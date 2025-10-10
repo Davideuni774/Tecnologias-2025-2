@@ -1,56 +1,432 @@
-/* Estilos para el Hola Mundo */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
-.container {
-    background: white;
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    max-width: 400px;
-    width: 90%;
-}
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
 
-h1 {
-    color: #333;
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-}
+    body {
+        background: #fff;
+        font-family: Arial, sans-serif;
+    }
 
-p {
-    color: #666;
-    font-size: 1.2em;
-    margin-bottom: 30px;
-    line-height: 1.6;
-}
+    .top-bar {
+        align-items: center;
+        background: #663399;
+        color: white;
+        display: flex;
+        font-size: 14px;
+        gap: 20px;
+        justify-content: flex-end;
+        padding: 5px 15px;
+        position: relative;
+    }
 
-button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    font-size: 1.1em;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    font-weight: bold;
-}
+    .top-bar .envios {
+        left: 50%;
+        position: absolute;
+        transform: translateX(-50%);
+    }
 
-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
+    header {
+        align-items: center;
+        background: #fff;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 20px;
+    }
 
-button:active {
-    transform: translateY(0);
-}
+    .header-left {
+        align-items: center;
+        display: flex;
+        gap: 20px;
+    }
+
+    .header-left img {
+        height: 50px;
+    }
+
+    .search-container {
+        align-items: center;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 25px;
+        display: flex;
+        flex: 1;
+        max-width: 500px;
+        padding: 5px 10px;
+    }
+
+    .search-container input {
+        border: none;
+        flex: 1;
+        outline: none;
+    }
+
+    .header-right img {
+        height: 28px;
+    }
+
+    nav {
+        background: #666;
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 20px;
+    }
+
+    nav a {
+        color: white;
+        font-size: 1.2rem;
+        text-decoration: none;
+    }
+
+    /* Dropdown en nav */
+    .dropdown {
+        position: relative;
+    }
+
+    .dropdown .drop-toggle {
+        display: inline-block;
+        padding-right: 14px; /* espacio para el caret */
+        position: relative;
+    }
+
+    /* Caret indicador */
+    .dropdown .drop-toggle::after {
+        content: "\25BE"; /* ▾ */
+        display: inline-block;
+        margin-left: 6px;
+        transition: transform 0.2s ease;
+        vertical-align: middle;
+    }
+
+    /* Rotar caret cuando está abierto */
+    .dropdown:hover .drop-toggle::after,
+    .dropdown:focus-within .drop-toggle::after {
+        transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+        background: #666;
+        border-radius: 6px;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+        display: none;
+        left: 0;
+        min-width: 180px;
+        padding: 8px 0;
+        position: absolute;
+        top: 100%;
+        z-index: 1000;
+    }
+
+    .dropdown-menu a {
+        color: #fff;
+        display: block;
+        font-size: 1rem;
+        padding: 8px 14px;
+        white-space: nowrap;
+    }
+
+    .dropdown-menu a:hover,
+    .dropdown-menu a:focus {
+        background: rgba(255,255,255,0.15);
+    }
+
+    /* Mostrar con hover o focus dentro para accesibilidad */
+    .dropdown:hover .dropdown-menu,
+    .dropdown:focus-within .dropdown-menu {
+        display: block;
+    }
+
+    .banner-text h1 {
+        font-size: 3.5rem;
+        text-shadow: 2px 2px 5px black;
+    }
+
+    .banner-text p {
+        font-size: 1.3rem;
+        text-shadow: 1px 1px 3px black;
+    }
+
+    /* Banner con imagen de fondo para "Impresiones 3D" */
+    .banner {
+        align-items: center;
+        background-color: #222; /* Fallback */
+        background-image: url('https://i.imgur.com/lj72Ghv.png');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        min-height: 360px;
+        padding: 40px 20px;
+        position: relative;
+    }
+
+    .banner::before {
+        background: rgba(0, 0, 0, 0.35);
+        content: "";
+        inset: 0;
+        position: absolute;
+    }
+
+    .banner-text {
+        color: #fff;
+        position: relative; /* sobre el overlay */
+        text-align: center;
+    }
+
+    .categorias {
+        font-family: 'Irish Grover', cursive;
+        margin: 0 auto;
+        max-width: 1000px;
+        padding: 16px;
+        text-align: center;
+    }
+
+    .categorias h2 {
+        align-items: center;
+        display: flex;
+        font-size: 2rem;
+        justify-content: center;
+        line-height: 1.2;
+        margin: 0 auto 16px;
+        max-width: 100%;
+        padding: 8px 0;
+    }
+
+    .categorias p {
+        align-items: center;
+        display: flex;
+        font-size: 1.05rem;
+        justify-content: center;
+        line-height: 1.4;
+        margin: 0 auto;
+        max-width: 720px;
+        padding: 8px 0 0;
+    }
+
+    .grid-categorias {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(3, 1fr);
+        margin-top: 12px;
+    }
+
+    .categoria {
+        align-items: center;
+        background: #eee;
+        border-radius: 10px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden; /* respeta el borde redondeado al hacer scale */
+        padding: 18px 14px;
+        transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+        will-change: transform;
+    }
+
+    /* Efecto hover/focus: ligero crecimiento y elevación */
+    .categoria:hover,
+    .categoria:focus-within {
+        transform: translateY(-4px) scale(1.03);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        background-color: #f1f1f1;
+    }
+
+    /* Respeto a usuarios con reducción de movimiento */
+    @media (prefers-reduced-motion: reduce) {
+        .categoria {
+            transition: none;
+        }
+    }
+
+    .categoria img {
+        display: block;
+        height: 140px;
+        margin: 0 auto;
+        object-fit: contain;
+        width: 100%;
+    }
+
+    /* Texto de cada tarjeta */
+    .categoria p {
+        font-size: 0.95rem;
+        line-height: 1.2;
+        margin-top: 8px;
+        /* Reservar dos líneas para igualar alturas entre tarjetas */
+        min-height: calc(1.2em * 2);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        line-clamp: 2;
+        overflow: hidden;
+    }
+
+    .centered-row {
+        display: flex;
+        gap: 40px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .center-category {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+    }
+
+    footer {
+        background: linear-gradient(100deg, #6E0D9E, #5C1865, #812DF4);
+        color: white;
+        padding: 30px 40px;
+    }
+
+    .footer-grid {
+        align-items: flex-start;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: space-between;
+    }
+
+    .footer-grid > div {
+        flex: 1 1 30%;
+    }
+
+    .footer-grid h3 {
+        margin-bottom: 10px;
+    }
+
+    .footer-grid p {
+        margin: 6px 0;
+    }
+
+    .footer-grid img {
+        display: block;
+        margin-left: auto;
+        max-height: 280px;
+    }
+
+    .metodos {
+        background: white;
+        padding: 20px 0;
+        text-align: center;
+    }
+
+    .payment-logos {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        justify-content: center;
+    }
+
+    .payment-logos img {
+        height: 50px;
+    }
+
+    .footer-bottom {
+        background: linear-gradient(100deg, #6E0D9E, #5C1865, #812DF4);
+        color: white;
+        padding: 30px 40px 20px;
+    }
+
+    .footer-bottom-grid {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(5, 1fr);
+        margin-bottom: 20px;
+    }
+
+    .footer-bottom h4 {
+        margin-bottom: 10px;
+    }
+
+    .footer-bottom ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .footer-bottom-text {
+        color: black;
+        display: flex;
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+        font-weight: bold;
+        justify-content: space-between;
+    }
+
+    /* Tablets: 2 columnas y texto ligeramente más pequeño */
+    @media (max-width: 1024px) {
+        .grid-categorias {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .categorias h2 {
+            font-size: 1.8rem;
+        }
+
+        .categorias p {
+            font-size: 0.98rem;
+        }
+
+        .categoria img {
+            height: 130px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .grid-categorias {
+            grid-template-columns: 1fr;
+        }
+
+        .footer-bottom-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        nav {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* En móvil, el dropdown ocupa ancho completo y se apila */
+        .dropdown-menu {
+            position: static;
+            box-shadow: none;
+            background: #5a5a5a;
+            border-radius: 4px;
+        }
+    }
+
+    /* Móviles pequeños: más compactación */
+    @media (max-width: 480px) {
+        .categorias {
+            padding: 12px;
+        }
+
+        .categorias h2 {
+            font-size: 1.45rem;
+        }
+
+        .categorias p {
+            font-size: 0.95rem;
+        }
+
+        .categoria {
+            padding: 14px 10px;
+        }
+
+        .categoria img {
+            height: 110px;
+        }
+
+        .categoria p {
+            font-size: 0.9rem;
+            line-height: 1.2;
+            min-height: calc(1.2em * 2);
+        }
+    }
