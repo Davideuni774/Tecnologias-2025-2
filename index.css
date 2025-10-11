@@ -21,6 +21,19 @@
         padding: 5px 15px;
         position: relative;
     }
+    /* Estilos comunes para páginas dentro de /Paginas */
+
+/* Clase para forzar 2 columnas en escritorio y 1 en móvil */
+.grid-2-cols {
+  display: grid; /* por si el contenedor no tiene display grid */
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (max-width: 768px) {
+  .grid-2-cols {
+    grid-template-columns: 1fr;
+  }
+}
 
     .top-bar .envios {
         left: 50%;
@@ -265,6 +278,20 @@
         overflow: hidden;
     }
 
+    /* Estado "Próximamente" */
+    .categoria.proximo {
+        opacity: 0.7;
+        filter: grayscale(50%);
+        cursor: default;
+        pointer-events: none; /* no clic */
+    }
+    .categoria.proximo img {
+        opacity: 0.85;
+    }
+    .categoria.proximo p {
+        font-weight: 600;
+    }
+
     .centered-row {
         display: flex;
         gap: 40px;
@@ -430,3 +457,14 @@
             min-height: calc(1.2em * 2);
         }
     }
+
+    /* For category pages: force 2 columns on desktop to avoid 3-1 layout */
+    .grid-categorias { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 768px) {
+      .grid-categorias { grid-template-columns: 1fr; }
+    }
+
+        /* Keep 3 columns only on the homepage (has the .banner as a direct child) */
+        @media (min-width: 769px) {
+            body:has(> .banner) .grid-categorias { grid-template-columns: repeat(3, 1fr); }
+        }
