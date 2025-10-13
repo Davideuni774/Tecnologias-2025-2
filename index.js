@@ -1,6 +1,6 @@
 // Inyecta header (top-bar + header + nav) y footer comunes en todas las páginas
 // Detecta si la página está en /Paginas/ para ajustar rutas relativas
-
+//hola xd
 (function () {
   const isSubpage = /\/Paginas\//i.test(location.pathname);
   const base = isSubpage ? '../' : '';
