@@ -3,7 +3,16 @@
 
 (function () {
   const pathParts = location.pathname.split('/').filter(p => p);
-  const base = '../'.repeat(pathParts.length);
+
+  // Mejor cálculo: detectar si estamos dentro de /Paginas/ o /Paginas/Paginasemergentes/
+  let base = './';
+  if (pathParts.includes('Paginasemergentes')) {
+    base = '../../';
+  } else if (pathParts.includes('Paginas')) {
+    base = '../';
+  } else {
+    base = './';
+  }
 
   const headerHTML = () => `
     <div class="top-bar">
