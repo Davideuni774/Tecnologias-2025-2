@@ -3,38 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Draconis - Pregrabado de madera</title>
+  <title>Draconis - Pirograbado en madera</title>
   <link rel="stylesheet" href="../index.css?v=20251011">
   <script src="../index.js?v=20251011" defer></script>
+  <style>
+    body { background: #fff; }
+    h2 { text-align: center; font-family: 'Irish Grover', cursive; font-size:48px; margin:40px 0; color:#000; }
+    .grid-categorias {
+      max-width: 900px;
+      margin: 0 auto 80px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 48px 80px;
+      padding: 0 24px;
+    }
+    .categoria { text-align: center; font-family: 'Irish Grover', cursive; color:#222; }
+    .categoria a { color: inherit; text-decoration: none; display: block; }
+    .categoria img {
+      width: 140px; height: 140px; object-fit: cover; border-radius: 18px; margin: 0 auto 18px; display:block;
+    }
+    .categoria p { margin:6px 0; font-size:18px; line-height:1.3; }
+    .categoria p strong { display:block; margin-top:6px; font-size:18px; }
+    @media (max-width:700px){
+      .grid-categorias { grid-template-columns: 1fr; gap:36px; }
+      .categoria img { width:160px; height:160px; }
+    }
+  </style>
 </head>
 <body>
   <main>
+    <h2>Pirograbado en madera</h2>
+
     <section class="categorias">
-      <h2>Pregrabado de madera</h2>
       <div class="grid-categorias">
         <div class="categoria">
-          <a href="#">
-            <img src="" alt="Nombre figura 1"></a>
-          <p>Nombre figura 1</p>
-          <p><strong>$0</strong></p>
+          <a href="Paginasemergentes/Cofres-Madera-Personalizados.html">
+            <img src="https://i.imgur.com/1Hc45qB.jpg"
+                 alt="Cofres Madera Personalizados"
+                 onerror="this.onerror=null;this.src='https://via.placeholder.com/420?text=Cofres';">
+            <p>Cofres/Madera<br>Personalizados</p>
+            <p><strong>$45.000</strong></p>
+          </a>
         </div>
+
         <div class="categoria">
-          <a href="#">
-            <img src="" alt="Nombre figura 2"></a>
-          <p>Nombre figura 2</p>
-          <p><strong>$0</strong></p>
+          <a href="Paginasemergentes/Tankards-Pocillos-Personalizados.html">
+            <img src="https://i.imgur.com/2LxYXPu.jpg"
+                 alt="Tankards Pocillos Personalizados"
+                 onerror="this.onerror=null;this.src='https://via.placeholder.com/420?text=Tankards';">
+            <p>Tankards(Pocillos)<br>Personalizados</p>
+            <p><strong>$30.000</strong></p>
+          </a>
         </div>
+
         <div class="categoria">
-          <a href="#">
-            <img src="" alt="Nombre figura 3"></a>
-          <p>Nombre figura 3</p>
-          <p><strong>$0</strong></p>
+          <a href="Paginasemergentes/Escudo-Vikingo-de-Madera.html">
+            <img src="https://i.imgur.com/nmIqXbZ.jpg"
+                 alt="Escudo Vikingo de Madera"
+                 onerror="this.onerror=null;this.src='https://via.placeholder.com/420?text=Escudo';">
+            <p>Escudo Vikingo<br>de Madera</p>
+            <p><strong>$350.000</strong></p>
+          </a>
         </div>
+
         <div class="categoria">
-          <a href="#">
-            <img src="" alt="Nombre figura 4"></a>
-          <p>Nombre figura 4</p>
-          <p><strong>$0</strong></p>
+          <a href="Paginasemergentes/Cuadros-Personalizados.html">
+            <img src="https://i.imgur.com/IToLGgu.jpg"
+                 alt="Cuadros Personalizados"
+                 onerror="this.onerror=null;this.src='https://via.placeholder.com/420?text=Cuadros';">
+            <p>Cuadros<br>Personalizados</p>
+            <p><strong>$35.000</strong></p>
+          </a>
         </div>
       </div>
     </section>
