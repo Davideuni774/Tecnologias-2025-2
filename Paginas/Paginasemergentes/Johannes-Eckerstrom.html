@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draconis - Johannes Eckerstrom</title>
+  <link rel="stylesheet" href="../../index.css?v=20251011">
+  <script src="../../index.js?v=20251011" defer></script>
+  <style>
+    body { background: #fff; }
+    .categoria-titulo { text-align: center; font-family: Arial, sans-serif; font-size: 48px; margin: 40px 0; }
+    .producto-detalle { max-width: 1100px; margin: 0 auto 80px; display:flex; gap:60px; align-items:flex-start; padding:0 20px; }
+    .producto-imagen img{ width:420px; height:420px; object-fit:cover; border-radius:32px; display:block; }
+    .producto-info { flex:1; max-width:520px; font-family:'Caveat', cursive; color:#222; }
+    .producto-info h1{ font-size:26px; margin:6px 0 18px; font-weight:700; }
+    .producto-info .descripcion{ font-size:18px; line-height:1.6; margin-bottom:18px; color:#333; }
+    .producto-info .precio{ font-size:22px; margin-bottom:26px; }
+    .btn-comprar{ display:inline-block; padding:14px 36px; background:#7b7b7b; color:#fff; border-radius:28px; font-size:20px; min-width:320px; text-align:center; border:none; cursor:pointer; }
+    @media (max-width:900px){ .producto-detalle{ flex-direction:column; align-items:center; gap:30px } .producto-imagen img{ width:320px; height:320px } .btn-comprar{ min-width:260px } }
+  </style>
+</head>
+<body>
+  <main>
+    <h2 class="categoria-titulo">Figuras Musicales</h2>
+    <section class="producto-detalle">
+      <div class="producto-imagen">
+        <img src="https://i.imgur.com/hWapRIj.png" alt="Johannes Eckerstrom">
+      </div>
+      <div class="producto-info">
+        <h1>Johannes Eckerstrom</h1>
+        <p class="descripcion">
+          Figura detallada de Johannes Eckerstrom, bajista de The Hives. Diseño personalizado con elementos representativos de su estilo musical y apariencia.
+        </p>
+        <p class="precio"><strong>$45.000</strong></p>
+        <button class="btn-comprar">Comprar</button>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
