@@ -2,8 +2,8 @@
 // Detecta si la página está en /Paginas/ para ajustar rutas relativas
 
 (function () {
-  const pathParts = location.pathname.split('/').filter(p => p);
-  const base = '../'.repeat(pathParts.length);
+  const isSubpage = /\/Paginas\//i.test(location.pathname);
+  const base = isSubpage ? '../' : '';
 
   const headerHTML = () => `
     <div class="top-bar">
