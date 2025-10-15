@@ -3,7 +3,7 @@
 
 (function () {
   const pathParts = location.pathname.split('/').filter(p => p);
-  const base = pathParts.length > 1 ? '../'.repeat(pathParts.length - 1) : '';
+  const base = '../'.repeat(pathParts.length);
 
   const headerHTML = () => `
     <div class="top-bar">
