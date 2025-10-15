@@ -7,8 +7,9 @@
   <link rel="stylesheet" href="../index.css?v=20251011">
   <script src="../index.js?v=20251011" defer></script>
   <style>
-    body { background:#fff; }
+    body { background: transparent; }
     h2 { text-align:center; font-family:'Irish Grover', cursive; font-size:48px; margin:40px 0; color:#000; }
+
     .grid-categorias {
       max-width:900px;
       margin:0 auto 80px;
@@ -17,21 +18,53 @@
       gap:48px 80px;
       padding:0 24px;
     }
-    .categoria { text-align:center; font-family:'Irish Grover', cursive; color:#222; }
-    .categoria a { color:inherit; text-decoration:none; display:block; }
-    .categoria img {
-      width:140px;
-      height:140px;
-      object-fit:cover;
-      border-radius:18px;
-      display:block;
-      margin:0 auto 18px;
+
+    .categoria {
+      font-family:'Irish Grover', cursive;
+      color:#222;
     }
-    .categoria p { margin:6px 0; font-size:18px; line-height:1.3; }
+
+    .categoria .card {
+      background: #f3f3f3;
+      border-radius: 12px;
+      padding: 22px 18px;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* contenedor cuadrado para la imagen: mantener proporción y mostrar el modelo completo */
+    .img-wrap {
+      width: 220px;                 /* aumentar tamaño para mejor visibilidad */
+      aspect-ratio: 1 / 1;
+      border-radius: 18px;
+      overflow: hidden;
+      background: linear-gradient(180deg,#fff,#f6f6f6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;                /* evita que el modelo toque los bordes */
+      box-shadow: none;
+    }
+
+    .img-wrap img {
+      width: auto;
+      height: 100%;
+      max-width: 100%;
+      object-fit: contain;          /* muestra la imagen completa sin recortar */
+      object-position: center center;
+      display: block;
+      background: transparent;
+    }
+
+    .categoria p { margin:6px 0; font-size:18px; line-height:1.3; text-align:center; }
     .categoria p strong { display:block; margin-top:6px; font-size:18px; }
+
     @media (max-width:700px){
       .grid-categorias { grid-template-columns: 1fr; gap:36px; }
-      .categoria img { width:160px; height:160px; }
+      .img-wrap { width: 260px; }   /* móvil: un poco más grande para legibilidad */
     }
   </style>
 </head>
@@ -41,37 +74,51 @@
 
     <section class="categorias">
       <div class="grid-categorias">
+
         <div class="categoria">
-          <a href="Paginasemergentes/Johannes-Eckerstrom-Avatar.html">
-            <img src="https://i.imgur.com/FUf9a5f.png" alt="Johannes Eckerstrom Avatar">
+          <a class="card" href="Paginasemergentes/Johannes-Eckerstrom-Avatar.html">
+            <div class="img-wrap">
+              <img loading="lazy" src="https://i.imgur.com/FUf9a5f.png" alt="Johannes Eckerstrom Avatar"
+                   onerror="this.onerror=null;this.src='https://via.placeholder.com/420?text=Johannes';">
+            </div>
             <p>Johannes Eckerstrom<br>Avatar</p>
             <p><strong>$25.000</strong></p>
           </a>
         </div>
 
         <div class="categoria">
-          <a href="Paginasemergentes/Joey-Jordison-Slipknot.html">
-            <img src="https://i.imgur.com/CoiU3qe.png" alt="Joey Jordison Slipknot">
+          <a class="card" href="Paginasemergentes/Joey-Jordison-Slipknot.html">
+            <div class="img-wrap">
+              <img loading="lazy" src="https://i.imgur.com/CoiU3qe.png" alt="Joey Jordison Slipknot"
+                   onerror="this.onerror=null;this.src='https://via.placeholder.com/420?text=Joey';">
+            </div>
             <p>Joey Jordison<br>Slipknot</p>
             <p><strong>$25.000</strong></p>
           </a>
         </div>
 
         <div class="categoria">
-          <a href="Paginasemergentes/Ned-Twenty-One-Pilots-Modelo-3D.html">
-            <img src="https://i.imgur.com/KczQiYh.png" alt="Ned Twenty One Pilots Modelo 3D">
+          <a class="card" href="Paginasemergentes/Ned-Twenty-One-Pilots-Modelo-3D.html">
+            <div class="img-wrap">
+              <img loading="lazy" src="https://i.imgur.com/KczQiYh.png" alt="Ned Twenty One Pilots Modelo 3D"
+                   onerror="this.onerror=null;this.src='https://via.placeholder.com/420?text=Ned';">
+            </div>
             <p>Ned<br>Twenty One Pilots<br>Modelo 3D</p>
             <p><strong>$20.000</strong></p>
           </a>
         </div>
 
         <div class="categoria">
-          <a href="Paginasemergentes/Saorix-Caballeros-del-Zodiaco.html">
-            <img src="https://i.imgur.com/vX7xWqS.png" alt="Saorix Caballeros del Zodiaco">
+          <a class="card" href="Paginasemergentes/Saorix-Caballeros-del-Zodiaco.html">
+            <div class="img-wrap">
+              <img loading="lazy" src="https://i.imgur.com/vX7xWqS.png" alt="Saorix Caballeros del Zodiaco"
+                   onerror="this.onerror=null;this.src='https://via.placeholder.com/420?text=Saorix';">
+            </div>
             <p>Saorix<br>Caballeros del Zodiaco</p>
             <p><strong>$85.000</strong></p>
           </a>
         </div>
+
       </div>
     </section>
   </main>
