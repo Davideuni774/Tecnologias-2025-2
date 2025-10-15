@@ -6,37 +6,69 @@
   <title>Draconis - Accesorios</title>
   <link rel="stylesheet" href="../index.css?v=20251011">
   <script src="../index.js?v=20251011" defer></script>
+  <style>
+    body { background: #fff; }
+    h2 { text-align: center; font-family: 'Cinzel', serif; font-size:48px; margin:40px 0; }
+    .grid-categorias {
+      max-width: 900px;
+      margin: 0 auto 80px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 48px 80px;
+      padding: 0 24px;
+    }
+    .categoria { text-align: center; font-family: 'Caveat', cursive; color:#222; }
+    .categoria a { color: inherit; text-decoration: none; display: block; }
+    .categoria img {
+      width: 140px; height: 140px; object-fit: cover; border-radius: 18px; margin: 0 auto 18px; display:block;
+    }
+    .categoria p { margin:6px 0; font-size:18px; line-height:1.2; }
+    .categoria p strong { display:block; margin-top:6px; font-size:18px; }
+    @media (max-width:700px){
+      .grid-categorias { grid-template-columns: 1fr; gap:36px; }
+      .categoria img { width:160px; height:160px; }
+    }
+  </style>
 </head>
 <body>
   <main>
-  <section class="categorias">
-      <h2>Accesorios</h2>
+    <h2>Accesorios</h2>
+
+    <section class="categorias">
       <div class="grid-categorias">
         <div class="categoria">
-          <a href="">
-            <img src="https://i.imgur.com/tvYK1ZQ.png" alt="Producto 1"></a>
-          <p>Nombre figura 1</p>
-          <p><strong>$0</strong></p>
+          <a href="Paginasemergentes/Aretes-y-Collar-Banda-Avatar.html">
+            <img src="https://i.imgur.com/tvYK1ZQ.png" alt="Aretes y Collar Banda Avatar">
+            <p>Aretes y Collar<br>Banda Avatar</p>
+            <p><strong>$10.000</strong></p>
+          </a>
         </div>
+
         <div class="categoria">
-          <a href="#">
-            <img src="https://i.imgur.com/F1UdFfK.png" alt="Producto 2"></a>
-          <p>Nombre figura 2</p>
-          <p><strong>$0</strong></p>
+          <a href="Paginasemergentes/Collar-Banda-Ghost.html">
+            <img src="https://i.imgur.com/F1UdFfK.png" alt="Collar Banda Ghost">
+            <p>Collar Banda<br>Ghost</p>
+            <p><strong>$5.000</strong></p>
+          </a>
         </div>
+
         <div class="categoria">
-          <a href="#">
-            <img src="https://i.imgur.com/b9MvcBE.png" alt="Producto 3"></a>
-          <p>Nombre figura 3</p>
-          <p><strong>$0</strong></p>
+          <a href="Paginasemergentes/Collar-Linkin-Park.html">
+            <img src="https://i.imgur.com/b9MvcBE.png" alt="Collar Linkin Park">
+            <p>Collar<br>Linkin Park</p>
+            <p><strong>$5.000</strong></p>
+          </a>
         </div>
+
         <div class="categoria">
-          <a href="#">
-            <img src="https://i.imgur.com/BOOw2GX.png" alt="Producto 4"></a>
-          <p>Nombre figura 4</p>
-          <p><strong>$0</strong></p>
+          <a href="Paginasemergentes/Aretes-Monster-Draculavra.html">
+            <img src="https://i.imgur.com/BOOw2GX.png" alt="Aretes Monster Draculavra">
+            <p>Aretes Monster<br>Draculavra</p>
+            <p><strong>$8.000</strong></p>
+          </a>
         </div>
       </div>
+    </section>
   </main>
 </body>
 </html>
