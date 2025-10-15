@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draconis - Ned Twenty One Pilots Modelo 3D</title>
+  <link rel="stylesheet" href="../../index.css?v=20251011">
+  <script src="../../index.js?v=20251011" defer></script>
+
+  <!-- Estilos locales para reproducir exactamente la vista del screenshot -->
+  <style>
+    body { background: #fff; }
+    .categoria-titulo {
+      text-align: center;
+      font-family: 'Irish Grover', cursive;
+      font-size: 48px;
+      margin: 40px 0;
+      color: #000;
+    }
+
+    .producto-detalle {
+      max-width: 1100px;
+      margin: 0 auto 80px;
+      display: flex;
+      gap: 60px;
+      align-items: flex-start;
+      padding: 0 20px;
+    }
+
+    .producto-imagen img{
+      width: 420px;
+      height: 420px;
+      object-fit: cover;
+      border-radius: 32px;
+      display: block;
+      box-shadow: none;
+    }
+
+    .producto-info {
+      flex: 1;
+      max-width: 520px;
+      font-family: 'Irish Grover', cursive;
+      color: #222;
+    }
+
+    .producto-info h1{
+      font-size: 26px;
+      margin: 6px 0 18px;
+      font-weight: 700;
+    }
+
+    .producto-info .descripcion{
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 18px;
+      color: #333;
+    }
+
+    .producto-info .precio{
+      font-size: 22px;
+      margin-bottom: 26px;
+    }
+
+    .btn-comprar{
+      display: inline-block;
+      padding: 14px 36px;
+      background: #7b7b7b;
+      color: #fff;
+      border-radius: 28px;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      text-align: center;
+      min-width: 320px;
+    }
+
+    /* Ajustes responsivos */
+    @media (max-width: 900px){
+      .producto-detalle{ flex-direction: column; align-items: center; gap: 30px; }
+      .producto-imagen img{ width: 320px; height: 320px; }
+      .producto-info{ max-width: 820px; text-align: left; }
+      .btn-comprar{ min-width: 260px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h2 class="categoria-titulo">Modelos 3D</h2>
+
+    <section class="producto-detalle">
+      <div class="producto-imagen">
+        <img src="https://i.imgur.com/KczQiYh.png" alt="Ned Twenty One Pilots Modelo 3D">
+      </div>
+
+      <div class="producto-info">
+        <h1>Ned Twenty One Pilots Modelo 3D</h1>
+        <p class="descripcion">
+          Figura digitalizada del tierno Ned, un símbolo de creatividad y esperanza para los fans de TOP. Perfecto para quienes coleccionan figuras exclusivas.
+        </p>
+        <p class="precio"><strong>$20.000</strong></p>
+        <button class="btn-comprar">Comprar</button>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
