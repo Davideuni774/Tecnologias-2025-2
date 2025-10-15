@@ -1,5 +1,4 @@
-
-    * {
+* {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
@@ -468,3 +467,31 @@
         @media (min-width: 769px) {
             body:has(> .banner) .grid-categorias { grid-template-columns: repeat(3, 1fr); }
         }
+
+/* Importar Irish Grover */
+@import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
+
+:root{
+  --font-title: 'Irish Grover', cursive;
+  --font-base: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Aplicar Irish Grover a títulos y elementos destacables */
+h1,h2,h3,h4,h5,h6,
+.categoria-titulo,
+header nav,
+nav a,
+.footer-bottom h4,
+.categoria p:first-child /* nombre de producto */
+{
+  font-family: var(--font-title);
+}
+
+/* Aplicar Irish Grover a todo el sitio */
+body, p, li, input, button {
+  font-family: var(--font-title);
+}
+
+/* Si prefieres usar Irish Grover en todo el sitio (no recomendado para párrafos), descomenta:
+body { font-family: var(--font-title); }
+*/
