@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draconis - Medios de pago</title>
+  <link rel="stylesheet" href="../../index.css?v=20251011">
+  <script src="../../index.js?v=20251011" defer></script>
+</head>
+<body>
+  <main>
+    <section class="payment-page">
+      <h2>Medios de pago</h2>
+
+      <form id="payment-form" class="payment-form">
+        <div class="payment-grid">
+          <label class="payment-option">
+            <input type="radio" name="payment" value="Daviplata">
+            <span class="icon">🏦</span>
+            <span class="text">Daviplata</span>
+          </label>
+
+          <label class="payment-option">
+            <input type="radio" name="payment" value="Nequi">
+            <span class="icon">📲</span>
+            <span class="text">Nequi</span>
+          </label>
+
+          <label class="payment-option">
+            <input type="radio" name="payment" value="Addi">
+            <span class="icon">💠</span>
+            <span class="text">Addi</span>
+          </label>
+
+          <label class="payment-option">
+            <input type="radio" name="payment" value="PayPal">
+            <span class="icon">💳</span>
+            <span class="text">PayPal</span>
+          </label>
+
+          <label class="payment-option">
+            <input type="radio" name="payment" value="Visa">
+            <span class="icon">💳</span>
+            <span class="text">Visa</span>
+          </label>
+
+          <label class="payment-option">
+            <input type="radio" name="payment" value="Tarjeta de crédito">
+            <span class="icon">💳</span>
+            <span class="text">Tarjeta de crédito</span>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button type="button" id="cancel-payment" class="btn-secondary">Cancelar</button>
+          <button type="submit" class="continue-btn">Continuar</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  
+</body>
+</html>

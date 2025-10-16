@@ -7,12 +7,14 @@
   const isNestedSubpage = /\/Paginas\/Paginasemergentes\//i.test(path);
   const isSubpage = /\/Paginas\//i.test(path);
   const baseToRoot = isNestedSubpage ? '../../' : (isSubpage ? '../' : '');
-  const loginPath = `${baseToRoot}Paginas/iniciosesion.html`;
+  const loginPath = `${baseToRoot}Paginas/Paginasemergentes/Miusuario.html`;
 
   const headerHTML = () => `
     <div class="top-bar">
       <span class="envios">Envíos a toda Colombia</span>
-      <span>Mis pedidos</span>
+      <a href="${baseToRoot}Paginas/Paginasemergentes/Mispedidos.html" style="color: inherit; text-decoration: none;">
+        <span>Mis pedidos</span>
+      </a>
       <a href="${loginPath}" style="color: inherit; text-decoration: none;"><span>Mi cuenta</span></a>
       <a href="${loginPath}"><img src="https://i.imgur.com/BHiRNHm.png" alt="Usuario" style="height:24px;"></a>
     </div>
@@ -37,12 +39,12 @@
       </div>
     </header>
     <nav>
-      <a href="#">Lo último</a>
+      <a href="${baseToRoot}Paginas/Paginasemergentes/Loultimo.html">Lo último</a>
       <div class="dropdown">
         <a href="#" class="drop-toggle">Funkos</a>
         <div class="dropdown-menu">
-          <a href="#">De temporada</a>
-          <a href="#">Clásicos</a>
+          <a href="${baseToRoot}Paginas/Paginasemergentes/detemporada.html">De temporada</a>
+          <a href="${baseToRoot}Paginas/Paginasemergentes/Clasicos.html">Clásicos</a>
         </div>
       </div>
       <div class="dropdown">
@@ -137,6 +139,14 @@
 
   // --- Carrito (localStorage) ---
   const CART_KEY = 'draconis_cart_items';
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
   function parsePriceToNumber(text) {
     // Quita todo excepto dígitos; asume moneda sin decimales (COP)
     const digits = String(text || '').replace(/[^\d]/g, '');
@@ -165,6 +175,126 @@
     const items = getCart();
     const total = items.reduce((sum, it) => sum + (it.qty || 1), 0);
     countEl.textContent = String(total);
+  }
+
+  // --- Búsqueda global de productos ---
+  // Índice simple de productos y categorías (paths relativos a la raíz del repo)
+  const PRODUCT_INDEX = [
+    // Categorías
+    { name: 'Accesorios', path: 'Paginas/Aceesorios.html', keywords: ['aretes', 'collares', 'accesorio'] },
+    { name: 'Figuras personalizadas', path: 'Paginas/Figuras-personalizadas.html', keywords: ['figuras', 'personalizado', 'muñeco', 'funko'] },
+    { name: 'Modelos 3D', path: 'Paginas/Modelos 3D.html', keywords: ['impresion', 'impresión', '3d', 'modelos'] },
+    { name: 'Props', path: 'Paginas/Props.html', keywords: ['props', 'cosplay', 'utileria', 'accesorios'] },
+    { name: 'Pregrabado de madera', path: 'Paginas/Pregrabado de madera.html', keywords: ['madera', 'grabado', 'laser'] },
+
+    // Productos (Paginasemergentes)
+    { name: 'Accesorios Ghost', path: 'Paginas/Paginasemergentes/Accesorios-Ghost.html', keywords: ['ghost', 'collar', 'aretes', 'banda'] },
+    { name: 'Aretes Monster Draculavra', path: 'Paginas/Paginasemergentes/Aretes-Monster-Draculavra.html', keywords: ['aretes', 'monster', 'draculavra'] },
+    { name: 'Aretes y Collar Banda Avatar', path: 'Paginas/Paginasemergentes/Aretes-y-Collar-Banda-Avatar.html', keywords: ['aretes', 'collar', 'avatar', 'banda'] },
+    { name: 'Cofres Madera Personalizados', path: 'Paginas/Paginasemergentes/Cofres-Madera-Personalizados.html', keywords: ['cofre', 'madera', 'grabado'] },
+    { name: 'Collar Banda Ghost', path: 'Paginas/Paginasemergentes/Collar-Banda-Ghost.html', keywords: ['collar', 'ghost', 'banda'] },
+    { name: 'Collar Linkin Park', path: 'Paginas/Paginasemergentes/Collar-Linkin-Park.html', keywords: ['collar', 'linkin', 'park', 'banda'] },
+    { name: 'Cuadros Personalizados', path: 'Paginas/Paginasemergentes/Cuadros-Personalizados.html', keywords: ['cuadros', 'personalizado', 'arte'] },
+    { name: 'Escudo Vikingo de Madera', path: 'Paginas/Paginasemergentes/Escudo-Vikingo-de-Madera.html', keywords: ['escudo', 'vikingo', 'madera'] },
+    { name: 'Joey Jordison Slipknot', path: 'Paginas/Paginasemergentes/Joey-Jordison-Slipknot.html', keywords: ['joey', 'jordison', 'slipknot', 'baterista'] },
+    { name: 'Johannes Eckerström Avatar', path: 'Paginas/Paginasemergentes/Johannes-Eckerstrom-Avatar.html', keywords: ['johannes', 'eckerstrom', 'avatar', 'banda'] },
+    { name: 'Johannes Eckerström', path: 'Paginas/Paginasemergentes/Johannes-Eckerstrom.html', keywords: ['johannes', 'eckerstrom', 'cantante'] },
+    { name: 'Josh Dun', path: 'Paginas/Paginasemergentes/Josh-Dun.html', keywords: ['josh', 'dun', 'twenty one pilots', 'baterista'] },
+    { name: 'Manos Robot Cyberpunk', path: 'Paginas/Paginasemergentes/Manos-Robot-Cyberpunk.html', keywords: ['manos', 'robot', 'cyberpunk'] },
+    { name: 'Ned TOP', path: 'Paginas/Paginasemergentes/Ned-TOP.html', keywords: ['ned', 'top', 'twenty one pilots'] },
+    { name: 'Ned Twenty One Pilots Modelo 3D', path: 'Paginas/Paginasemergentes/Ned-Twenty-One-Pilots-Modelo-3D.html', keywords: ['ned', 'modelo', '3d', 'impresion'] },
+    { name: 'Papa Emeritus II Ghost Cetro', path: 'Paginas/Paginasemergentes/Papa-Emeritus-II-Ghost-Cetro.html', keywords: ['papa', 'emeritus', 'ghost', 'cetro'] },
+    { name: 'Saorix Caballeros del Zodiaco', path: 'Paginas/Paginasemergentes/Saorix-Caballeros-del-Zodiaco.html', keywords: ['saorix', 'caballeros', 'zodiaco'] },
+    { name: 'Tankards Pocillos Personalizados', path: 'Paginas/Paginasemergentes/Tankards-Pocillos-Personalizados.html', keywords: ['pocillos', 'tankards', 'personalizado'] },
+    { name: 'Tyler Joseph', path: 'Paginas/Paginasemergentes/Tyler-Joseph.html', keywords: ['tyler', 'joseph', 'twenty one pilots', 'cantante'] }
+  ];
+
+  function normalizeText(s) {
+    return String(s || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function doSearch(query) {
+    const q = (query || '').trim();
+    const dest = `${baseToRoot}Paginas/Paginasemergentes/Buscar.html?q=${encodeURIComponent(q)}`;
+    location.href = dest;
+  }
+
+  function initSearch() {
+    const searchContainer = document.querySelector('.search-container');
+    if (!searchContainer) return;
+    const input = searchContainer.querySelector('input[type="search"]');
+    const icon = searchContainer.querySelector('img');
+    if (input) {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          doSearch(input.value);
+        }
+      });
+    }
+    if (icon) {
+      icon.style.cursor = 'pointer';
+      icon.addEventListener('click', () => doSearch(input?.value || ''));
+    }
+  }
+
+  function initSearchResultsPage() {
+    const root = document.getElementById('search-root');
+    if (!root) return; // no estamos en la página de resultados
+
+    const params = new URLSearchParams(location.search);
+    const qRaw = params.get('q') || '';
+  const qNorm = normalizeText(qRaw);
+  const tokens = qNorm.split(' ').filter(Boolean);
+
+    // Mostrar query en el input del header si existe
+    const headerInput = document.querySelector('.search-container input[type="search"]');
+    if (headerInput) headerInput.value = qRaw;
+
+    let results = [];
+    if (tokens.length) {
+      results = PRODUCT_INDEX.filter(p => {
+        const doc = normalizeText([p.name].concat(p.keywords || []).join(' '));
+        return tokens.every(t => doc.includes(t));
+      });
+    }
+
+    const title = document.createElement('h2');
+    title.textContent = qRaw ? `Resultados (${results.length}) para "${qRaw}"` : 'Buscar productos';
+    if (qRaw) {
+      document.title = `Buscar: ${qRaw} — ${results.length} resultados`;
+    }
+    const container = document.createElement('div');
+    container.className = 'grid-categorias';
+
+    if (!results.length) {
+      root.innerHTML = '';
+      root.appendChild(title);
+      const msg = document.createElement('p');
+      msg.textContent = qRaw ? 'No encontramos resultados. Intenta con otro término.' : 'Escribe en la barra superior y presiona Enter.';
+      root.appendChild(msg);
+      return;
+    }
+
+    results.forEach(p => {
+      const a = document.createElement('a');
+      a.className = 'categoria';
+      a.href = `${baseToRoot}${p.path}`;
+      a.innerHTML = `
+        <img src="https://i.imgur.com/lj72Ghv.png" alt="${p.name}">
+        <p>${p.name}</p>
+      `;
+      container.appendChild(a);
+    });
+
+    root.innerHTML = '';
+    root.appendChild(title);
+    root.appendChild(container);
   }
 
   // --- Render de la página Mi carrito ---
@@ -205,6 +335,24 @@
       const unit = typeof it.price === 'number' ? it.price : parsePriceToNumber(it.price);
       return sum + unit * (it.qty || 1);
     }, 0);
+
+    // Bloque de dirección de envío y método de pago
+    const shipping = (() => { try { return localStorage.getItem('draconis_shipping_address') || ''; } catch { return ''; } })();
+    const payMethod = (() => { try { return localStorage.getItem('draconis_payment_method') || ''; } catch { return ''; } })();
+    const metaDiv = document.createElement('div');
+    metaDiv.className = 'cart-meta';
+    metaDiv.innerHTML = `
+      <div class="cart-meta-row">
+        <span class="cart-meta-label">Dirección:</span>
+        <span class="cart-meta-value">${shipping ? escapeHtml(shipping) : 'No seleccionada'}</span>
+        <a class="cart-meta-change" href="${baseToRoot}Paginas/Paginasemergentes/Direcciondeenvio.html">${shipping ? 'Cambiar' : 'Añadir'}</a>
+      </div>
+      <div class="cart-meta-row">
+        <span class="cart-meta-label">Pago:</span>
+        <span class="cart-meta-value">${payMethod ? escapeHtml(payMethod) : 'No seleccionado'}</span>
+        <a class="cart-meta-change" href="${baseToRoot}Paginas/Paginasemergentes/Mediosdepago.html">${payMethod ? 'Cambiar' : 'Elegir'}</a>
+      </div>
+    `;
     const summary = document.createElement('div');
     summary.className = 'cart-summary';
     summary.innerHTML = `
@@ -217,6 +365,7 @@
 
     root.innerHTML = '';
     root.appendChild(list);
+    root.appendChild(metaDiv);
     root.appendChild(summary);
 
     // Eventos
@@ -249,7 +398,23 @@
     });
 
     document.getElementById('cart-checkout')?.addEventListener('click', () => {
-      alert('Gracias por tu compra (demo).');
+      // Validar que exista dirección de envío y método de pago antes de continuar
+      const shipping = (() => { try { return localStorage.getItem('draconis_shipping_address') || ''; } catch { return ''; } })();
+      const payMethod = (() => { try { return localStorage.getItem('draconis_payment_method') || ''; } catch { return ''; } })();
+
+      if (!shipping) {
+        alert('Por favor, añade tu Dirección de envío para continuar.');
+        location.href = `${baseToRoot}Paginas/Paginasemergentes/Direcciondeenvio.html`;
+        return;
+      }
+      if (!payMethod) {
+        alert('Por favor, elige un Medio de pago para continuar.');
+        location.href = `${baseToRoot}Paginas/Paginasemergentes/Mediosdepago.html`;
+        return;
+      }
+
+      // Ambos presentes: continuar a página de confirmación
+      location.href = `${baseToRoot}Paginas/Paginasemergentes/Gracias.html`;
     });
   }
 
@@ -290,22 +455,201 @@
     });
   }
 
+  // Redirige los botones "Comprar" a Medios de pago
+  function wireBuyButtons() {
+    document.querySelectorAll('.btn-comprar').forEach(btn => {
+      if (btn.dataset.buyWired === '1') return; // evitar duplicar
+      btn.dataset.buyWired = '1';
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        try {
+          // Intentar capturar info del producto como en Agregar al carrito
+          const info = btn.closest('.producto-info');
+          const title = info?.querySelector('h1')?.textContent?.trim() || 'Producto';
+          const priceText = info?.querySelector('.precio')?.textContent || '';
+          const price = parsePriceToNumber(priceText);
+          const detail = info?.closest('.producto-detalle') || document.querySelector('.producto-detalle');
+          const imgEl = detail?.querySelector('.producto-imagen img') || detail?.querySelector('img');
+          const image = imgEl?.getAttribute('src') || '';
+          const url = location.pathname;
+          addToCart({ name: title, price, image, url, qty: 1 });
+        } catch (err) {
+          console.warn('[Comprar] No se pudo agregar al carrito antes de ir a pagos', err);
+        }
+        // Ir a Medios de pago
+        location.href = `${baseToRoot}Paginas/Paginasemergentes/Mediosdepago.html`;
+      });
+    });
+  }
+
+  // --- Página Medios de Pago ---
+  function initPaymentPage() {
+    const form = document.getElementById('payment-form');
+    if (!form) return; // No estamos en la página de medios de pago
+
+    // Preseleccionar método guardado
+    try {
+      const saved = localStorage.getItem('draconis_payment_method');
+      if (saved) {
+        const input = document.querySelector(`input[name="payment"][value="${saved}"]`);
+        if (input) input.checked = true;
+      }
+    } catch {}
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const selected = document.querySelector('input[name="payment"]:checked');
+      if (!selected) {
+        alert('Por favor, selecciona un medio de pago.');
+        return;
+      }
+      try { localStorage.setItem('draconis_payment_method', selected.value); } catch {}
+      // Regresar al carrito
+      location.href = `${baseToRoot}Paginas/Paginasemergentes/Micarrito.html`;
+    });
+
+    const cancelBtn = document.getElementById('cancel-payment');
+    cancelBtn?.addEventListener('click', () => {
+      location.href = `${baseToRoot}Paginas/Paginasemergentes/Micarrito.html`;
+    });
+  }
+
+  // --- Página Dirección de Envío ---
+  function initShippingPage() {
+    const form = document.getElementById('shipping-form');
+    if (!form) return; // No estamos en la página de dirección de envío
+
+    const current = document.getElementById('current-address');
+    const other = document.getElementById('other-address');
+    const clearBtn = document.querySelector('.clear-btn');
+
+    clearBtn?.addEventListener('click', () => {
+      if (current) { current.value = ''; current.focus(); }
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const chosen = (other && other.value && other.value.trim()) ? other.value.trim() : (current?.value || '').trim();
+      try { localStorage.setItem('draconis_shipping_address', chosen); } catch {}
+      // Ir a Medios de pago después de guardar
+      location.href = `${baseToRoot}Paginas/Paginasemergentes/Mediosdepago.html`;
+    });
+  }
+
+  // --- Página Mi Usuario ---
+  function initUserPage() {
+    const form = document.getElementById('user-form');
+    if (!form) return; // no estamos en Mi usuario
+
+    const emailEl = document.getElementById('user-email');
+    const phoneEl = document.getElementById('user-phone');
+    const addrEl = document.getElementById('user-address');
+
+    // Prefill desde localStorage
+    try {
+      const savedEmail = localStorage.getItem('draconis_user_email') || '';
+      const savedPhone = localStorage.getItem('draconis_user_phone') || '';
+      const savedAddr  = localStorage.getItem('draconis_user_address') || '';
+      if (emailEl && savedEmail) emailEl.value = savedEmail;
+      if (phoneEl && savedPhone) phoneEl.value = savedPhone;
+      if (addrEl && savedAddr) addrEl.value = savedAddr;
+    } catch {}
+
+    // Botones de limpiar
+    document.querySelectorAll('.clear-btn[data-target]')?.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const input = targetId ? document.getElementById(targetId) : null;
+        if (input) { input.value = ''; input.focus(); }
+      });
+    });
+
+    // Guardar
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = emailEl?.value?.trim() || '';
+      const phone = phoneEl?.value?.trim() || '';
+      const addr  = addrEl?.value?.trim() || '';
+      try {
+        localStorage.setItem('draconis_user_email', email);
+        localStorage.setItem('draconis_user_phone', phone);
+        localStorage.setItem('draconis_user_address', addr);
+        // También sincronizar como dirección de envío por defecto
+        if (addr) localStorage.setItem('draconis_shipping_address', addr);
+      } catch {}
+      alert('Datos guardados.');
+    });
+  }
+
+  // --- Página Crear Cuenta ---
+  function initCreateAccountPage() {
+    // Detectar inputs del mock de Crear cuenta
+    const inputs = document.querySelectorAll('.form-section .form-input');
+    if (!inputs || inputs.length < 3) return; // no estamos en crearcuenta.html
+
+    const emailEl = inputs[0];
+    const phoneEl = inputs[1];
+    const addrEl  = inputs[2];
+
+    // Prefill
+    try {
+      const savedEmail = localStorage.getItem('draconis_user_email') || '';
+      const savedPhone = localStorage.getItem('draconis_user_phone') || '';
+      const savedAddr  = localStorage.getItem('draconis_user_address') || '';
+      if (savedEmail) emailEl.value = savedEmail;
+      if (savedPhone) phoneEl.value = savedPhone;
+      if (savedAddr)  addrEl.value  = savedAddr;
+    } catch {}
+
+    // Interceptar los botones que navegan a Miusuario.html para guardar antes de salir
+    const userLinks = Array.from(document.querySelectorAll('a[href$="Miusuario.html"]'));
+    userLinks.forEach(a => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const email = emailEl?.value?.trim() || '';
+        const phone = phoneEl?.value?.trim() || '';
+        const addr  = addrEl?.value?.trim() || '';
+        try {
+          localStorage.setItem('draconis_user_email', email);
+          localStorage.setItem('draconis_user_phone', phone);
+          localStorage.setItem('draconis_user_address', addr);
+          if (addr) localStorage.setItem('draconis_shipping_address', addr);
+        } catch {}
+        location.href = a.getAttribute('href');
+      });
+    });
+  }
+
   // Ejecutar cuando el DOM esté listo
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       injectHeader();
       injectFooter();
       injectAddToCartButtons();
+      initSearch();
+      wireBuyButtons();
       updateCartBadge();
       renderCartPage();
+      initShippingPage();
+      initPaymentPage();
+      initUserPage();
+      initCreateAccountPage();
+      initSearchResultsPage();
       console.log('[Draconis] Header y footer inyectados (DOMContentLoaded).');
     });
   } else {
     injectHeader();
     injectFooter();
     injectAddToCartButtons();
+    initSearch();
+    wireBuyButtons();
     updateCartBadge();
     renderCartPage();
+    initShippingPage();
+    initPaymentPage();
+    initUserPage();
+    initCreateAccountPage();
+    initSearchResultsPage();
     console.log('[Draconis] Header y footer inyectados (carga inmediata).');
   }
 })();

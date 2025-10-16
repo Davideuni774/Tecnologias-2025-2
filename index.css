@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
+
 * {
         box-sizing: border-box;
         margin: 0;
@@ -401,6 +403,7 @@
     }
 
     /* --- Cart page --- */
+    /* Container y títulos */
     .cart-container {
         max-width: 1000px;
         margin: 30px auto;
@@ -408,30 +411,224 @@
         font-family: Arial, sans-serif;
     }
     .cart-container h2 {
+        margin-bottom: 20px;
         font-family: 'Irish Grover', cursive;
         font-size: 2rem;
         text-align: center;
-        margin-bottom: 20px;
     }
-    .cart-list { list-style: none; padding: 0; margin: 0 0 20px; }
+
+    /* Lista y filas de ítems */
+    .cart-list {
+        list-style: none;
+        margin: 0 0 20px;
+        padding: 0;
+    }
     .cart-item {
         display: grid;
-        grid-template-columns: auto 1fr auto auto;
+        grid-template-columns: auto 1fr auto auto; /* thumb | nombre | precio | qty */
         align-items: center;
         gap: 10px;
         padding: 12px 10px;
         border-bottom: 1px solid #e5e5e5;
     }
-    .cart-thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; }
+    .cart-thumb {
+        width: 56px;
+        height: 56px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
     .cart-item-name { font-weight: 600; }
-    .cart-qty { display: inline-flex; align-items: center; gap: 6px; }
-    .cart-qty input { width: 56px; text-align: center; padding: 6px; }
-    .cart-remove { background: transparent; border: none; color: #c00; cursor: pointer; }
-    .cart-summary { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
+    .cart-link { color: inherit; text-decoration: none; }
+
+    /* Cantidad y acciones por ítem */
+    .cart-qty {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .cart-qty input {
+        width: 56px;
+        padding: 6px;
+        text-align: center;
+    }
+    .cart-remove {
+        background: transparent;
+        border: none;
+        color: #c00;
+        cursor: pointer;
+    }
+
+    /* Resumen y botones */
+    .cart-summary {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 16px;
+    }
+    /* Bloque de dirección y pago */
+    .cart-meta { margin-top: 12px; display: grid; gap: 8px; }
+    .cart-meta-row { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+    .cart-meta-label { font-weight: 700; }
+    .cart-meta-value { opacity: 0.9; }
+    .cart-meta-change { color: #663399; text-decoration: none; font-weight: 600; }
+    .cart-meta-change:hover { text-decoration: underline; }
     .cart-actions { display: flex; gap: 10px; }
     .btn-secondary { padding: 10px 16px; border: 1px solid #888; background: #fff; border-radius: 8px; cursor: pointer; }
     .btn-primary { padding: 10px 16px; border: none; background: #663399; color: #fff; border-radius: 8px; cursor: pointer; }
-    .cart-link { color: inherit; text-decoration: none; }
+
+    /* --- Shipping page (Dirección de Envío) --- */
+    /* Container y título */
+    .shipping-page {
+        max-width: 560px;
+        margin: 32px auto 80px;
+        padding: 0 16px;
+    }
+    .shipping-page h2 {
+        margin-bottom: 18px;
+        font-family: 'Irish Grover', cursive;
+        font-size: 2.2rem;
+        text-align: center;
+    }
+
+    /* Formulario e inputs */
+    .shipping-form { display: grid; gap: 18px; }
+    .field-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-family: 'Irish Grover', cursive;
+    }
+    .input-row { position: relative; }
+    .input-row input {
+        width: 100%;
+        padding: 12px 40px 12px 44px;
+        border: 1.5px solid #ccc;
+        border-radius: 22px;
+        font-size: 1rem;
+        outline: none;
+    }
+    .input-row input:focus {
+        border-color: #7b61ff;
+        box-shadow: 0 0 0 3px rgba(123, 97, 255, 0.12);
+    }
+
+    /* Iconos y acciones del input */
+    .icon.user {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 22px;
+        height: 22px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #ededed;
+        border-radius: 50%;
+        font-size: 14px;
+    }
+    .clear-btn {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        border: none;
+        background: #e9e9e9;
+        color: #666;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+    }
+    .clear-btn:hover { background: #ddd; }
+
+    /* Acciones */
+    .actions { display: flex; justify-content: center; margin-top: 8px; }
+    .continue-btn {
+        padding: 12px 28px;
+        background: linear-gradient(90deg, #7b61ff, #a864ff);
+        color: #fff;
+        border: none;
+        border-radius: 24px;
+        font-size: 1rem;
+        cursor: pointer;
+        min-width: 220px;
+    }
+    .continue-btn:hover { filter: brightness(1.05); }
+
+    /* Shipping page: ajustes para móviles pequeños */
+    @media (max-width: 480px) {
+        .continue-btn {
+            width: 100%;
+            min-width: 0;
+        }
+    }
+
+    /* --- Payment Methods (Medios de Pago) --- */
+    .payment-page {
+        max-width: 900px;
+        margin: 32px auto 80px;
+        padding: 0 16px;
+    }
+    .payment-page h2 {
+        margin-bottom: 18px;
+        font-family: 'Irish Grover', cursive;
+        font-size: 2.2rem;
+        text-align: center;
+    }
+    .payment-form { display: grid; gap: 18px; }
+    .payment-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 20px;
+    }
+    .payment-option {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border: 1.5px solid #ccc;
+        border-radius: 24px;
+        background: #fff;
+        cursor: pointer;
+        user-select: none;
+    }
+    .payment-option input {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #888;
+        border-radius: 50%;
+        position: relative;
+        margin: 0 6px 0 2px;
+    }
+    .payment-option input:checked {
+        border-color: #663399;
+        box-shadow: inset 0 0 0 4px #663399;
+    }
+    .payment-option .icon {
+        width: 26px;
+        height: 26px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #ededed;
+        border-radius: 50%;
+        font-size: 14px;
+    }
+    .payment-option .text { font-weight: 600; }
+    .payment-option:hover { border-color: #7b61ff; box-shadow: 0 0 0 3px rgba(123, 97, 255, 0.12); }
+
+    @media (max-width: 768px) {
+        .payment-grid { grid-template-columns: 1fr; }
+    }
+
+    /* --- Orders (Mis pedidos) --- */
+    .orders-page { max-width: 900px; margin: 32px auto 80px; padding: 0 16px; text-align: center; }
+    .orders-page h2 { font-family: 'Irish Grover', cursive; font-size: 2.2rem; margin-bottom: 12px; }
+    .orders-empty { font-family: 'Irish Grover', cursive; font-size: 2rem; opacity: 0.8; margin-top: 40px; }
 
     .footer-bottom {
         background: linear-gradient(100deg, #6E0D9E, #5C1865, #812DF4);
@@ -545,9 +742,6 @@
         @media (min-width: 769px) {
             body:has(> .banner) .grid-categorias { grid-template-columns: repeat(3, 1fr); }
         }
-
-/* Importar Irish Grover */
-@import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
 
 :root{
   --font-title: 'Irish Grover', cursive;

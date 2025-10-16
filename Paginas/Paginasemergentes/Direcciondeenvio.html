@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draconis - Accesorios</title>
+  <link rel="stylesheet" href="../../index.css?v=20251011">
+  <script src="../../index.js?v=20251011" defer></script>
+</head>
+<body>
+  <main>
+    <section class="shipping-page">
+      <h2>Dirección de Envío</h2>
+
+      <form id="shipping-form" class="shipping-form" autocomplete="on">
+        <div class="field-group">
+          <label for="current-address">Dirección Actual</label>
+          <div class="input-row">
+            <span class="icon user" aria-hidden="true">👤</span>
+            <input id="current-address" name="current" type="text" value="CR 10 #20-13" />
+            <button type="button" class="clear-btn" aria-label="Borrar dirección actual">×</button>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="other-address">Enviar a otra dirección</label>
+          <div class="input-row">
+            <span class="icon user" aria-hidden="true">👤</span>
+            <input id="other-address" name="other" type="text" placeholder="Ingresa tu Dirección" />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn-primary continue-btn">Continuar</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  
+</body>
+</html>
