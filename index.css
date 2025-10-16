@@ -65,6 +65,12 @@
         transform: translateX(-50%);
     }
 
+    /* Compactar top bar en pantallas pequeñas y ocultar el mensaje centrado */
+    @media (max-width: 600px) {
+        .top-bar { font-size: 12px; gap: 12px; padding: 4px 10px; }
+        .top-bar .envios { display: none; }
+    }
+
     header {
         align-items: center;
         background: #fff;
@@ -103,6 +109,53 @@
 
     .header-right img {
         height: 28px;
+    }
+
+    /* Ajustes del header para móvil: reducir logos, barra de búsqueda y cart badge */
+    @media (max-width: 768px) {
+        .search-container { max-width: 320px; }
+    }
+    @media (max-width: 480px) {
+        header { padding: 8px 12px; gap: 10px; }
+        .header-left { gap: 10px; }
+        /* Reducir tamaño del logo y ocultar el texto de marca para ahorrar espacio */
+        .header-left img { height: 36px; }
+        .header-left a:nth-child(2) { display: none; }
+        /* Hacer la barra de búsqueda más pequeña y que no empuje al carrito */
+        .search-container { flex: 0 1 58%; max-width: 200px; padding: 4px 8px; }
+        .search-container input { font-size: 14px; }
+        /* Cart más compacto */
+        .header-right img { height: 24px; }
+        .cart-badge { top: -6px; right: -8px; min-width: 18px; height: 18px; font-size: 11px; line-height: 18px; }
+    }
+
+    /* Ultra móvil: mostrar solo el icono de búsqueda y expandir on-demand */
+    @media (max-width: 360px) {
+        .search-container {
+            flex: 0 0 auto;
+            width: auto;
+            max-width: none;
+            border: none;
+            background: transparent;
+            padding: 0;
+        }
+        .search-container img { height: 20px; }
+        .search-container input { display: none; }
+
+        /* Estado expandido al tocar el icono */
+        .search-container.search-expanded { position: relative; }
+        .search-container.search-expanded input {
+            display: block;
+            position: absolute;
+            right: 0;
+            top: 28px;
+            width: 80vw;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 18px;
+            padding: 8px 10px;
+            z-index: 1200;
+        }
     }
 
     /* Cart badge counter */
@@ -475,6 +528,24 @@
     .cart-actions { display: flex; gap: 10px; }
     .btn-secondary { padding: 10px 16px; border: 1px solid #888; background: #fff; border-radius: 8px; cursor: pointer; }
     .btn-primary { padding: 10px 16px; border: none; background: #663399; color: #fff; border-radius: 8px; cursor: pointer; }
+
+        /* Carrito en pantallas pequeñas: apilar columnas para evitar desbordes */
+        @media (max-width: 540px) {
+            .cart-item {
+                grid-template-columns: auto 1fr; /* thumb | nombre */
+                grid-template-areas:
+                    "thumb name"
+                    "price price"
+                    "qty qty";
+            }
+            .cart-thumb { grid-area: thumb; }
+            .cart-item-name { grid-area: name; }
+            .cart-price { grid-area: price; font-weight: 600; }
+            .cart-qty { grid-area: qty; justify-content: flex-start; }
+            .cart-qty input { width: 72px; }
+            .cart-summary { flex-direction: column; gap: 12px; align-items: flex-start; }
+            .cart-actions { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+        }
 
     /* --- Shipping page (Dirección de Envío) --- */
     /* Container y título */

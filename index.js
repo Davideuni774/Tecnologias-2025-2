@@ -239,7 +239,46 @@
     }
     if (icon) {
       icon.style.cursor = 'pointer';
-      icon.addEventListener('click', () => doSearch(input?.value || ''));
+      icon.addEventListener('click', () => {
+        // En pantallas muy pequeñas, expandimos el input; si ya está expandido y no hay input visible, navegar
+        const isUltraMobile = window.matchMedia('(max-width: 360px)').matches;
+        if (isUltraMobile) {
+          if (!searchContainer.classList.contains('search-expanded')) {
+            searchContainer.classList.add('search-expanded');
+            if (input) {
+              input.style.display = 'block';
+              input.focus();
+            }
+            // Cerrar al hacer clic fuera
+            const closeOnOutside = (ev) => {
+              if (!searchContainer.contains(ev.target)) {
+                searchContainer.classList.remove('search-expanded');
+                if (input) input.style.display = '';
+                document.removeEventListener('click', closeOnOutside);
+                document.removeEventListener('keydown', closeOnEsc);
+              }
+            };
+            const closeOnEsc = (ev) => {
+              if (ev.key === 'Escape') {
+                searchContainer.classList.remove('search-expanded');
+                if (input) input.style.display = '';
+                document.removeEventListener('click', closeOnOutside);
+                document.removeEventListener('keydown', closeOnEsc);
+              }
+            };
+            setTimeout(() => {
+              document.addEventListener('click', closeOnOutside);
+              document.addEventListener('keydown', closeOnEsc);
+            }, 0);
+            return;
+          }
+          // Si ya está expandido, ejecutar búsqueda
+          doSearch(input?.value || '');
+          return;
+        }
+        // pantallas normales: ejecutar búsqueda
+        doSearch(input?.value || '');
+      });
     }
   }
 
@@ -322,7 +361,7 @@
       li.innerHTML = `
         ${imgHtml}
         ${linkOpen}<span class="cart-item-name">${it.name}</span>${linkClose}
-        <span>$${unit.toLocaleString()}</span>
+        <span class="cart-price">$${unit.toLocaleString()}</span>
         <span class="cart-qty">
           Cantidad: <input type="number" min="1" value="${it.qty || 1}" data-idx="${idx}" />
           <button class="cart-remove" data-idx="${idx}">Eliminar</button>
@@ -416,6 +455,28 @@
       // Ambos presentes: continuar a página de confirmación
       location.href = `${baseToRoot}Paginas/Paginasemergentes/Gracias.html`;
     });
+  }
+
+  // --- Página Inicio de sesión (iniciosesion.html) ---
+  function initLoginPage() {
+    // Detectar por estructura de la página
+    const loginContainer = document.querySelector('.login-container');
+    if (!loginContainer) return;
+
+    const continuarBtn = loginContainer.querySelector('.button.primary');
+    const crearBtn = loginContainer.querySelector('.button.secondary');
+    if (continuarBtn) {
+      continuarBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        location.href = `${baseToRoot}Paginas/Paginasemergentes/Miusuario.html`;
+      });
+    }
+    if (crearBtn) {
+      crearBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        location.href = `${baseToRoot}Paginas/Paginasemergentes/crearcuenta.html`;
+      });
+    }
   }
 
   function injectAddToCartButtons() {
@@ -632,6 +693,7 @@
       renderCartPage();
       initShippingPage();
       initPaymentPage();
+      initLoginPage();
       initUserPage();
       initCreateAccountPage();
       initSearchResultsPage();
@@ -647,6 +709,7 @@
     renderCartPage();
     initShippingPage();
     initPaymentPage();
+    initLoginPage();
     initUserPage();
     initCreateAccountPage();
     initSearchResultsPage();
