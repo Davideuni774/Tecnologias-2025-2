@@ -35,9 +35,8 @@
       justify-content: space-between;
     }
 
-    /* contenedor cuadrado para la imagen: mantener proporción y mostrar el modelo completo */
     .img-wrap {
-      width: 220px;                 /* aumentar tamaño para mejor visibilidad */
+      width: 220px;
       aspect-ratio: 1 / 1;
       border-radius: 18px;
       overflow: hidden;
@@ -45,7 +44,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 12px;                /* evita que el modelo toque los bordes */
+      padding: 12px;
       box-shadow: none;
     }
 
@@ -53,7 +52,7 @@
       width: auto;
       height: 100%;
       max-width: 100%;
-      object-fit: contain;          /* muestra la imagen completa sin recortar */
+      object-fit: contain;
       object-position: center center;
       display: block;
       background: transparent;
@@ -64,7 +63,7 @@
 
     @media (max-width:700px){
       .grid-categorias { grid-template-columns: 1fr; gap:36px; }
-      .img-wrap { width: 260px; }   /* móvil: un poco más grande para legibilidad */
+      .img-wrap { width: 260px; }
     }
   </style>
 </head>

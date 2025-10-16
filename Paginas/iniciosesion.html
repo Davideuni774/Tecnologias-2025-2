@@ -8,65 +8,59 @@
   <script src="../index.js?v=20251011" defer></script>
   <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
   <style>
-    /* Contenedor principal para centrar el formulario y el texto */
     .login-container {
       display: flex;
-      align-items: center; /* Alineación vertical para el texto y el formulario */
+      align-items: center;
       width: 100%;
-      max-width: 800px; /* Ancho estimado para contener los elementos */
+      max-width: 800px;
       margin: 0 auto;
       padding: 40px 20px;
     }
 
-    /* Estilos para el texto grande a la izquierda */
     .text-section {
-      flex: 1; /* Ocupa el espacio restante */
+      flex: 1;
       padding-right: 50px;
     }
 
     .text-section h1 {
-      /* Fuente que simula el estilo gótico/fantasía de la imagen */
       font-family: 'UnifrakturMaguntia', serif;
       font-size: 30px;
-      font-weight: normal; /* Para que no sea tan grueso como un h1 por defecto */
+      font-weight: normal;
       color: #000000;
       line-height: 1.2;
       margin: 0;
-      white-space: nowrap; /* Evita que el texto se parta en líneas */
+      white-space: nowrap;
     }
 
-    /* Estilos para la sección del formulario a la derecha */
     .form-section {
-      flex: 1; /* Ocupa el espacio restante */
+      flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 15px; /* Espacio entre los elementos del formulario */
-      align-items: flex-end; /* Alinea los elementos a la derecha */
+      gap: 15px;
+      align-items: flex-end;
     }
 
-    /* Estilo para el texto "Correo o teléfono" */
     .form-label {
-      align-self: flex-start; /* Alinea el label a la izquierda de la sección del formulario */
+      align-self: flex-start;
       font-size: 14px;
       color: #000000;
-      margin-bottom: 5px; /* Ajuste fino del espacio */
-      width: 332px; /* Mismo ancho que los botones */
+      margin-bottom: 5px;
+      width: 332px;
       text-align: left;
-      padding-left: 5px; /* Alinea con el inicio del input */
+      padding-left: 5px;
     }
 
-    /* Estilo para el campo de entrada (input) */
     .input-group {
       display: flex;
       align-items: center;
-      width: 100%; /* Ocupa todo el ancho de la sección del formulario */
-      max-width: 350px; /* Ancho fijo para el campo de entrada, aumentado */
-      border: 1px solid #c0c0c0; /* Borde gris claro */
-      border-radius: 20px; /* Bordes redondeados */
+      width: 100%;
+      max-width: 350px;
+      border: 1px solid #c0c0c0;
+      border-radius: 20px;
       padding: 5px 15px;
       background-color: #ffffff;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.05); /* Sombra muy sutil */
-      align-self: flex-start; /* Alinea el input a la izquierda */
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+      align-self: flex-start;
     }
 
     .input-group span {
@@ -76,11 +70,10 @@
       color: #555555;
     }
 
-    /* Simulación del icono de persona con un carácter unicode (no es un ícono real) */
     .icon-person::before {
-      content: '👤'; /* Unicode para silueta de busto, similar al ícono */
+      content: '👤';
       display: inline-block;
-      transform: translateY(1px); /* Ajuste vertical */
+      transform: translateY(1px);
       color: #555;
       font-size: 18px;
     }
@@ -94,30 +87,27 @@
       color: #555555;
     }
 
-    /* Estilos para los botones */
     .button {
-      width: 332px; /* Mismo ancho que el input, ajustado para compensar el padding del input-group */
+      width: 332px;
       padding: 12px 20px;
       border: none;
-      border-radius: 25px; /* Bordes muy redondeados */
+      border-radius: 25px;
       font-size: 16px;
       cursor: pointer;
       text-align: center;
       font-weight: bold;
       transition: background-color 0.3s;
-      margin: 0 auto; /* Centra los botones horizontalmente */
+      margin: 0 auto;
     }
 
-    /* Botón de Continuar (Morado) */
     .button.primary {
-      background-color: #925cff; /* Tono morado aproximado */
+      background-color: #925cff;
       color: white;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    /* Botón de Crear cuenta (Gris) */
     .button.secondary {
-      background-color: #808080; /* Tono gris oscuro aproximado */
+      background-color: #808080;
       color: white;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
