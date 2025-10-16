@@ -4,13 +4,14 @@
 (function () {
   const isSubpage = /\/Paginas\//i.test(location.pathname);
   const base = isSubpage ? '../' : '';
+  const loginPath = isSubpage ? 'iniciosesion.html' : 'Paginas/iniciosesion.html';
 
   const headerHTML = () => `
     <div class="top-bar">
       <span class="envios">Envíos a toda Colombia</span>
       <span>Mis pedidos</span>
-      <span>Mi cuenta</span>
-      <img src="https://i.imgur.com/BHiRNHm.png" alt="Usuario" style="height:24px;">
+      <a href="${loginPath}" style="color: inherit; text-decoration: none;"><span>Mi cuenta</span></a>
+      <a href="${loginPath}"><img src="https://i.imgur.com/BHiRNHm.png" alt="Usuario" style="height:24px;"></a>
     </div>
     <header>
       <div class="header-left">

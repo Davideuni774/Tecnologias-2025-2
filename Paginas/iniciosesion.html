@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draconis - Inicio de Sesión</title>
+  <link rel="stylesheet" href="../index.css?v=20251011">
+  <script src="../index.js?v=20251011" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+  <style>
+    /* Contenedor principal para centrar el formulario y el texto */
+    .login-container {
+      display: flex;
+      align-items: center; /* Alineación vertical para el texto y el formulario */
+      width: 100%;
+      max-width: 800px; /* Ancho estimado para contener los elementos */
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* Estilos para el texto grande a la izquierda */
+    .text-section {
+      flex: 1; /* Ocupa el espacio restante */
+      padding-right: 50px;
+    }
+
+    .text-section h1 {
+      /* Fuente que simula el estilo gótico/fantasía de la imagen */
+      font-family: 'UnifrakturMaguntia', serif;
+      font-size: 30px;
+      font-weight: normal; /* Para que no sea tan grueso como un h1 por defecto */
+      color: #000000;
+      line-height: 1.2;
+      margin: 0;
+      white-space: nowrap; /* Evita que el texto se parta en líneas */
+    }
+
+    /* Estilos para la sección del formulario a la derecha */
+    .form-section {
+      flex: 1; /* Ocupa el espacio restante */
+      display: flex;
+      flex-direction: column;
+      gap: 15px; /* Espacio entre los elementos del formulario */
+      align-items: flex-end; /* Alinea los elementos a la derecha */
+    }
+
+    /* Estilo para el texto "Correo o teléfono" */
+    .form-label {
+      align-self: flex-start; /* Alinea el label a la izquierda de la sección del formulario */
+      font-size: 14px;
+      color: #000000;
+      margin-bottom: 5px; /* Ajuste fino del espacio */
+      width: 332px; /* Mismo ancho que los botones */
+      text-align: left;
+      padding-left: 5px; /* Alinea con el inicio del input */
+    }
+
+    /* Estilo para el campo de entrada (input) */
+    .input-group {
+      display: flex;
+      align-items: center;
+      width: 100%; /* Ocupa todo el ancho de la sección del formulario */
+      max-width: 350px; /* Ancho fijo para el campo de entrada, aumentado */
+      border: 1px solid #c0c0c0; /* Borde gris claro */
+      border-radius: 20px; /* Bordes redondeados */
+      padding: 5px 15px;
+      background-color: #ffffff;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.05); /* Sombra muy sutil */
+      align-self: flex-start; /* Alinea el input a la izquierda */
+    }
+
+    .input-group span {
+      /* Simula el icono (usamos un simple cuadrado o un símbolo) */
+      font-size: 18px;
+      margin-right: 10px;
+      color: #555555;
+    }
+
+    /* Simulación del icono de persona con un carácter unicode (no es un ícono real) */
+    .icon-person::before {
+      content: '👤'; /* Unicode para silueta de busto, similar al ícono */
+      display: inline-block;
+      transform: translateY(1px); /* Ajuste vertical */
+      color: #555;
+      font-size: 18px;
+    }
+
+    .input-group input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 16px;
+      padding: 5px 0;
+      color: #555555;
+    }
+
+    /* Estilos para los botones */
+    .button {
+      width: 332px; /* Mismo ancho que el input, ajustado para compensar el padding del input-group */
+      padding: 12px 20px;
+      border: none;
+      border-radius: 25px; /* Bordes muy redondeados */
+      font-size: 16px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      margin: 0 auto; /* Centra los botones horizontalmente */
+    }
+
+    /* Botón de Continuar (Morado) */
+    .button.primary {
+      background-color: #925cff; /* Tono morado aproximado */
+      color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Botón de Crear cuenta (Gris) */
+    .button.secondary {
+      background-color: #808080; /* Tono gris oscuro aproximado */
+      color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 768px) {
+      .login-container {
+        flex-direction: column;
+        text-align: center;
+      }
+      .text-section {
+        padding-right: 0;
+        padding-bottom: 30px;
+      }
+      .form-section {
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+
+  <section class="categorias">
+    <div class="login-container">
+      <div class="text-section">
+        <h1>Ingresa tu e-mail<br>para iniciar sesión</h1>
+      </div>
+
+      <div class="form-section">
+        <span class="form-label">Correo o teléfono</span>
+        <div class="input-group">
+          <span class="icon-person"></span>
+          <input type="text" placeholder="Ingresa">
+        </div>
+
+        <button class="button primary">Continuar</button>
+        <button class="button secondary">Crear cuenta</button>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
