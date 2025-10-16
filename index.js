@@ -2,9 +2,12 @@
 // Detecta si la página está en /Paginas/ para ajustar rutas relativas
 
 (function () {
-  const isSubpage = /\/Paginas\//i.test(location.pathname);
-  const base = isSubpage ? '../' : '';
-  const loginPath = isSubpage ? 'iniciosesion.html' : 'Paginas/iniciosesion.html';
+  // Determinar base relativa hasta la raíz, contemplando subcarpetas
+  const path = location.pathname.replace(/\\/g, '/');
+  const isNestedSubpage = /\/Paginas\/Paginasemergentes\//i.test(path);
+  const isSubpage = /\/Paginas\//i.test(path);
+  const baseToRoot = isNestedSubpage ? '../../' : (isSubpage ? '../' : '');
+  const loginPath = `${baseToRoot}Paginas/iniciosesion.html`;
 
   const headerHTML = () => `
     <div class="top-bar">
@@ -15,10 +18,10 @@
     </div>
     <header>
       <div class="header-left">
-        <a href="${base}index.html" aria-label="Ir a inicio - logo">
+        <a href="${baseToRoot}index.html" aria-label="Ir a inicio - logo">
           <img src="https://i.imgur.com/sUTU3bi.png" alt="Logo Draconis">
         </a>
-        <a href="${base}index.html" aria-label="Ir a inicio - texto">
+        <a href="${baseToRoot}index.html" aria-label="Ir a inicio - texto">
           <img src="https://i.imgur.com/CmZgZpI.png" alt="Draconis Texto">
         </a>
       </div>
@@ -27,7 +30,10 @@
         <input type="search" placeholder="Buscar">
       </div>
       <div class="header-right">
-        <img src="https://i.imgur.com/orxdqLp.png" alt="Carrito">
+        <a href="${baseToRoot}Paginas/Paginasemergentes/Micarrito.html" class="cart-wrapper" aria-label="Carrito">
+          <img src="https://i.imgur.com/orxdqLp.png" alt="Carrito">
+          <span class="cart-badge" id="cart-count" aria-live="polite">0</span>
+        </a>
       </div>
     </header>
     <nav>
@@ -129,16 +135,177 @@
     existingFooterBottom && existingFooterBottom.remove();
   }
 
+  // --- Carrito (localStorage) ---
+  const CART_KEY = 'draconis_cart_items';
+  function parsePriceToNumber(text) {
+    // Quita todo excepto dígitos; asume moneda sin decimales (COP)
+    const digits = String(text || '').replace(/[^\d]/g, '');
+    return digits ? parseInt(digits, 10) : 0;
+  }
+  function getCart() {
+    try {
+      const raw = localStorage.getItem(CART_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  }
+  function setCart(items) {
+    localStorage.setItem(CART_KEY, JSON.stringify(items));
+    updateCartBadge();
+  }
+  function addToCart(product) {
+    const items = getCart();
+    // Sumar cantidad si ya existe mismo nombre; de lo contrario, push
+    const idx = items.findIndex(it => it.name === product.name);
+    if (idx >= 0) items[idx].qty += product.qty || 1; else items.push(product);
+    setCart(items);
+  }
+  function updateCartBadge() {
+    const countEl = document.getElementById('cart-count');
+    if (!countEl) return;
+    const items = getCart();
+    const total = items.reduce((sum, it) => sum + (it.qty || 1), 0);
+    countEl.textContent = String(total);
+  }
+
+  // --- Render de la página Mi carrito ---
+  function renderCartPage() {
+    const root = document.getElementById('cart-root');
+    if (!root) return; // No estamos en la página del carrito
+    const items = getCart();
+
+    if (!items.length) {
+      root.innerHTML = '<p>Tu carrito está vacío.</p>' +
+        `<div class="cart-actions"><a class="btn-primary" href="${baseToRoot}index.html">Seguir comprando</a></div>`;
+      return;
+    }
+
+    const list = document.createElement('ul');
+    list.className = 'cart-list';
+
+    items.forEach((it, idx) => {
+      const li = document.createElement('li');
+      li.className = 'cart-item';
+      const unit = typeof it.price === 'number' ? it.price : parsePriceToNumber(it.price);
+      const linkOpen = it.url ? `<a class="cart-link" href="${it.url}">` : '';
+      const linkClose = it.url ? `</a>` : '';
+      const imgHtml = it.image ? `${linkOpen}<img class="cart-thumb" src="${it.image}" alt="${it.name}">${linkClose}` : '';
+      li.innerHTML = `
+        ${imgHtml}
+        ${linkOpen}<span class="cart-item-name">${it.name}</span>${linkClose}
+        <span>$${unit.toLocaleString()}</span>
+        <span class="cart-qty">
+          Cantidad: <input type="number" min="1" value="${it.qty || 1}" data-idx="${idx}" />
+          <button class="cart-remove" data-idx="${idx}">Eliminar</button>
+        </span>
+      `;
+      list.appendChild(li);
+    });
+
+    const total = items.reduce((sum, it) => {
+      const unit = typeof it.price === 'number' ? it.price : parsePriceToNumber(it.price);
+      return sum + unit * (it.qty || 1);
+    }, 0);
+    const summary = document.createElement('div');
+    summary.className = 'cart-summary';
+    summary.innerHTML = `
+      <strong>Total: $${total.toLocaleString()}</strong>
+      <div class="cart-actions">
+        <button id="cart-clear" class="btn-secondary">Vaciar carrito</button>
+        <button id="cart-checkout" class="btn-primary">Finalizar compra</button>
+      </div>
+    `;
+
+    root.innerHTML = '';
+    root.appendChild(list);
+    root.appendChild(summary);
+
+    // Eventos
+    root.querySelectorAll('input[type="number"]').forEach(input => {
+      input.addEventListener('change', (e) => {
+        const idx = parseInt(e.target.getAttribute('data-idx'), 10);
+        const qty = Math.max(1, parseInt(e.target.value, 10) || 1);
+        const items = getCart();
+        if (items[idx]) {
+          items[idx].qty = qty;
+          setCart(items);
+          renderCartPage();
+        }
+      });
+    });
+
+    root.querySelectorAll('.cart-remove').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const idx = parseInt(e.target.getAttribute('data-idx'), 10);
+        const items = getCart();
+        items.splice(idx, 1);
+        setCart(items);
+        renderCartPage();
+      });
+    });
+
+    document.getElementById('cart-clear')?.addEventListener('click', () => {
+      setCart([]);
+      renderCartPage();
+    });
+
+    document.getElementById('cart-checkout')?.addEventListener('click', () => {
+      alert('Gracias por tu compra (demo).');
+    });
+  }
+
+  function injectAddToCartButtons() {
+    // Inserta un botón "Agregar al carrito" debajo de cada .btn-comprar
+    const buyButtons = document.querySelectorAll('.btn-comprar');
+    buyButtons.forEach((btn) => {
+      // Evitar duplicar si ya existe un .btn-agregar junto a este botón
+      const next = btn.nextElementSibling;
+      if (next && next.classList && next.classList.contains('btn-agregar')) return;
+
+      const addBtn = document.createElement('button');
+      addBtn.className = 'btn-agregar';
+      addBtn.type = 'button';
+      addBtn.textContent = 'Agregar al carrito';
+      addBtn.addEventListener('click', () => {
+        try {
+          const info = btn.closest('.producto-info');
+          const title = info?.querySelector('h1')?.textContent?.trim() || 'Producto';
+          const priceText = info?.querySelector('.precio')?.textContent || '';
+          const price = parsePriceToNumber(priceText);
+          // Capturar imagen dentro del bloque de detalle
+          const detail = info?.closest('.producto-detalle') || document.querySelector('.producto-detalle');
+          const imgEl = detail?.querySelector('.producto-imagen img') || detail?.querySelector('img');
+          const image = imgEl?.getAttribute('src') || '';
+          const url = location.pathname;
+          addToCart({ name: title, price, image, url, qty: 1 });
+          addBtn.textContent = 'Agregado ✔';
+          setTimeout(() => (addBtn.textContent = 'Agregar al carrito'), 1200);
+          // Opcional: navegar directo al carrito al agregar
+          // location.href = `${baseToRoot}Paginas/Paginasemergentes/Micarrito.html`;
+        } catch (e) {
+          console.warn('[Carrito] No se pudo identificar el producto', e);
+        }
+      });
+
+      btn.insertAdjacentElement('afterend', addBtn);
+    });
+  }
+
   // Ejecutar cuando el DOM esté listo
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       injectHeader();
       injectFooter();
+      injectAddToCartButtons();
+      updateCartBadge();
+      renderCartPage();
       console.log('[Draconis] Header y footer inyectados (DOMContentLoaded).');
     });
   } else {
     injectHeader();
     injectFooter();
+    injectAddToCartButtons();
+    updateCartBadge();
+    renderCartPage();
     console.log('[Draconis] Header y footer inyectados (carga inmediata).');
   }
 })();
