@@ -720,8 +720,9 @@
 //cambios Nicol :v
 
 // --- Conteo real de productos y productos agregados al carrito ---
-
-// 1. Lista de productos (como antes)
+// ====================
+//  LISTA DE PRODUCTOS (catálogo)
+// ====================
 const productos = {
   "Figuras musicales": [
     "Tyler Joseph (llavero)",
@@ -754,23 +755,66 @@ const productos = {
   ]
 };
 
-// 2. Calcular total de productos disponibles
+// ====================
+//  CONTADORES INVISIBLES
+// ====================
+
+// 1. Total de productos disponibles
 let totalProductos = 0;
 for (const categoria in productos) {
   totalProductos += productos[categoria].length;
 }
-console.log("Total de productos disponibles:", totalProductos);
 
-// 3. Contador de productos agregados al carrito
-let productosAgregados = 0;
+// 2. Obtener elementos del carrito (si ya existen en el DOM o localStorage)
+function getCart() {
+  const carrito = localStorage.getItem("carrito");
+  return carrito ? JSON.parse(carrito) : [];
+}
 
-// 4. Detectar los botones de 'Agregar al carrito'
-const botones = document.querySelectorAll(".agregar-carrito");
+// 3. Guardar carrito
+function setCart(items) {
+  localStorage.setItem("carrito", JSON.stringify(items));
+  actualizarConsola(); // actualiza cada vez que cambia
+}
 
-// 5. Escuchar clics y actualizar el contador real
-botones.forEach(boton => {
-  boton.addEventListener("click", () => {
-    productosAgregados++;
-    console.log("Producto agregado al carrito. Total actual:", productosAgregados);
+// 4. Mostrar datos reales en consola (versión invisible)
+function actualizarConsola() {
+  const carrito = getCart();
+  const totalEnCarrito = carrito.reduce((sum, item) => sum + (item.qty || 1), 0);
+
+  console.clear();
+  console.log("%c📦 Estado actual (invisible en la web)", "color: #00aaff; font-weight: bold;");
+  console.log("Productos en catálogo:", totalProductos);
+  console.log("Productos en carrito:", totalEnCarrito);
+  console.log("Detalle del carrito:");
+  carrito.forEach((p, i) => {
+    console.log(` ${i + 1}. ${p.nombre} — Cantidad: ${p.qty || 1}`);
   });
+}
+
+// ====================
+//  GESTIÓN DE BOTONES
+// ====================
+document.addEventListener("DOMContentLoaded", () => {
+  const botones = document.querySelectorAll(".agregar-carrito");
+
+  botones.forEach(boton => {
+    boton.addEventListener("click", () => {
+      const producto = boton.dataset.producto || "Producto sin nombre";
+
+      let carrito = getCart();
+      const existente = carrito.find(item => item.nombre === producto);
+
+      if (existente) {
+        existente.qty = (existente.qty || 1) + 1;
+      } else {
+        carrito.push({ nombre: producto, qty: 1 });
+      }
+
+      setCart(carrito);
+    });
+  });
+
+  // Mostrar conteo al cargar la página
+  actualizarConsola();
 });
