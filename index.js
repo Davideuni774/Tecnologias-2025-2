@@ -719,8 +719,9 @@
 
 //cambios Nicol :v
 
-// --- Lista de productos (versión invisible con conteo y selección) ---
+// --- Conteo real de productos y productos agregados al carrito ---
 
+// 1. Lista de productos (como antes)
 const productos = {
   "Figuras musicales": [
     "Tyler Joseph (llavero)",
@@ -753,37 +754,23 @@ const productos = {
   ]
 };
 
-// Mostrar productos en consola
-console.log(" Lista de productos por categoría:");
+// 2. Calcular total de productos disponibles
 let totalProductos = 0;
-
 for (const categoria in productos) {
-  console.log(`\n${categoria}:`);
-  productos[categoria].forEach(item => {
-    console.log(`- ${item}`);
-    totalProductos++;
-  });
+  totalProductos += productos[categoria].length;
 }
+console.log("Total de productos disponibles:", totalProductos);
 
-console.log(`\n Total de productos: ${totalProductos}`);
+// 3. Contador de productos agregados al carrito
+let productosAgregados = 0;
 
-// --- Simulación de productos seleccionados ---
-const productosSeleccionados = [
-  "Ned TOP (llavero)",
-  "Papa Emeritus II Ghost / Cetro",
-  "Escudo vikingo de madera"
-];
+// 4. Detectar los botones de 'Agregar al carrito'
+const botones = document.querySelectorAll(".agregar-carrito");
 
-// Contar cuántos están seleccionados
-let totalSeleccionados = 0;
-
-for (const categoria in productos) {
-  productos[categoria].forEach(item => {
-    if (productosSeleccionados.includes(item)) {
-      totalSeleccionados++;
-    }
+// 5. Escuchar clics y actualizar el contador real
+botones.forEach(boton => {
+  boton.addEventListener("click", () => {
+    productosAgregados++;
+    console.log("Producto agregado al carrito. Total actual:", productosAgregados);
   });
-}
-
-console.log(`🛒 Productos seleccionados (${totalSeleccionados}):`);
-productosSeleccionados.forEach(p => console.log(`- ${p}`));
+});
