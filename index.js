@@ -723,6 +723,7 @@
 // ====================
 //  LISTA DE PRODUCTOS (catálogo)
 // ====================
+// 1. Lista de productos
 const productos = {
   "Figuras musicales": [
     "Tyler Joseph (llavero)",
@@ -755,66 +756,53 @@ const productos = {
   ]
 };
 
-// ====================
-//  CONTADORES INVISIBLES
-// ====================
-
-// 1. Total de productos disponibles
+// 2. Calcular total de productos disponibles
 let totalProductos = 0;
 for (const categoria in productos) {
   totalProductos += productos[categoria].length;
 }
+console.log("Total de productos disponibles:", totalProductos);
 
-// 2. Obtener elementos del carrito (si ya existen en el DOM o localStorage)
-function getCart() {
-  const carrito = localStorage.getItem("carrito");
-  return carrito ? JSON.parse(carrito) : [];
-}
+// 3. Carrito invisible (solo almacenamiento interno)
+const carrito = [];
 
-// 3. Guardar carrito
-function setCart(items) {
-  localStorage.setItem("carrito", JSON.stringify(items));
-  actualizarConsola(); // actualiza cada vez que cambia
-}
+// 4. Contador de productos agregados al carrito
+let productosAgregados = 0;
 
-// 4. Mostrar datos reales en consola (versión invisible)
-function actualizarConsola() {
-  const carrito = getCart();
-  const totalEnCarrito = carrito.reduce((sum, item) => sum + (item.qty || 1), 0);
+// 5. Detectar los botones de 'Agregar al carrito'
+const botones = document.querySelectorAll(".agregar-carrito");
 
-  console.clear();
-  console.log("%c📦 Estado actual (invisible en la web)", "color: #00aaff; font-weight: bold;");
-  console.log("Productos en catálogo:", totalProductos);
-  console.log("Productos en carrito:", totalEnCarrito);
-  console.log("Detalle del carrito:");
-  carrito.forEach((p, i) => {
-    console.log(` ${i + 1}. ${p.nombre} — Cantidad: ${p.qty || 1}`);
+// 6. Escuchar clics y actualizar el contador real
+botones.forEach(boton => {
+  boton.addEventListener("click", () => {
+    const producto = boton.getAttribute("data-producto") || "Producto desconocido";
+    carrito.push(producto);
+    productosAgregados++;
+    console.log(`Producto agregado: ${producto}`);
+    console.log("Productos totales en carrito:", productosAgregados);
   });
+});
+
+// 7. Guardar carrito en localStorage de forma invisible (sin mostrar en interfaz)
+function guardarCarrito() {
+  localStorage.setItem("carritoInvisible", JSON.stringify(carrito));
 }
 
-// ====================
-//  GESTIÓN DE BOTONES
-// ====================
-document.addEventListener("DOMContentLoaded", () => {
-  const botones = document.querySelectorAll(".agregar-carrito");
+// 8. Cargar carrito si ya existía en el almacenamiento
+function cargarCarrito() {
+  const guardado = localStorage.getItem("carritoInvisible");
+  if (guardado) {
+    const data = JSON.parse(guardado);
+    carrito.push(...data);
+    productosAgregados = carrito.length;
+    console.log("Carrito invisible restaurado. Productos:", productosAgregados);
+  }
+}
 
-  botones.forEach(boton => {
-    boton.addEventListener("click", () => {
-      const producto = boton.dataset.producto || "Producto sin nombre";
+// 9. Llamar la función al inicio
+document.addEventListener("DOMContentLoaded", cargarCarrito);
 
-      let carrito = getCart();
-      const existente = carrito.find(item => item.nombre === producto);
-
-      if (existente) {
-        existente.qty = (existente.qty || 1) + 1;
-      } else {
-        carrito.push({ nombre: producto, qty: 1 });
-      }
-
-      setCart(carrito);
-    });
-  });
-
-  // Mostrar conteo al cargar la página
-  actualizarConsola();
+// 10. Actualizar almacenamiento cada vez que se agrega algo
+botones.forEach(boton => {
+  boton.addEventListener("click", guardarCarrito);
 });
