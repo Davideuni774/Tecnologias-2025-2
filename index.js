@@ -2,7 +2,6 @@
 // Detecta si la página está en /Paginas/ para ajustar rutas relativas
 
 (function () {
-  // Determinar base relativa hasta la raíz, contemplando subcarpetas
   const path = location.pathname.replace(/\\/g, '/');
   const isNestedSubpage = /\/Paginas\/Paginasemergentes\//i.test(path);
   const isSubpage = /\/Paginas\//i.test(path);
@@ -103,55 +102,24 @@
   `;
 
   function injectHeader() {
-    const existingTopBar = document.querySelector('.top-bar');
-    const existingHeader = document.querySelector('header');
-    const existingNav = document.querySelector('nav');
-
+    document.querySelector('.top-bar')?.remove();
+    document.querySelector('header')?.remove();
+    document.querySelector('nav')?.remove();
     const container = document.createElement('div');
     container.innerHTML = headerHTML();
-
-    const insertionPoint = existingHeader || document.body.firstElementChild;
-    if (insertionPoint && insertionPoint.parentNode) {
-      insertionPoint.parentNode.insertBefore(container, insertionPoint);
-    } else {
-      document.body.prepend(container);
-    }
-
-    existingTopBar && existingTopBar.remove();
-    existingHeader && existingHeader.remove();
-    existingNav && existingNav.remove();
+    document.body.prepend(container);
   }
 
   function injectFooter() {
-    const existingFooter = document.querySelector('footer');
-    const existingMetodos = document.querySelector('.metodos');
-    const existingFooterBottom = document.querySelector('.footer-bottom');
-
+    document.querySelector('footer')?.remove();
+    document.querySelector('.metodos')?.remove();
+    document.querySelector('.footer-bottom')?.remove();
     const container = document.createElement('div');
     container.innerHTML = footerHTML();
-
     document.body.appendChild(container);
-
-    existingFooter && existingFooter.remove();
-    existingMetodos && existingMetodos.remove();
-    existingFooterBottom && existingFooterBottom.remove();
   }
 
-  // --- Carrito (localStorage) ---
   const CART_KEY = 'draconis_cart_items';
-  function escapeHtml(str) {
-    return String(str || '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  }
-  function parsePriceToNumber(text) {
-    // Quita todo excepto dígitos; asume moneda sin decimales (COP)
-    const digits = String(text || '').replace(/[^\d]/g, '');
-    return digits ? parseInt(digits, 10) : 0;
-  }
   function getCart() {
     try {
       const raw = localStorage.getItem(CART_KEY);
@@ -162,647 +130,45 @@
     localStorage.setItem(CART_KEY, JSON.stringify(items));
     updateCartBadge();
   }
+  function updateCartBadge() {
+    const el = document.getElementById('cart-count');
+    if (!el) return;
+    const total = getCart().reduce((sum, it) => sum + (it.qty || 1), 0);
+    el.textContent = String(total);
+  }
   function addToCart(product) {
     const items = getCart();
-    // Sumar cantidad si ya existe mismo nombre; de lo contrario, push
     const idx = items.findIndex(it => it.name === product.name);
     if (idx >= 0) items[idx].qty += product.qty || 1; else items.push(product);
     setCart(items);
   }
-  function updateCartBadge() {
-    const countEl = document.getElementById('cart-count');
-    if (!countEl) return;
-    const items = getCart();
-    const total = items.reduce((sum, it) => sum + (it.qty || 1), 0);
-    countEl.textContent = String(total);
-  }
-
-  // --- Búsqueda global de productos ---
-  // Índice simple de productos y categorías (paths relativos a la raíz del repo)
-  const PRODUCT_INDEX = [
-    // Categorías
-    { name: 'Accesorios', path: 'Paginas/Aceesorios.html', keywords: ['aretes', 'collares', 'accesorio'] },
-    { name: 'Figuras personalizadas', path: 'Paginas/Figuras-personalizadas.html', keywords: ['figuras', 'personalizado', 'muñeco', 'funko'] },
-    { name: 'Modelos 3D', path: 'Paginas/Modelos 3D.html', keywords: ['impresion', 'impresión', '3d', 'modelos'] },
-    { name: 'Props', path: 'Paginas/Props.html', keywords: ['props', 'cosplay', 'utileria', 'accesorios'] },
-    { name: 'Pregrabado de madera', path: 'Paginas/Pregrabado de madera.html', keywords: ['madera', 'grabado', 'laser'] },
-
-    // Productos (Paginasemergentes)
-    { name: 'Accesorios Ghost', path: 'Paginas/Paginasemergentes/Accesorios-Ghost.html', keywords: ['ghost', 'collar', 'aretes', 'banda'] },
-    { name: 'Aretes Monster Draculavra', path: 'Paginas/Paginasemergentes/Aretes-Monster-Draculavra.html', keywords: ['aretes', 'monster', 'draculavra'] },
-    { name: 'Aretes y Collar Banda Avatar', path: 'Paginas/Paginasemergentes/Aretes-y-Collar-Banda-Avatar.html', keywords: ['aretes', 'collar', 'avatar', 'banda'] },
-    { name: 'Cofres Madera Personalizados', path: 'Paginas/Paginasemergentes/Cofres-Madera-Personalizados.html', keywords: ['cofre', 'madera', 'grabado'] },
-    { name: 'Collar Banda Ghost', path: 'Paginas/Paginasemergentes/Collar-Banda-Ghost.html', keywords: ['collar', 'ghost', 'banda'] },
-    { name: 'Collar Linkin Park', path: 'Paginas/Paginasemergentes/Collar-Linkin-Park.html', keywords: ['collar', 'linkin', 'park', 'banda'] },
-    { name: 'Cuadros Personalizados', path: 'Paginas/Paginasemergentes/Cuadros-Personalizados.html', keywords: ['cuadros', 'personalizado', 'arte'] },
-    { name: 'Escudo Vikingo de Madera', path: 'Paginas/Paginasemergentes/Escudo-Vikingo-de-Madera.html', keywords: ['escudo', 'vikingo', 'madera'] },
-    { name: 'Joey Jordison Slipknot', path: 'Paginas/Paginasemergentes/Joey-Jordison-Slipknot.html', keywords: ['joey', 'jordison', 'slipknot', 'baterista'] },
-    { name: 'Johannes Eckerström Avatar', path: 'Paginas/Paginasemergentes/Johannes-Eckerstrom-Avatar.html', keywords: ['johannes', 'eckerstrom', 'avatar', 'banda'] },
-    { name: 'Johannes Eckerström', path: 'Paginas/Paginasemergentes/Johannes-Eckerstrom.html', keywords: ['johannes', 'eckerstrom', 'cantante'] },
-    { name: 'Josh Dun', path: 'Paginas/Paginasemergentes/Josh-Dun.html', keywords: ['josh', 'dun', 'twenty one pilots', 'baterista'] },
-    { name: 'Manos Robot Cyberpunk', path: 'Paginas/Paginasemergentes/Manos-Robot-Cyberpunk.html', keywords: ['manos', 'robot', 'cyberpunk'] },
-    { name: 'Ned TOP', path: 'Paginas/Paginasemergentes/Ned-TOP.html', keywords: ['ned', 'top', 'twenty one pilots'] },
-    { name: 'Ned Twenty One Pilots Modelo 3D', path: 'Paginas/Paginasemergentes/Ned-Twenty-One-Pilots-Modelo-3D.html', keywords: ['ned', 'modelo', '3d', 'impresion'] },
-    { name: 'Papa Emeritus II Ghost Cetro', path: 'Paginas/Paginasemergentes/Papa-Emeritus-II-Ghost-Cetro.html', keywords: ['papa', 'emeritus', 'ghost', 'cetro'] },
-    { name: 'Saorix Caballeros del Zodiaco', path: 'Paginas/Paginasemergentes/Saorix-Caballeros-del-Zodiaco.html', keywords: ['saorix', 'caballeros', 'zodiaco'] },
-    { name: 'Tankards Pocillos Personalizados', path: 'Paginas/Paginasemergentes/Tankards-Pocillos-Personalizados.html', keywords: ['pocillos', 'tankards', 'personalizado'] },
-    { name: 'Tyler Joseph', path: 'Paginas/Paginasemergentes/Tyler-Joseph.html', keywords: ['tyler', 'joseph', 'twenty one pilots', 'cantante'] }
-  ];
-
-  function normalizeText(s) {
-    return String(s || '')
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9\s]+/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
-
-  function doSearch(query) {
-    const q = (query || '').trim();
-    const dest = `${baseToRoot}Paginas/Paginasemergentes/Buscar.html?q=${encodeURIComponent(q)}`;
-    location.href = dest;
-  }
-
-  function initSearch() {
-    const searchContainer = document.querySelector('.search-container');
-    if (!searchContainer) return;
-    const input = searchContainer.querySelector('input[type="search"]');
-    const icon = searchContainer.querySelector('img');
-    if (input) {
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          doSearch(input.value);
-        }
-      });
-    }
-    if (icon) {
-      icon.style.cursor = 'pointer';
-      icon.addEventListener('click', () => {
-        // En pantallas muy pequeñas, expandimos el input; si ya está expandido y no hay input visible, navegar
-        const isUltraMobile = window.matchMedia('(max-width: 360px)').matches;
-        if (isUltraMobile) {
-          if (!searchContainer.classList.contains('search-expanded')) {
-            searchContainer.classList.add('search-expanded');
-            if (input) {
-              input.style.display = 'block';
-              input.focus();
-            }
-            // Cerrar al hacer clic fuera
-            const closeOnOutside = (ev) => {
-              if (!searchContainer.contains(ev.target)) {
-                searchContainer.classList.remove('search-expanded');
-                if (input) input.style.display = '';
-                document.removeEventListener('click', closeOnOutside);
-                document.removeEventListener('keydown', closeOnEsc);
-              }
-            };
-            const closeOnEsc = (ev) => {
-              if (ev.key === 'Escape') {
-                searchContainer.classList.remove('search-expanded');
-                if (input) input.style.display = '';
-                document.removeEventListener('click', closeOnOutside);
-                document.removeEventListener('keydown', closeOnEsc);
-              }
-            };
-            setTimeout(() => {
-              document.addEventListener('click', closeOnOutside);
-              document.addEventListener('keydown', closeOnEsc);
-            }, 0);
-            return;
-          }
-          // Si ya está expandido, ejecutar búsqueda
-          doSearch(input?.value || '');
-          return;
-        }
-        // pantallas normales: ejecutar búsqueda
-        doSearch(input?.value || '');
-      });
-    }
-  }
-
-  function initSearchResultsPage() {
-    const root = document.getElementById('search-root');
-    if (!root) return; // no estamos en la página de resultados
-
-    const params = new URLSearchParams(location.search);
-    const qRaw = params.get('q') || '';
-  const qNorm = normalizeText(qRaw);
-  const tokens = qNorm.split(' ').filter(Boolean);
-
-    // Mostrar query en el input del header si existe
-    const headerInput = document.querySelector('.search-container input[type="search"]');
-    if (headerInput) headerInput.value = qRaw;
-
-    let results = [];
-    if (tokens.length) {
-      results = PRODUCT_INDEX.filter(p => {
-        const doc = normalizeText([p.name].concat(p.keywords || []).join(' '));
-        return tokens.every(t => doc.includes(t));
-      });
-    }
-
-    const title = document.createElement('h2');
-    title.textContent = qRaw ? `Resultados (${results.length}) para "${qRaw}"` : 'Buscar productos';
-    if (qRaw) {
-      document.title = `Buscar: ${qRaw} — ${results.length} resultados`;
-    }
-    const container = document.createElement('div');
-    container.className = 'grid-categorias';
-
-    if (!results.length) {
-      root.innerHTML = '';
-      root.appendChild(title);
-      const msg = document.createElement('p');
-      msg.textContent = qRaw ? 'No encontramos resultados. Intenta con otro término.' : 'Escribe en la barra superior y presiona Enter.';
-      root.appendChild(msg);
-      return;
-    }
-
-    results.forEach(p => {
-      const a = document.createElement('a');
-      a.className = 'categoria';
-      a.href = `${baseToRoot}${p.path}`;
-      a.innerHTML = `
-        <img src="https://i.imgur.com/lj72Ghv.png" alt="${p.name}">
-        <p>${p.name}</p>
-      `;
-      container.appendChild(a);
-    });
-
-    root.innerHTML = '';
-    root.appendChild(title);
-    root.appendChild(container);
-  }
-
-  // --- Render de la página Mi carrito ---
-  function renderCartPage() {
-    const root = document.getElementById('cart-root');
-    if (!root) return; // No estamos en la página del carrito
-    const items = getCart();
-
-    if (!items.length) {
-      root.innerHTML = '<p>Tu carrito está vacío.</p>' +
-        `<div class="cart-actions"><a class="btn-primary" href="${baseToRoot}index.html">Seguir comprando</a></div>`;
-      return;
-    }
-
-    const list = document.createElement('ul');
-    list.className = 'cart-list';
-
-    items.forEach((it, idx) => {
-      const li = document.createElement('li');
-      li.className = 'cart-item';
-      const unit = typeof it.price === 'number' ? it.price : parsePriceToNumber(it.price);
-      const linkOpen = it.url ? `<a class="cart-link" href="${it.url}">` : '';
-      const linkClose = it.url ? `</a>` : '';
-      const imgHtml = it.image ? `${linkOpen}<img class="cart-thumb" src="${it.image}" alt="${it.name}">${linkClose}` : '';
-      li.innerHTML = `
-        ${imgHtml}
-        ${linkOpen}<span class="cart-item-name">${it.name}</span>${linkClose}
-        <span class="cart-price">$${unit.toLocaleString()}</span>
-        <span class="cart-qty">
-          Cantidad: <input type="number" min="1" value="${it.qty || 1}" data-idx="${idx}" />
-          <button class="cart-remove" data-idx="${idx}">Eliminar</button>
-        </span>
-      `;
-      list.appendChild(li);
-    });
-
-    const total = items.reduce((sum, it) => {
-      const unit = typeof it.price === 'number' ? it.price : parsePriceToNumber(it.price);
-      return sum + unit * (it.qty || 1);
-    }, 0);
-
-    // Bloque de dirección de envío y método de pago
-    const shipping = (() => { try { return localStorage.getItem('draconis_shipping_address') || ''; } catch { return ''; } })();
-    const payMethod = (() => { try { return localStorage.getItem('draconis_payment_method') || ''; } catch { return ''; } })();
-    const metaDiv = document.createElement('div');
-    metaDiv.className = 'cart-meta';
-    metaDiv.innerHTML = `
-      <div class="cart-meta-row">
-        <span class="cart-meta-label">Dirección:</span>
-        <span class="cart-meta-value">${shipping ? escapeHtml(shipping) : 'No seleccionada'}</span>
-        <a class="cart-meta-change" href="${baseToRoot}Paginas/Paginasemergentes/Direcciondeenvio.html">${shipping ? 'Cambiar' : 'Añadir'}</a>
-      </div>
-      <div class="cart-meta-row">
-        <span class="cart-meta-label">Pago:</span>
-        <span class="cart-meta-value">${payMethod ? escapeHtml(payMethod) : 'No seleccionado'}</span>
-        <a class="cart-meta-change" href="${baseToRoot}Paginas/Paginasemergentes/Mediosdepago.html">${payMethod ? 'Cambiar' : 'Elegir'}</a>
-      </div>
-    `;
-    const summary = document.createElement('div');
-    summary.className = 'cart-summary';
-    summary.innerHTML = `
-      <strong>Total: $${total.toLocaleString()}</strong>
-      <div class="cart-actions">
-        <button id="cart-clear" class="btn-secondary">Vaciar carrito</button>
-        <button id="cart-checkout" class="btn-primary">Finalizar compra</button>
-      </div>
-    `;
-
-    root.innerHTML = '';
-    root.appendChild(list);
-    root.appendChild(metaDiv);
-    root.appendChild(summary);
-
-    // Eventos
-    root.querySelectorAll('input[type="number"]').forEach(input => {
-      input.addEventListener('change', (e) => {
-        const idx = parseInt(e.target.getAttribute('data-idx'), 10);
-        const qty = Math.max(1, parseInt(e.target.value, 10) || 1);
-        const items = getCart();
-        if (items[idx]) {
-          items[idx].qty = qty;
-          setCart(items);
-          renderCartPage();
-        }
-      });
-    });
-
-    root.querySelectorAll('.cart-remove').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const idx = parseInt(e.target.getAttribute('data-idx'), 10);
-        const items = getCart();
-        items.splice(idx, 1);
-        setCart(items);
-        renderCartPage();
-      });
-    });
-
-    document.getElementById('cart-clear')?.addEventListener('click', () => {
-      setCart([]);
-      renderCartPage();
-    });
-
-    document.getElementById('cart-checkout')?.addEventListener('click', () => {
-      // Validar que exista dirección de envío y método de pago antes de continuar
-      const shipping = (() => { try { return localStorage.getItem('draconis_shipping_address') || ''; } catch { return ''; } })();
-      const payMethod = (() => { try { return localStorage.getItem('draconis_payment_method') || ''; } catch { return ''; } })();
-
-      if (!shipping) {
-        alert('Por favor, añade tu Dirección de envío para continuar.');
-        location.href = `${baseToRoot}Paginas/Paginasemergentes/Direcciondeenvio.html`;
-        return;
-      }
-      if (!payMethod) {
-        alert('Por favor, elige un Medio de pago para continuar.');
-        location.href = `${baseToRoot}Paginas/Paginasemergentes/Mediosdepago.html`;
-        return;
-      }
-
-      // Ambos presentes: continuar a página de confirmación
-      location.href = `${baseToRoot}Paginas/Paginasemergentes/Gracias.html`;
-    });
-  }
-
-  // --- Página Inicio de sesión (iniciosesion.html) ---
-  function initLoginPage() {
-    // Detectar por estructura de la página
-    const loginContainer = document.querySelector('.login-container');
-    if (!loginContainer) return;
-
-    const continuarBtn = loginContainer.querySelector('.button.primary');
-    const crearBtn = loginContainer.querySelector('.button.secondary');
-    if (continuarBtn) {
-      continuarBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        location.href = `${baseToRoot}Paginas/Paginasemergentes/Miusuario.html`;
-      });
-    }
-    if (crearBtn) {
-      crearBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        location.href = `${baseToRoot}Paginas/Paginasemergentes/crearcuenta.html`;
-      });
-    }
-  }
 
   function injectAddToCartButtons() {
-    // Inserta un botón "Agregar al carrito" debajo de cada .btn-comprar
     const buyButtons = document.querySelectorAll('.btn-comprar');
-    buyButtons.forEach((btn) => {
-      // Evitar duplicar si ya existe un .btn-agregar junto a este botón
-      const next = btn.nextElementSibling;
-      if (next && next.classList && next.classList.contains('btn-agregar')) return;
-
+    buyButtons.forEach(btn => {
       const addBtn = document.createElement('button');
-      addBtn.className = 'btn-agregar';
-      addBtn.type = 'button';
+      addBtn.className = 'btn-add-cart';
       addBtn.textContent = 'Agregar al carrito';
       addBtn.addEventListener('click', () => {
-        try {
-          const info = btn.closest('.producto-info');
-          const title = info?.querySelector('h1')?.textContent?.trim() || 'Producto';
-          const priceText = info?.querySelector('.precio')?.textContent || '';
-          const price = parsePriceToNumber(priceText);
-          // Capturar imagen dentro del bloque de detalle
-          const detail = info?.closest('.producto-detalle') || document.querySelector('.producto-detalle');
-          const imgEl = detail?.querySelector('.producto-imagen img') || detail?.querySelector('img');
-          const image = imgEl?.getAttribute('src') || '';
-          const url = location.pathname;
-          addToCart({ name: title, price, image, url, qty: 1 });
-          addBtn.textContent = 'Agregado ✔';
-          setTimeout(() => (addBtn.textContent = 'Agregar al carrito'), 1200);
-          // Opcional: navegar directo al carrito al agregar
-          // location.href = `${baseToRoot}Paginas/Paginasemergentes/Micarrito.html`;
-        } catch (e) {
-          console.warn('[Carrito] No se pudo identificar el producto', e);
-        }
+        const card = btn.closest('.producto, .card, .item, body');
+        const name = card.querySelector('h2, h3, .nombre, .titulo')?.textContent?.trim() || document.title;
+        const priceText = card.querySelector('.precio, .price, .valor')?.textContent || '0';
+        const image = card.querySelector('img')?.src || '';
+        const url = location.pathname;
+        const price = parseInt(priceText.replace(/[^\d]/g, ''), 10) || 0;
+        addToCart({ name, price, image, url, qty: 1 });
+        alert('Producto agregado al carrito');
       });
-
       btn.insertAdjacentElement('afterend', addBtn);
     });
   }
 
-  // Redirige los botones "Comprar" a Medios de pago
-  function wireBuyButtons() {
-    document.querySelectorAll('.btn-comprar').forEach(btn => {
-      if (btn.dataset.buyWired === '1') return; // evitar duplicar
-      btn.dataset.buyWired = '1';
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        try {
-          // Intentar capturar info del producto como en Agregar al carrito
-          const info = btn.closest('.producto-info');
-          const title = info?.querySelector('h1')?.textContent?.trim() || 'Producto';
-          const priceText = info?.querySelector('.precio')?.textContent || '';
-          const price = parsePriceToNumber(priceText);
-          const detail = info?.closest('.producto-detalle') || document.querySelector('.producto-detalle');
-          const imgEl = detail?.querySelector('.producto-imagen img') || detail?.querySelector('img');
-          const image = imgEl?.getAttribute('src') || '';
-          const url = location.pathname;
-          addToCart({ name: title, price, image, url, qty: 1 });
-        } catch (err) {
-          console.warn('[Comprar] No se pudo agregar al carrito antes de ir a pagos', err);
-        }
-        // Ir a Medios de pago
-        location.href = `${baseToRoot}Paginas/Paginasemergentes/Mediosdepago.html`;
-      });
-    });
-  }
-
-  // --- Página Medios de Pago ---
-  function initPaymentPage() {
-    const form = document.getElementById('payment-form');
-    if (!form) return; // No estamos en la página de medios de pago
-
-    // Preseleccionar método guardado
-    try {
-      const saved = localStorage.getItem('draconis_payment_method');
-      if (saved) {
-        const input = document.querySelector(`input[name="payment"][value="${saved}"]`);
-        if (input) input.checked = true;
-      }
-    } catch {}
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const selected = document.querySelector('input[name="payment"]:checked');
-      if (!selected) {
-        alert('Por favor, selecciona un medio de pago.');
-        return;
-      }
-      try { localStorage.setItem('draconis_payment_method', selected.value); } catch {}
-      // Regresar al carrito
-      location.href = `${baseToRoot}Paginas/Paginasemergentes/Micarrito.html`;
-    });
-
-    const cancelBtn = document.getElementById('cancel-payment');
-    cancelBtn?.addEventListener('click', () => {
-      location.href = `${baseToRoot}Paginas/Paginasemergentes/Micarrito.html`;
-    });
-  }
-
-  // --- Página Dirección de Envío ---
-  function initShippingPage() {
-    const form = document.getElementById('shipping-form');
-    if (!form) return; // No estamos en la página de dirección de envío
-
-    const current = document.getElementById('current-address');
-    const other = document.getElementById('other-address');
-    const clearBtn = document.querySelector('.clear-btn');
-
-    clearBtn?.addEventListener('click', () => {
-      if (current) { current.value = ''; current.focus(); }
-    });
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const chosen = (other && other.value && other.value.trim()) ? other.value.trim() : (current?.value || '').trim();
-      try { localStorage.setItem('draconis_shipping_address', chosen); } catch {}
-      // Ir a Medios de pago después de guardar
-      location.href = `${baseToRoot}Paginas/Paginasemergentes/Mediosdepago.html`;
-    });
-  }
-
-  // --- Página Mi Usuario ---
-  function initUserPage() {
-    const form = document.getElementById('user-form');
-    if (!form) return; // no estamos en Mi usuario
-
-    const emailEl = document.getElementById('user-email');
-    const phoneEl = document.getElementById('user-phone');
-    const addrEl = document.getElementById('user-address');
-
-    // Prefill desde localStorage
-    try {
-      const savedEmail = localStorage.getItem('draconis_user_email') || '';
-      const savedPhone = localStorage.getItem('draconis_user_phone') || '';
-      const savedAddr  = localStorage.getItem('draconis_user_address') || '';
-      if (emailEl && savedEmail) emailEl.value = savedEmail;
-      if (phoneEl && savedPhone) phoneEl.value = savedPhone;
-      if (addrEl && savedAddr) addrEl.value = savedAddr;
-    } catch {}
-
-    // Botones de limpiar
-    document.querySelectorAll('.clear-btn[data-target]')?.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetId = btn.getAttribute('data-target');
-        const input = targetId ? document.getElementById(targetId) : null;
-        if (input) { input.value = ''; input.focus(); }
-      });
-    });
-
-    // Guardar
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = emailEl?.value?.trim() || '';
-      const phone = phoneEl?.value?.trim() || '';
-      const addr  = addrEl?.value?.trim() || '';
-      try {
-        localStorage.setItem('draconis_user_email', email);
-        localStorage.setItem('draconis_user_phone', phone);
-        localStorage.setItem('draconis_user_address', addr);
-        // También sincronizar como dirección de envío por defecto
-        if (addr) localStorage.setItem('draconis_shipping_address', addr);
-      } catch {}
-      alert('Datos guardados.');
-    });
-  }
-
-  // --- Página Crear Cuenta ---
-  function initCreateAccountPage() {
-    // Detectar inputs del mock de Crear cuenta
-    const inputs = document.querySelectorAll('.form-section .form-input');
-    if (!inputs || inputs.length < 3) return; // no estamos en crearcuenta.html
-
-    const emailEl = inputs[0];
-    const phoneEl = inputs[1];
-    const addrEl  = inputs[2];
-
-    // Prefill
-    try {
-      const savedEmail = localStorage.getItem('draconis_user_email') || '';
-      const savedPhone = localStorage.getItem('draconis_user_phone') || '';
-      const savedAddr  = localStorage.getItem('draconis_user_address') || '';
-      if (savedEmail) emailEl.value = savedEmail;
-      if (savedPhone) phoneEl.value = savedPhone;
-      if (savedAddr)  addrEl.value  = savedAddr;
-    } catch {}
-
-    // Interceptar los botones que navegan a Miusuario.html para guardar antes de salir
-    const userLinks = Array.from(document.querySelectorAll('a[href$="Miusuario.html"]'));
-    userLinks.forEach(a => {
-      a.addEventListener('click', (e) => {
-        e.preventDefault();
-        const email = emailEl?.value?.trim() || '';
-        const phone = phoneEl?.value?.trim() || '';
-        const addr  = addrEl?.value?.trim() || '';
-        try {
-          localStorage.setItem('draconis_user_email', email);
-          localStorage.setItem('draconis_user_phone', phone);
-          localStorage.setItem('draconis_user_address', addr);
-          if (addr) localStorage.setItem('draconis_shipping_address', addr);
-        } catch {}
-        location.href = a.getAttribute('href');
-      });
-    });
-  }
-
-  // Ejecutar cuando el DOM esté listo
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      injectHeader();
-      injectFooter();
-      injectAddToCartButtons();
-      initSearch();
-      wireBuyButtons();
-      updateCartBadge();
-      renderCartPage();
-      initShippingPage();
-      initPaymentPage();
-      initLoginPage();
-      initUserPage();
-      initCreateAccountPage();
-      initSearchResultsPage();
-      console.log('[Draconis] Header y footer inyectados (DOMContentLoaded).');
-    });
-  } else {
+  function init() {
     injectHeader();
     injectFooter();
-    injectAddToCartButtons();
-    initSearch();
-    wireBuyButtons();
     updateCartBadge();
-    renderCartPage();
-    initShippingPage();
-    initPaymentPage();
-    initLoginPage();
-    initUserPage();
-    initCreateAccountPage();
-    initSearchResultsPage();
-    console.log('[Draconis] Header y footer inyectados (carga inmediata).');
+    injectAddToCartButtons();
   }
+
+  document.addEventListener('DOMContentLoaded', init);
 })();
-
-//cambios Nicol :v
-
-// --- Conteo real de productos y productos agregados al carrito ---
-// ====================
-//  LISTA DE PRODUCTOS (catálogo)
-// ====================
-// 1. Lista de productos
-const productos = {
-  "Figuras musicales": [
-    "Tyler Joseph (llavero)",
-    "Josh Dun (llavero)",
-    "Ned TOP (llavero)",
-    "Johannes Eckerstrom (figurita)"
-  ],
-  "Accesorios": [
-    "Aretes y collar banda Avatar",
-    "Collar banda Ghost",
-    "Collar Linkin Park",
-    "Aretes Monster Draculaura"
-  ],
-  "Props": [
-    "Accesorios Ghost",
-    "Papa Emeritus II Ghost / Cetro",
-    "Manos robot Cyberpunk"
-  ],
-  "Personalizados en madera": [
-    "Cofres/Madera personalizados",
-    "Tankards (Pocillos) personalizados",
-    "Escudo vikingo de madera",
-    "Cuadros personalizados"
-  ],
-  "Modelos 3D": [
-    "Johanes Eckerstrom Avatar",
-    "Joey Jordison Slipknot",
-    "Ned Twenty One Pilots",
-    "Saorix Caballeros del Zodiaco"
-  ]
-};
-
-// 2. Calcular total de productos disponibles
-let totalProductos = 0;
-for (const categoria in productos) {
-  totalProductos += productos[categoria].length;
-}
-console.log("Total de productos disponibles:", totalProductos);
-
-// 3. Carrito invisible (solo almacenamiento interno)
-const carrito = [];
-
-// 4. Contador de productos agregados al carrito
-let productosAgregados = 0;
-
-// 5. Detectar los botones de 'Agregar al carrito'
-const botones = document.querySelectorAll(".agregar-carrito");
-
-// 6. Escuchar clics y actualizar el contador real
-botones.forEach(boton => {
-  boton.addEventListener("click", () => {
-    const producto = boton.getAttribute("data-producto") || "Producto desconocido";
-    carrito.push(producto);
-    productosAgregados++;
-    console.log(`Producto agregado: ${producto}`);
-    console.log("Productos totales en carrito:", productosAgregados);
-  });
-});
-
-// 7. Guardar carrito en localStorage de forma invisible (sin mostrar en interfaz)
-function guardarCarrito() {
-  localStorage.setItem("carritoInvisible", JSON.stringify(carrito));
-}
-
-// 8. Cargar carrito si ya existía en el almacenamiento
-function cargarCarrito() {
-  const guardado = localStorage.getItem("carritoInvisible");
-  if (guardado) {
-    const data = JSON.parse(guardado);
-    carrito.push(...data);
-    productosAgregados = carrito.length;
-    console.log("Carrito invisible restaurado. Productos:", productosAgregados);
-  }
-}
-
-// 9. Llamar la función al inicio
-document.addEventListener("DOMContentLoaded", cargarCarrito);
-
-// 10. Actualizar almacenamiento cada vez que se agrega algo
-botones.forEach(boton => {
-  boton.addEventListener("click", guardarCarrito);
-});
