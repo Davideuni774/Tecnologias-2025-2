@@ -718,31 +718,3 @@
 })();
 
 //cambios Nicol :v
-
-// --- Render de productos destacados en el index ---
-document.addEventListener('DOMContentLoaded', () => {
-  const contenedor = document.getElementById('lista-productos');
-  if (!contenedor) return;
-
-  const productos = [
-    { nombre: 'Accesorios Ghost', imagen: 'https://i.imgur.com/lj72Ghv.png', url: 'Paginas/Paginasemergentes/Accesorios-Ghost.html' },
-    { nombre: 'Aretes Monster Draculavra', imagen: 'https://i.imgur.com/lj72Ghv.png', url: 'Paginas/Paginasemergentes/Aretes-Monster-Draculavra.html' },
-    { nombre: 'Cuadros Personalizados', imagen: 'https://i.imgur.com/lj72Ghv.png', url: 'Paginas/Paginasemergentes/Cuadros-Personalizados.html' },
-    { nombre: 'Ned TOP', imagen: 'https://i.imgur.com/lj72Ghv.png', url: 'Paginas/Paginasemergentes/Ned-TOP.html' },
-    { nombre: 'Tyler Joseph', imagen: 'https://i.imgur.com/lj72Ghv.png', url: 'Paginas/Paginasemergentes/Tyler-Joseph.html' },
-    { nombre: 'Papa Emeritus II Ghost Cetro', imagen: 'https://i.imgur.com/lj72Ghv.png', url: 'Paginas/Paginasemergentes/Papa-Emeritus-II-Ghost-Cetro.html' },
-    { nombre: 'Escudo Vikingo de Madera', imagen: 'https://i.imgur.com/lj72Ghv.png', url: 'Paginas/Paginasemergentes/Escudo-Vikingo-de-Madera.html' },
-    { nombre: 'Manos Robot Cyberpunk', imagen: 'https://i.imgur.com/lj72Ghv.png', url: 'Paginas/Paginasemergentes/Manos-Robot-Cyberpunk.html' }
-  ];
-
-  productos.forEach(p => {
-    const a = document.createElement('a');
-    a.href = p.url;
-    a.className = 'categoria';
-    a.innerHTML = `
-      <img src="${p.imagen}" alt="${p.nombre}">
-      <p>${p.nombre}</p>
-    `;
-    contenedor.appendChild(a);
-  });
-});
