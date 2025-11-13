@@ -718,3 +718,72 @@
 })();
 
 //cambios Nicol :v
+
+// --- Lista de productos (versión invisible con conteo y selección) ---
+
+const productos = {
+  "Figuras musicales": [
+    "Tyler Joseph (llavero)",
+    "Josh Dun (llavero)",
+    "Ned TOP (llavero)",
+    "Johannes Eckerstrom (figurita)"
+  ],
+  "Accesorios": [
+    "Aretes y collar banda Avatar",
+    "Collar banda Ghost",
+    "Collar Linkin Park",
+    "Aretes Monster Draculaura"
+  ],
+  "Props": [
+    "Accesorios Ghost",
+    "Papa Emeritus II Ghost / Cetro",
+    "Manos robot Cyberpunk"
+  ],
+  "Personalizados en madera": [
+    "Cofres/Madera personalizados",
+    "Tankards (Pocillos) personalizados",
+    "Escudo vikingo de madera",
+    "Cuadros personalizados"
+  ],
+  "Modelos 3D": [
+    "Johanes Eckerstrom Avatar",
+    "Joey Jordison Slipknot",
+    "Ned Twenty One Pilots",
+    "Saorix Caballeros del Zodiaco"
+  ]
+};
+
+// Mostrar productos en consola
+console.log(" Lista de productos por categoría:");
+let totalProductos = 0;
+
+for (const categoria in productos) {
+  console.log(`\n${categoria}:`);
+  productos[categoria].forEach(item => {
+    console.log(`- ${item}`);
+    totalProductos++;
+  });
+}
+
+console.log(`\n Total de productos: ${totalProductos}`);
+
+// --- Simulación de productos seleccionados ---
+const productosSeleccionados = [
+  "Ned TOP (llavero)",
+  "Papa Emeritus II Ghost / Cetro",
+  "Escudo vikingo de madera"
+];
+
+// Contar cuántos están seleccionados
+let totalSeleccionados = 0;
+
+for (const categoria in productos) {
+  productos[categoria].forEach(item => {
+    if (productosSeleccionados.includes(item)) {
+      totalSeleccionados++;
+    }
+  });
+}
+
+console.log(`🛒 Productos seleccionados (${totalSeleccionados}):`);
+productosSeleccionados.forEach(p => console.log(`- ${p}`));
