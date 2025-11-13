@@ -1,0 +1,141 @@
+{
+  "categorias": [
+    {
+      "nombre": "Props",
+      "Productos": {
+        "producto1": {
+          "nombre": "Ghost",
+          "precio": 25000,
+          "stock": 15,
+          "imagen": ""
+        },
+        "producto2": {
+          "nombre": "Papa Emeritus 2 cetro",
+          "precio": 180000,
+          "stock": 10,
+          "imagen": ""
+        },
+        "producto3": {
+          "nombre": "Manos Robot Cyberpunk",
+          "precio": 450000,
+          "stock": 30,
+          "imagen": ""
+        }
+      }
+    },
+    {
+      "nombre": "Pirograbado de madera",
+      "Productos": {
+        "producto1": {
+          "nombre": "Cofres de madeera",
+          "precio": 35000,
+          "stock": 45000,
+          "imagen": ""
+        },
+        "producto2": {
+          "nombre": "Tankards(pocillos)",
+          "precio": 30000,
+          "stock": 20,
+          "imagen": ""
+        },
+        "producto3": {
+          "nombre": "Escudo vikingos",
+          "precio": 30000,
+          "stock": 40,
+          "imagen": ""
+        },
+        "producto4": {
+          "nombre": "Cuadros personalizados",
+          "precio": 35000,
+          "stock": 35,
+          "imagen": ""
+        }
+      }
+    },
+    {
+      "nombre": "Modelos 3D",
+      "Productos": {
+        "producto1": {
+          "nombre": "Johannes Ekerstrom",
+          "precio": 25000,
+          "stock": 25000,
+          "imagen": ""
+        },
+        "producto2": {
+          "nombre": "Joey Jordinson-Slipknot",
+          "precio": 80000,
+          "stock": 20,
+          "imagen": ""
+        },
+        "producto3": {
+          "nombre": "Ned-Twenty One Pilots",
+          "precio": 60000,
+          "stock": 40,
+          "imagen": ""
+        },
+        "producto4": {
+          "nombre": "Caballeros del zodiaco",
+          "precio": 550000,
+          "stock": 15,
+          "imagen": ""
+        }
+      }
+    },
+    {
+      "nombre": "Figuras personalizadas",
+      "Productos": {
+        "producto1": {
+          "nombre": "Tyler Joseph",
+          "precio": 35000,
+          "stock": 25,
+          "imagen": ""
+        },
+        "producto2": {
+          "nombre": "Josh Dun",
+          "precio": 80000,
+          "stock": 20,
+          "imagen": ""
+        },
+        "producto3": {
+          "nombre": "Ned Top",
+          "precio": 60000,
+          "stock": 40,
+          "imagen": ""
+        }
+      }
+    },
+    {
+      "nombre": "Accesorios",
+      "Productos": {
+        "producto1": {
+          "nombre": "Arete y Collar ",
+          "precio": 10000,
+          "stock": 25,
+          "imagen": ""
+        },
+        "producto2": {
+          "nombre": "Collar Banda Ghost",
+          "precio": 80000,
+          "stock": 20,
+          "imagen": ""
+        },
+        "producto3": {
+          "nombre": "Collar Linkin Park",
+          "precio": 60000,
+          "stock": 40,
+          "imagen": ""
+        }
+      }
+    }
+  ]
+}
+    
+
+
+
+
+
+
+
+
+
