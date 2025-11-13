@@ -717,83 +717,32 @@
   }
 })();
 
-/* ==========================
-   CATÁLOGO DE PRODUCTOS (versión con enlaces xd)
-   ========================== */
+//cambios Nicol :v
 
-const productos = [
-  // FIGURAS MUSICALES
-  { nombre: "Tyler Joseph (llavero)", categoria: "Figuras musicales", imagen: "https://i.imgur.com/WzFrJU7.png", precio: 25000, url: "Paginas/Paginasemergentes/Tyler-Joseph.html" },
-  { nombre: "Josh Dun (llavero)", categoria: "Figuras musicales", imagen: "https://i.imgur.com/WST3GGQ.png", precio: 25000, url: "Paginas/Paginasemergentes/Josh-Dun.html" },
-  { nombre: "Ned TOP (llavero)", categoria: "Figuras musicales", imagen: "https://i.imgur.com/OKRPzxR.png", precio: 25000, url: "Paginas/Paginasemergentes/Ned-TOP.html" },
-  { nombre: "Johannes Eckerstrom (figurita)", categoria: "Figuras musicales", imagen: "https://i.imgur.com/hWapRIj.png", precio: 45000, url: "Paginas/Paginasemergentes/Johannes-Eckerstrom.html" },
-
-  // ACCESORIOS
-  { nombre: "Aretes y collar banda Avatar", categoria: "Accesorios", imagen: "file:///D:/Tecnologias-2025-2/assets/img/avatar-aretes-collar.png", precio: 30000, url: "Paginas/Paginasemergentes/Accesorios.html" },
-  { nombre: "Collar banda Ghost", categoria: "Accesorios", imagen: "file:///D:/Tecnologias-2025-2/assets/img/ghost-collar.png", precio: 35000, url: "Paginas/Paginasemergentes/Accesorios.html" },
-  { nombre: "Collar Linkin Park", categoria: "Accesorios", imagen: "file:///D:/Tecnologias-2025-2/assets/img/linkinpark-collar.png", precio: 30000, url: "Paginas/Paginasemergentes/Accesorios.html" },
-  { nombre: "Aretes Monster Draculaura", categoria: "Accesorios", imagen: "file:///D:/Tecnologias-2025-2/assets/img/monster-draculaura-aretes.png", precio: 20000, url: "Paginas/Paginasemergentes/Accesorios.html" },
-
-  // PROPS
-  { nombre: "Accesorios Ghost", categoria: "Props", imagen: "https://i.imgur.com/QLvS0he.png", precio: 60000, url: "Paginas/Paginasemergentes/Props.html" },
-  { nombre: "Papa Emeritus II Ghost / Cetro", categoria: "Props", imagen: "https://i.imgur.com/2GXDAYl.png", precio: 90000, url: "Paginas/Paginasemergentes/Papa-Emeritus-II-Ghost-Cetro.html" },
-  { nombre: "Manos Robot Cyberpunk", categoria: "Props", imagen: "https://i.imgur.com/FM6fGg2.png", precio: 85000, url: "Paginas/Paginasemergentes/Manos-Robot-Cyberpunk.html" },
-
-  // PERSONALIZADOS EN MADERA
-  { nombre: "Cofres/Madera personalizados", categoria: "Personalizados en madera", imagen: "https://i.imgur.com/1Hc45qB.jpg", precio: 70000, url: "Paginas/Paginasemergentes/Pregrabado-de-madera.html" },
-  { nombre: "Tankards (pocillos) personalizados", categoria: "Personalizados en madera", imagen: "https://i.imgur.com/2LxYXPu.jpg", precio: 65000, url: "Paginas/Paginasemergentes/Tankards-Pocillos-Personalizados.html" },
-  { nombre: "Escudo vikingo de madera", categoria: "Personalizados en madera", imagen: "https://i.imgur.com/nmIqXbZ.jpg", precio: 120000, url: "Paginas/Paginasemergentes/Figuras-personalizadas.html" },
-  { nombre: "Cuadros personalizados", categoria: "Personalizados en madera", imagen: "https://i.imgur.com/IToLGgu.jpg", precio: 55000, url: "Paginas/Paginasemergentes/Figuras-personalizadas.html" },
-
-  // MODELOS 3D
-  { nombre: "Johanes Eckerstrom Avatar", categoria: "Modelos 3D", imagen: "https://i.imgur.com/FUf9a5f.png", precio: 95000, url: "Paginas/Paginasemergentes/Ned-Twenty-One-Pilots-Modelo-3D.html" },
-  { nombre: "Joey Jordison Slipknot", categoria: "Modelos 3D", imagen: "https://i.imgur.com/CoiU3qe.png", precio: 95000, url: "Paginas/Paginasemergentes/Modelos-3D.html" },
-  { nombre: "Ned Twenty One Pilots", categoria: "Modelos 3D", imagen: "https://i.imgur.com/KczQiYh.png", precio: 95000, url: "Paginas/Paginasemergentes/Ned-Twenty-One-Pilots-Modelo-3D.html" },
-  { nombre: "Saorix Caballeros del Zodiaco", categoria: "Modelos 3D", imagen: "https://i.imgur.com/dq0r6hZ.jpg", precio: 95000, url: "Paginas/Paginasemergentes/Saorix-Caballeros-del-Zodiaco.html" }
-];
-
-// Función para mostrar productos
-function mostrarProductos() {
-  const contenedor = document.querySelector('.grid-categorias');
+// --- Render de productos destacados en el index ---
+document.addEventListener('DOMContentLoaded', () => {
+  const contenedor = document.getElementById('lista-productos');
   if (!contenedor) return;
 
-  // Agrupamos por categoría
-  const categorias = {};
+  const productos = [
+    { nombre: 'Accesorios Ghost', imagen: 'https://i.imgur.com/lj72Ghv.png', url: 'Paginas/Paginasemergentes/Accesorios-Ghost.html' },
+    { nombre: 'Aretes Monster Draculavra', imagen: 'https://i.imgur.com/lj72Ghv.png', url: 'Paginas/Paginasemergentes/Aretes-Monster-Draculavra.html' },
+    { nombre: 'Cuadros Personalizados', imagen: 'https://i.imgur.com/lj72Ghv.png', url: 'Paginas/Paginasemergentes/Cuadros-Personalizados.html' },
+    { nombre: 'Ned TOP', imagen: 'https://i.imgur.com/lj72Ghv.png', url: 'Paginas/Paginasemergentes/Ned-TOP.html' },
+    { nombre: 'Tyler Joseph', imagen: 'https://i.imgur.com/lj72Ghv.png', url: 'Paginas/Paginasemergentes/Tyler-Joseph.html' },
+    { nombre: 'Papa Emeritus II Ghost Cetro', imagen: 'https://i.imgur.com/lj72Ghv.png', url: 'Paginas/Paginasemergentes/Papa-Emeritus-II-Ghost-Cetro.html' },
+    { nombre: 'Escudo Vikingo de Madera', imagen: 'https://i.imgur.com/lj72Ghv.png', url: 'Paginas/Paginasemergentes/Escudo-Vikingo-de-Madera.html' },
+    { nombre: 'Manos Robot Cyberpunk', imagen: 'https://i.imgur.com/lj72Ghv.png', url: 'Paginas/Paginasemergentes/Manos-Robot-Cyberpunk.html' }
+  ];
+
   productos.forEach(p => {
-    if (!categorias[p.categoria]) categorias[p.categoria] = [];
-    categorias[p.categoria].push(p);
+    const a = document.createElement('a');
+    a.href = p.url;
+    a.className = 'categoria';
+    a.innerHTML = `
+      <img src="${p.imagen}" alt="${p.nombre}">
+      <p>${p.nombre}</p>
+    `;
+    contenedor.appendChild(a);
   });
-
-  // Generar HTML de cada categoría
-  Object.keys(categorias).forEach(categoria => {
-    const titulo = document.createElement('h2');
-    titulo.textContent = categoria;
-    titulo.classList.add('titulo-categoria');
-    contenedor.appendChild(titulo);
-
-    const grid = document.createElement('div');
-    grid.classList.add('grid-productos');
-
-    categorias[categoria].forEach(prod => {
-      const item = document.createElement('div');
-      item.classList.add('producto');
-      item.innerHTML = `
-        <a href="${prod.url}">
-          <img src="${prod.imagen}" alt="${prod.nombre}">
-        </a>
-        <p>${prod.nombre}</p>
-        <span class="precio">$${prod.precio.toLocaleString()}</span>
-      `;
-      grid.appendChild(item);
-    });
-
-    contenedor.appendChild(grid);
-  });
-}
-
-document.addEventListener('DOMContentLoaded', mostrarProductos);
-
-/* ==========================
-   FIN DEL CATÁLOGO
-   ========================== */
-
+});
