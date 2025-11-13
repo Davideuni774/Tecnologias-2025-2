@@ -1,12 +1,17 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Draconis</title>
-    <link rel="stylesheet" href="index.css?v=20251011">
-    <script src="index.js?v=20251011" defer></script>
+  <link rel="stylesheet" href="index.css?v=20251011">
+  <script src="index.js?v=20251011" defer></script>
+  <style>
+    /* Botones invisibles */
+    .agregar-carrito {
+      display: none;
+    }
+  </style>
 </head>
 <body>
   
@@ -16,24 +21,25 @@
       <p>Realizamos funkos de tus personajes favoritos</p>
     </div>
   </section>
+
   <section class="categorias">
     <h2>Categorías</h2>
     <div class="grid-categorias">
       <div class="categoria">
         <a href="Paginas/Figuras-personalizadas.html">
-        <img src="https://imgur.com/tU9CnsG.png"alt="Ned">
+          <img src="https://imgur.com/tU9CnsG.png" alt="Ned">
         </a>
         <p>Figuras Personalizadas</p>
       </div>
       <div class="categoria">
         <a href="Paginas/Accesorios.html">
-        <img src="https://imgur.com/o6rzyI5.png" alt="Accesorios">
+          <img src="https://imgur.com/o6rzyI5.png" alt="Accesorios">
         </a>
-      <p>Accesorios</p>
+        <p>Accesorios</p>
       </div>
       <div class="categoria">
         <a href="Paginas/Props.html">
-        <img src="https://imgur.com/KF9adTB.png" alt="Props">
+          <img src="https://imgur.com/KF9adTB.png" alt="Props">
         </a>
         <p>Props</p>
       </div>
@@ -45,12 +51,46 @@
       </div>
       <div class="categoria">
         <a href="Paginas/Modelos%203D.html">
-          <img src="https://imgur.com/KSd5zy0.png"alt="Modelos 3D">
+          <img src="https://imgur.com/KSd5zy0.png" alt="Modelos 3D">
         </a>
         <p>Modelos 3D</p>
-    
+      </div>
     </div>
   </section>
-  
+
+  <!-- ============================
+       BOTONES INVISIBLES (para el conteo del carrito)
+       ============================ -->
+  <div id="botones-invisibles">
+    <!-- Figuras musicales -->
+    <button class="agregar-carrito" data-producto="Tyler Joseph (llavero)"></button>
+    <button class="agregar-carrito" data-producto="Josh Dun (llavero)"></button>
+    <button class="agregar-carrito" data-producto="Ned TOP (llavero)"></button>
+    <button class="agregar-carrito" data-producto="Johannes Eckerstrom (figurita)"></button>
+
+    <!-- Accesorios -->
+    <button class="agregar-carrito" data-producto="Aretes y collar banda Avatar"></button>
+    <button class="agregar-carrito" data-producto="Collar banda Ghost"></button>
+    <button class="agregar-carrito" data-producto="Collar Linkin Park"></button>
+    <button class="agregar-carrito" data-producto="Aretes Monster Draculaura"></button>
+
+    <!-- Props -->
+    <button class="agregar-carrito" data-producto="Accesorios Ghost"></button>
+    <button class="agregar-carrito" data-producto="Papa Emeritus II Ghost / Cetro"></button>
+    <button class="agregar-carrito" data-producto="Manos robot Cyberpunk"></button>
+
+    <!-- Personalizados en madera -->
+    <button class="agregar-carrito" data-producto="Cofres/Madera personalizados"></button>
+    <button class="agregar-carrito" data-producto="Tankards (Pocillos) personalizados"></button>
+    <button class="agregar-carrito" data-producto="Escudo vikingo de madera"></button>
+    <button class="agregar-carrito" data-producto="Cuadros personalizados"></button>
+
+    <!-- Modelos 3D -->
+    <button class="agregar-carrito" data-producto="Johanes Eckerstrom Avatar"></button>
+    <button class="agregar-carrito" data-producto="Joey Jordison Slipknot"></button>
+    <button class="agregar-carrito" data-producto="Ned Twenty One Pilots"></button>
+    <button class="agregar-carrito" data-producto="Saorix Caballeros del Zodiaco"></button>
+  </div>
+
 </body>
 </html>

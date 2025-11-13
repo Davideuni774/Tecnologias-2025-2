@@ -718,9 +718,9 @@
 })();
 
 //cambios Nicol :v
-// --- Conteo real de productos y productos agregados al carrito ---
+
 // ====================
-//  LISTA DE PRODUCTOS (catálogo)
+//  CATÁLOGO DE PRODUCTOS
 // ====================
 const productos = {
   "Figuras musicales": [
@@ -759,42 +759,38 @@ const productos = {
 // ====================
 
 // 1. Total de productos disponibles
-let totalProductos = 0;
-for (const categoria in productos) {
-  totalProductos += productos[categoria].length;
-}
+let totalProductos = Object.values(productos).flat().length;
 
-// 2. Obtener carrito desde localStorage
+// 2. Carrito en localStorage
 function getCart() {
-  const carrito = localStorage.getItem("carrito");
-  return carrito ? JSON.parse(carrito) : [];
+  const data = localStorage.getItem("carrito");
+  return data ? JSON.parse(data) : [];
 }
 
-// 3. Guardar carrito
 function setCart(items) {
   localStorage.setItem("carrito", JSON.stringify(items));
   actualizarConsola();
-  renderCarrito();
 }
 
-// 4. Mostrar datos reales en consola (versión invisible)
+// 3. Mostrar conteo en consola (invisible en la web)
 function actualizarConsola() {
   const carrito = getCart();
-  const totalEnCarrito = carrito.reduce((sum, item) => sum + (item.qty || 1), 0);
+  const totalEnCarrito = carrito.reduce((s, i) => s + (i.qty || 1), 0);
 
   console.clear();
-  console.log("%c Estado actual", "color: #00aaff; font-weight: bold;");
-  console.log("Productos en catálogo:", totalProductos);
-  console.log("Productos en carrito:", totalEnCarrito);
+  console.log("%c🟣 Estado actual del sistema", "color:#00aaff; font-weight:bold;");
+  console.log("Total de productos en catálogo:", totalProductos);
+  console.log("Total agregados al carrito:", totalEnCarrito);
   console.log("Detalle del carrito:");
-  carrito.forEach((p, i) => {
-    console.log(` ${i + 1}. ${p.nombre} — Cantidad: ${p.qty || 1}`);
-  });
+  carrito.forEach((p, i) =>
+    console.log(` ${i + 1}. ${p.nombre} — Cantidad: ${p.qty || 1}`)
+  );
 }
 
 // ====================
-//  GESTIÓN DE BOTONES
+//  BOTONES DINÁMICOS
 // ====================
+
 document.addEventListener("DOMContentLoaded", () => {
   const botones = document.querySelectorAll(".agregar-carrito");
 
@@ -802,11 +798,18 @@ document.addEventListener("DOMContentLoaded", () => {
     boton.addEventListener("click", () => {
       const producto = boton.dataset.producto || "Producto sin nombre";
 
-      let carrito = getCart();
-      const existente = carrito.find(item => item.nombre === producto);
+      // Evita agregar productos inexistentes al catálogo
+      const existe = Object.values(productos).flat().includes(producto);
+      if (!existe) {
+        console.warn(`⚠️ El producto "${producto}" no existe en el catálogo`);
+        return;
+      }
 
-      if (existente) {
-        existente.qty = (existente.qty || 1) + 1;
+      let carrito = getCart();
+      const encontrado = carrito.find(item => item.nombre === producto);
+
+      if (encontrado) {
+        encontrado.qty++;
       } else {
         carrito.push({ nombre: producto, qty: 1 });
       }
@@ -815,33 +818,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Mostrar conteo inicial
+  // Mostrar al cargar
   actualizarConsola();
-  renderCarrito();
 });
-
-// ====================
-//  MOSTRAR CARRITO EN LA PÁGINA (si existe el contenedor)
-// ====================
-function renderCarrito() {
-  const contenedor = document.getElementById("lista-carrito");
-  if (!contenedor) return; // si no hay contenedor, no hace nada (modo invisible)
-
-  const carrito = getCart();
-  contenedor.innerHTML = "";
-
-  if (carrito.length === 0) {
-    contenedor.innerHTML = "<p>No hay productos en el carrito.</p>";
-    return;
-  }
-
-  carrito.forEach(item => {
-    const div = document.createElement("div");
-    div.classList.add("item-carrito");
-    div.innerHTML = `
-      <span>${item.nombre}</span>
-      <span>Cantidad: ${item.qty}</span>
-    `;
-    contenedor.appendChild(div);
-  });
-}
