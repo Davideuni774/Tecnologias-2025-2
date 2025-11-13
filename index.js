@@ -718,7 +718,6 @@
 })();
 
 //cambios Nicol :v
-
 // --- Conteo real de productos y productos agregados al carrito ---
 // ====================
 //  LISTA DE PRODUCTOS (catálogo)
@@ -765,7 +764,7 @@ for (const categoria in productos) {
   totalProductos += productos[categoria].length;
 }
 
-// 2. Obtener elementos del carrito (si ya existen en el DOM o localStorage)
+// 2. Obtener carrito desde localStorage
 function getCart() {
   const carrito = localStorage.getItem("carrito");
   return carrito ? JSON.parse(carrito) : [];
@@ -774,7 +773,8 @@ function getCart() {
 // 3. Guardar carrito
 function setCart(items) {
   localStorage.setItem("carrito", JSON.stringify(items));
-  actualizarConsola(); // actualiza cada vez que cambia
+  actualizarConsola();
+  renderCarrito();
 }
 
 // 4. Mostrar datos reales en consola (versión invisible)
@@ -815,6 +815,33 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Mostrar conteo al cargar la página
+  // Mostrar conteo inicial
   actualizarConsola();
+  renderCarrito();
 });
+
+// ====================
+//  MOSTRAR CARRITO EN LA PÁGINA (si existe el contenedor)
+// ====================
+function renderCarrito() {
+  const contenedor = document.getElementById("lista-carrito");
+  if (!contenedor) return; // si no hay contenedor, no hace nada (modo invisible)
+
+  const carrito = getCart();
+  contenedor.innerHTML = "";
+
+  if (carrito.length === 0) {
+    contenedor.innerHTML = "<p>No hay productos en el carrito.</p>";
+    return;
+  }
+
+  carrito.forEach(item => {
+    const div = document.createElement("div");
+    div.classList.add("item-carrito");
+    div.innerHTML = `
+      <span>${item.nombre}</span>
+      <span>Cantidad: ${item.qty}</span>
+    `;
+    contenedor.appendChild(div);
+  });
+}
