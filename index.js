@@ -721,87 +721,56 @@
 
 // --- Conteo real de productos y productos agregados al carrito ---
 
-// Lista de productos por categoría
+// 1. Lista de productos (como antes)
 const productos = {
-  figurasMusicales: [
+  "Figuras musicales": [
     "Tyler Joseph (llavero)",
     "Josh Dun (llavero)",
     "Ned TOP (llavero)",
     "Johannes Eckerstrom (figurita)"
   ],
-  accesorios: [
-    "Aretes y collar banda avatar",
-    "Collar banda ghost",
-    "Collar linkin park",
-    "Aretes monster draculaura"
+  "Accesorios": [
+    "Aretes y collar banda Avatar",
+    "Collar banda Ghost",
+    "Collar Linkin Park",
+    "Aretes Monster Draculaura"
   ],
-  props: [
-    "Accesorios ghost",
-    "Papa Emeritus II Ghost/ Cetro",
+  "Props": [
+    "Accesorios Ghost",
+    "Papa Emeritus II Ghost / Cetro",
     "Manos robot Cyberpunk"
   ],
-  personalizadosMadera: [
+  "Personalizados en madera": [
     "Cofres/Madera personalizados",
-    "Tankards(Pocillos) personalizados",
+    "Tankards (Pocillos) personalizados",
     "Escudo vikingo de madera",
     "Cuadros personalizados"
   ],
-  modelos3D: [
+  "Modelos 3D": [
     "Johanes Eckerstrom Avatar",
     "Joey Jordison Slipknot",
-    "Ned twenty one pilots",
-    "Saorix caballeros del zodiaco"
+    "Ned Twenty One Pilots",
+    "Saorix Caballeros del Zodiaco"
   ]
 };
 
-// Renderizado de los productos en la página
-const contenedor = document.getElementById("productos");
-
+// 2. Calcular total de productos disponibles
+let totalProductos = 0;
 for (const categoria in productos) {
-  const seccion = document.createElement("section");
-  seccion.classList.add("categoria");
+  totalProductos += productos[categoria].length;
+}
+console.log("Total de productos disponibles:", totalProductos);
 
-  const titulo = document.createElement("h2");
-  titulo.textContent = categoria.replace(/([A-Z])/g, " $1").toUpperCase();
-  seccion.appendChild(titulo);
+// 3. Contador de productos agregados al carrito
+let productosAgregados = 0;
 
-  const lista = document.createElement("ul");
+// 4. Detectar los botones de 'Agregar al carrito'
+const botones = document.querySelectorAll(".agregar-carrito");
 
-  productos[categoria].forEach((producto) => {
-    const item = document.createElement("li");
-    item.textContent = producto;
-
-    const boton = document.createElement("button");
-    boton.textContent = "Agregar al carrito";
-    boton.addEventListener("click", () => agregarAlCarrito(producto));
-
-    item.appendChild(boton);
-    lista.appendChild(item);
+// 5. Escuchar clics y actualizar el contador real
+botones.forEach(boton => {
+  boton.addEventListener("click", () => {
+    productosAgregados++;
+    console.log("Producto agregado al carrito. Total actual:", productosAgregados);
   });
-
-  seccion.appendChild(lista);
-  contenedor.appendChild(seccion);
-}
-
-// Variables del carrito
-let carrito = [];
-
-// Función para agregar productos al carrito
-function agregarAlCarrito(producto) {
-  carrito.push(producto);
-  actualizarContadores();
-}
-
-// Mostrar cantidad de productos totales y seleccionados
-const totalProductosSpan = document.getElementById("totalProductos");
-const seleccionadosSpan = document.getElementById("seleccionados");
-
-// Función para actualizar los contadores
-function actualizarContadores() {
-  const total = Object.values(productos).reduce((acc, lista) => acc + lista.length, 0);
-  totalProductosSpan.textContent = total;
-  seleccionadosSpan.textContent = carrito.length;
-}
-
-// Inicialización al cargar la página
-document.addEventListener("DOMContentLoaded", actualizarContadores);
+});
