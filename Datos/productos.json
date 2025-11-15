@@ -5,19 +5,19 @@
       "Productos": {
         "producto1": {
           "nombre": "Ghost",
-          "precio": 25000,
+          "precio": 25.000,
           "stock": 15,
           "imagen": ""
         },
         "producto2": {
           "nombre": "Papa Emeritus 2 cetro",
-          "precio": 180000,
+          "precio": 180.000,
           "stock": 10,
           "imagen": ""
         },
         "producto3": {
           "nombre": "Manos Robot Cyberpunk",
-          "precio": 450000,
+          "precio": 450.000,
           "stock": 30,
           "imagen": ""
         }
@@ -28,25 +28,25 @@
       "Productos": {
         "producto1": {
           "nombre": "Cofres de madeera",
-          "precio": 35000,
-          "stock": 45000,
+          "precio": 45.000,
+          "stock": 35,
           "imagen": ""
         },
         "producto2": {
           "nombre": "Tankards(pocillos)",
-          "precio": 30000,
+          "precio": 30.000,
           "stock": 20,
           "imagen": ""
         },
         "producto3": {
           "nombre": "Escudo vikingos",
-          "precio": 30000,
+          "precio": 350.000,
           "stock": 40,
           "imagen": ""
         },
         "producto4": {
           "nombre": "Cuadros personalizados",
-          "precio": 35000,
+          "precio": 35.000,
           "stock": 35,
           "imagen": ""
         }
@@ -57,25 +57,25 @@
       "Productos": {
         "producto1": {
           "nombre": "Johannes Ekerstrom",
-          "precio": 25000,
-          "stock": 25000,
+          "precio": 25.000,
+          "stock": 25,
           "imagen": ""
         },
         "producto2": {
           "nombre": "Joey Jordinson-Slipknot",
-          "precio": 80000,
+          "precio": 25.000,
           "stock": 20,
           "imagen": ""
         },
         "producto3": {
           "nombre": "Ned-Twenty One Pilots",
-          "precio": 60000,
+          "precio": 20.000,
           "stock": 40,
           "imagen": ""
         },
         "producto4": {
           "nombre": "Caballeros del zodiaco",
-          "precio": 550000,
+          "precio": 85.000,
           "stock": 15,
           "imagen": ""
         }
@@ -86,22 +86,29 @@
       "Productos": {
         "producto1": {
           "nombre": "Tyler Joseph",
-          "precio": 35000,
+          "precio": 12.000,
           "stock": 25,
           "imagen": ""
         },
         "producto2": {
           "nombre": "Josh Dun",
-          "precio": 80000,
+          "precio": 12.000,
           "stock": 20,
           "imagen": ""
         },
         "producto3": {
           "nombre": "Ned Top",
-          "precio": 60000,
+          "precio": 20.000,
           "stock": 40,
           "imagen": ""
+        },
+        "producto4": {
+          "nombre": "Johannes Ekerstrom",
+          "precio": 45.000,
+          "stock": 20,
+          "imagen": ""
         }
+
       }
     },
     {
@@ -109,22 +116,29 @@
       "Productos": {
         "producto1": {
           "nombre": "Arete y Collar ",
-          "precio": 10000,
+          "precio": 10.000,
           "stock": 25,
           "imagen": ""
         },
         "producto2": {
           "nombre": "Collar Banda Ghost",
-          "precio": 80000,
+          "precio": 5.000,
           "stock": 20,
           "imagen": ""
         },
         "producto3": {
           "nombre": "Collar Linkin Park",
-          "precio": 60000,
+          "precio": 5.000,
           "stock": 40,
           "imagen": ""
+        },
+        "producto4": {
+          "nombre": "Aretes Monster Draculaura",
+          "precio": 8.000,
+          "stock": 20,
+          "imagen": ""
         }
+
       }
     }
   ]
