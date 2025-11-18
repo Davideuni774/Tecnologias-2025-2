@@ -7,7 +7,7 @@
   const isNestedSubpage = /\/Paginas\/Paginasemergentes\//i.test(path);
   const isSubpage = /\/Paginas\//i.test(path);
   const baseToRoot = isNestedSubpage ? '../../' : (isSubpage ? '../' : '');
-  const loginPath = `${baseToRoot}Paginas/iniciosesion.html`;
+  const loginPath = `${baseToRoot}Paginas/Paginasemergentes/iniciosesion.html`;
 
   const headerHTML = () => `
     <div class="top-bar">
@@ -465,10 +465,25 @@
 
     const continuarBtn = loginContainer.querySelector('.button.primary');
     const crearBtn = loginContainer.querySelector('.button.secondary');
+    const input = loginContainer.querySelector('input[type="text"]');
+    const errorMsg = document.getElementById('error-message');
+
     if (continuarBtn) {
       continuarBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        location.href = `${baseToRoot}Paginas/Paginasemergentes/Miusuario.html`;
+        const email = input?.value?.trim() || '';
+        if (email) {
+          // Simular verificación: si no es un email válido o no existe, mostrar error
+          // Para demo, asumimos que cualquier email no vacío es inválido
+          if (errorMsg) {
+            errorMsg.style.display = 'block';
+          }
+        } else {
+          if (errorMsg) {
+            errorMsg.style.display = 'block';
+            errorMsg.textContent = 'Por favor, ingresa un correo o teléfono.';
+          }
+        }
       });
     }
     if (crearBtn) {
