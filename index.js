@@ -7,7 +7,7 @@
   const isNestedSubpage = /\/Paginas\/Paginasemergentes\//i.test(path);
   const isSubpage = /\/Paginas\//i.test(path);
   const baseToRoot = isNestedSubpage ? '../../' : (isSubpage ? '../' : '');
-  const loginPath = `${baseToRoot}Paginas/Paginasemergentes/Miusuario.html`;
+  const loginPath = `${baseToRoot}Paginas/iniciosesion.html`;
 
   const headerHTML = () => `
     <div class="top-bar">
