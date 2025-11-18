@@ -511,6 +511,11 @@
         const nombre = inputs[0]?.value?.trim() || '';
         const email = inputs[1]?.value?.trim() || '';
         const telefono = inputs[2]?.value?.trim() || '';
+        // Validar que todos los campos estén completos
+        if (!nombre || !email || !telefono) {
+          alert('Por favor, completa todos los campos.');
+          return;
+        }
         // Simular guardar en localStorage
         try {
           localStorage.setItem('draconis_user_name', nombre);
