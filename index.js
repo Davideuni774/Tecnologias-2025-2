@@ -506,10 +506,11 @@
     if (crearBtn) {
       crearBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        // Capturar datos del formulario
-        const nombre = createContainer.querySelector('input[placeholder="Ingresa tu nombre"]')?.value?.trim() || '';
-        const email = createContainer.querySelector('input[placeholder="Ingresa tu email"]')?.value?.trim() || '';
-        const telefono = createContainer.querySelector('input[placeholder="Ingresa tu teléfono"]')?.value?.trim() || '';
+        // Capturar datos del formulario usando querySelectorAll para mayor fiabilidad
+        const inputs = createContainer.querySelectorAll('input');
+        const nombre = inputs[0]?.value?.trim() || '';
+        const email = inputs[1]?.value?.trim() || '';
+        const telefono = inputs[2]?.value?.trim() || '';
         // Simular guardar en localStorage
         try {
           localStorage.setItem('draconis_user_name', nombre);
@@ -692,8 +693,8 @@
     });
   }
 
-  // --- Página Crear Cuenta ---
-  function initCreateAccountPage() {
+  // --- Página Crear Cuenta Formulario ---
+  function initCreateAccountFormPage() {
     // Detectar inputs del mock de Crear cuenta
     const inputs = document.querySelectorAll('.form-section .form-input');
     if (!inputs || inputs.length < 3) return; // no estamos en crearcuenta.html

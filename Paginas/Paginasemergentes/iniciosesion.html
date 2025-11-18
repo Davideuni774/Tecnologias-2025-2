@@ -88,6 +88,14 @@
       font-size: 18px;
     }
 
+    .icon-lock::before {
+      content: '🔒';
+      display: inline-block;
+      transform: translateY(1px);
+      color: #555;
+      font-size: 18px;
+    }
+
     .input-group input {
       border: none;
       outline: none;
@@ -151,6 +159,12 @@
         <div class="input-group">
           <span class="icon-person"></span>
           <input type="text" placeholder="Ingresa">
+        </div>
+
+        <span class="form-label">Contraseña</span>
+        <div class="input-group">
+          <span class="icon-lock"></span>
+          <input type="password" placeholder="Ingresa tu contraseña">
         </div>
 
         <button class="button primary">Continuar</button>
