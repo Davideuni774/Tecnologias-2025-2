@@ -494,6 +494,30 @@
     }
   }
 
+  // --- Página Crear Cuenta ---
+  function initCreateAccountPage() {
+    // Detectar por estructura de la página
+    const createContainer = document.querySelector('.create-account-container');
+    if (!createContainer) return;
+
+    const crearBtn = createContainer.querySelector('.button.primary');
+    const yaTengoBtn = createContainer.querySelector('.button.secondary');
+
+    if (crearBtn) {
+      crearBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Simular creación de cuenta: redirigir a Mi usuario
+        location.href = `${baseToRoot}Paginas/Paginasemergentes/Miusuario.html`;
+      });
+    }
+    if (yaTengoBtn) {
+      yaTengoBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        location.href = `${baseToRoot}Paginas/Paginasemergentes/iniciosesion.html`;
+      });
+    }
+  }
+
   function injectAddToCartButtons() {
     // Inserta un botón "Agregar al carrito" debajo de cada .btn-comprar
     const buyButtons = document.querySelectorAll('.btn-comprar');
@@ -710,6 +734,7 @@
       initPaymentPage();
       initLoginPage();
       initUserPage();
+      initCreateAccountPage();
       initCreateAccountPage();
       initSearchResultsPage();
       console.log('[Draconis] Header y footer inyectados (DOMContentLoaded).');
