@@ -506,8 +506,19 @@
     if (crearBtn) {
       crearBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        // Simular creación de cuenta: redirigir a Mi usuario
-        location.href = `${baseToRoot}Paginas/Paginasemergentes/Miusuario.html`;
+        // Capturar datos del formulario
+        const nombre = createContainer.querySelector('input[placeholder="Ingresa tu nombre"]')?.value?.trim() || '';
+        const email = createContainer.querySelector('input[placeholder="Ingresa tu email"]')?.value?.trim() || '';
+        const telefono = createContainer.querySelector('input[placeholder="Ingresa tu teléfono"]')?.value?.trim() || '';
+        // Simular guardar en localStorage
+        try {
+          localStorage.setItem('draconis_user_name', nombre);
+          localStorage.setItem('draconis_user_email', email);
+          localStorage.setItem('draconis_user_phone', telefono);
+        } catch {}
+        // Mostrar mensaje y redirigir al inicio
+        alert('Cuenta creada exitosamente');
+        location.href = `${baseToRoot}index.html`;
       });
     }
     if (yaTengoBtn) {
@@ -734,7 +745,6 @@
       initPaymentPage();
       initLoginPage();
       initUserPage();
-      initCreateAccountPage();
       initCreateAccountPage();
       initSearchResultsPage();
       console.log('[Draconis] Header y footer inyectados (DOMContentLoaded).');
