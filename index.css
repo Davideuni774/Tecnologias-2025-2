@@ -711,6 +711,26 @@
     .orders-page h2 { font-family: 'Irish Grover', cursive; font-size: 2.2rem; margin-bottom: 12px; }
     .orders-empty { font-family: 'Irish Grover', cursive; font-size: 2rem; opacity: 0.8; margin-top: 40px; }
 
+    /* Floating message for login prompt */
+    .floating-message {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 10px;
+        font-size: 1.2rem;
+        text-align: center;
+        z-index: 1000;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    .floating-message p {
+        margin: 0;
+        font-family: 'Irish Grover', cursive;
+    }
+
     .footer-bottom {
         background: linear-gradient(100deg, #6E0D9E, #5C1865, #812DF4);
         color: white;
