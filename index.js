@@ -465,23 +465,44 @@
 
     const continuarBtn = loginContainer.querySelector('.button.primary');
     const crearBtn = loginContainer.querySelector('.button.secondary');
-    const input = loginContainer.querySelector('input[type="text"]');
+    const emailInput = loginContainer.querySelector('input[type="text"]');
+    const passwordInput = loginContainer.querySelector('input[type="password"]');
     const errorMsg = document.getElementById('error-message');
+
+    // Usuario dummy para simulación (en producción, esto vendría de un backend)
+    const dummyUser = {
+      email: 'test@example.com',
+      passwordHash: CryptoJS.SHA256('password123').toString() // Hash de "password123"
+    };
 
     if (continuarBtn) {
       continuarBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        const email = input?.value?.trim() || '';
-        if (email) {
-          // Simular verificación: si no es un email válido o no existe, mostrar error
-          // Para demo, asumimos que cualquier email no vacío es inválido
+        const email = emailInput?.value?.trim() || '';
+        const password = passwordInput?.value?.trim() || '';
+        const passwordHash = CryptoJS.SHA256(password).toString();
+
+        if (!email || !password) {
           if (errorMsg) {
             errorMsg.style.display = 'block';
+            errorMsg.textContent = 'Por favor, ingresa tu correo y contraseña.';
           }
+          return;
+        }
+
+        // Verificar credenciales (simulado)
+        if (email === dummyUser.email && passwordHash === dummyUser.passwordHash) {
+          // Login exitoso: guardar en localStorage y redirigir
+          try {
+            localStorage.setItem('draconis_logged_in', 'true');
+            localStorage.setItem('draconis_user_email', email);
+          } catch {}
+          alert('Inicio de sesión exitoso.');
+          location.href = `${baseToRoot}index.html`;
         } else {
           if (errorMsg) {
             errorMsg.style.display = 'block';
-            errorMsg.textContent = 'Por favor, ingresa un correo o teléfono.';
+            errorMsg.textContent = 'Correo o contraseña incorrectos.';
           }
         }
       });
