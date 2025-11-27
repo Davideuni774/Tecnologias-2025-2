@@ -868,3 +868,43 @@ body, p, li, input, button {
 /* Si prefieres usar Irish Grover en todo el sitio (no recomendado para párrafos), descomenta:
 body { font-family: var(--font-title); }
 */
+
+/*cambios Nicol x2
+*/
+.cookie-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+}
+
+.cookie-box {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 350px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+.cookie-buttons button {
+  margin: 8px;
+  padding: 8px 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+#cookie-accept {
+  background: #28a745;
+  color: white;
+}
+
+#cookie-reject {
+  background: #dc3545;
+  color: white;
+}

@@ -822,3 +822,51 @@
     console.log('[Draconis] Header y footer inyectados (carga inmediata).');
   }
 })();
+
+// cambios Nicol 19 de noviembre
+
+// =======================
+//   SISTEMA DE COOKIES
+// =======================
+
+const COOKIE_KEY = "draconis_cookie_consent";
+
+function showCookieModal() {
+  const modal = document.getElementById("cookie-modal");
+  if (!modal) return;
+  modal.style.display = "flex";
+}
+
+function hideCookieModal() {
+  const modal = document.getElementById("cookie-modal");
+  if (!modal) return;
+  modal.style.display = "none";
+}
+
+function initCookieSystem() {
+  const consent = localStorage.getItem(COOKIE_KEY);
+
+  // Si el usuario ya decidió, no mostrar nada
+  if (consent === "accepted" || consent === "rejected") return;
+
+  // Mostrar ventana
+  showCookieModal();
+
+  document.getElementById("cookie-accept").addEventListener("click", () => {
+    localStorage.setItem(COOKIE_KEY, "accepted");
+    hideCookieModal();
+
+    console.log("Cookies activadas");
+    // aquí puedes activar cosas como Google Analytics si lo usas
+  });
+
+  document.getElementById("cookie-reject").addEventListener("click", () => {
+    localStorage.setItem(COOKIE_KEY, "rejected");
+    hideCookieModal();
+
+    console.log("Cookies rechazadas");
+  });
+}
+
+document.addEventListener("DOMContentLoaded", initCookieSystem);
+

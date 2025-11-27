@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <style>
+        /* Forzar disposición vertical del formulario */
+        #formulario {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 480px;
+            margin: 16px auto;
+            padding: 12px;
+            box-sizing: border-box;
+            background: transparent;
+        }
+        #formulario label {
+            display: block;
+            font-weight: 600;
+        }
+        #formulario input[type="text"],
+        #formulario input[type="number"],
+        #formulario input[type="file"],
+        #formulario select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        #formulario button {
+            align-self: flex-start;
+            padding: 8px 16px;
+        }
+        figure { margin: 0; }
+        #preview { max-width: 100%; height: auto; display: block; }
+        @media (min-width: 700px) {
+            #formulario { max-width: 600px; }
+        }
+    </style>
+    <script src="js/datos.js" defer></script>
+</head>
+
+<body>
+   <form id="formulario" enctype="multipart/form-data">
+    <label for="producto">Producto:</label>
+    <input type="text" name="producto" id="producto">
+    <label for="categoria">Categoría:</label>
+    <select name="categoria" id="categoria">
+        <option value="accesorios">Accesorios</option>
+        <option value="figuras_personalizadas">Figuras Personalizadas</option>
+        <option value="modelos_3d">Modelos 3D</option>
+        <option value="pregrabado_madera">Pregrabado de madera</option>
+        <option value="props">Props</option>
+    </select>
+    <label for="precio">Precio:</label>
+    <input type="number" name="precio" id="precio">
+    <label for="referencia">Referencia:</label>
+    <input required type="text" name="referencia" id="referencia">
+    <label for="imagen">Imagen:</label>
+    <input type="file" name="imagen" id="imagen">
+    <figure><img id="preview" src="" alt=""></figure>
+    <button type="submit">Enviar</button>
+   </form>
+   <span id="respuesta"></span>
+   <ul id="productos"> </ul>
+</body>
+
+
+
+</html>
