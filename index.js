@@ -469,6 +469,28 @@
     const passwordInput = loginContainer.querySelector('input[type="password"]');
     const errorMsg = document.getElementById('error-message');
 
+    // Interstitial tipo Cloudflare: crear/mostrar/ocultar overlay sencillo
+    function createInterstitial() {
+      let overlay = document.getElementById('dg-interstitial');
+      if (overlay) return overlay;
+      overlay = document.createElement('div');
+      overlay.id = 'dg-interstitial';
+      overlay.setAttribute('role', 'status');
+      overlay.style.cssText = 'position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,0.96);z-index:9999;backdrop-filter:blur(2px);';
+      overlay.innerHTML = `
+        <div style="text-align:center;max-width:360px;padding:22px;border-radius:10px;">
+          <div style="width:56px;height:56px;margin:0 auto 12px;border-radius:50%;border:6px solid #eee;border-top-color:#925cff;animation:dg-spin 1s linear infinite;"></div>
+          <div style="font-weight:700;margin-bottom:6px;font-size:16px;color:#111">Comprobando tu navegador</div>
+          <div style="color:#666;font-size:13px">Esto ayuda a proteger tu cuenta y tus datos.</div>
+        </div>
+        <style id="dg-interstitial-style">@keyframes dg-spin{to{transform:rotate(360deg)}}</style>
+      `;
+      document.body.appendChild(overlay);
+      return overlay;
+    }
+    function showInterstitial() { const o = createInterstitial(); o.style.display = 'flex'; }
+    function hideInterstitial() { const o = document.getElementById('dg-interstitial'); if (o) o.style.display = 'none'; }
+
     // Usuario dummy para simulación (en producción, esto vendría de un backend)
     const dummyUser = {
       email: 'test@example.com',
@@ -480,7 +502,6 @@
         e.preventDefault();
         const email = emailInput?.value?.trim() || '';
         const password = passwordInput?.value?.trim() || '';
-        const passwordHash = CryptoJS.SHA256(password).toString();
 
         if (!email || !password) {
           if (errorMsg) {
@@ -490,21 +511,29 @@
           return;
         }
 
-        // Verificar credenciales (simulado)
-        if (email === dummyUser.email && passwordHash === dummyUser.passwordHash) {
-          // Login exitoso: guardar en localStorage y redirigir
-          try {
-            localStorage.setItem('draconis_logged_in', 'true');
-            localStorage.setItem('draconis_user_email', email);
-          } catch {}
-          alert('Inicio de sesión exitoso.');
-          location.href = `${baseToRoot}index.html`;
-        } else {
-          if (errorMsg) {
-            errorMsg.style.display = 'block';
-            errorMsg.textContent = 'Correo o contraseña incorrectos.';
+        // Mostrar interstitial durante la comprobación (simulamos un pequeño delay)
+        showInterstitial();
+        setTimeout(() => {
+          const passwordHash = CryptoJS.SHA256(password).toString();
+
+          // Verificar credenciales (simulado)
+          if (email === dummyUser.email && passwordHash === dummyUser.passwordHash) {
+            // Login exitoso: guardar en localStorage y redirigir
+            try {
+              localStorage.setItem('draconis_logged_in', 'true');
+              localStorage.setItem('draconis_user_email', email);
+            } catch {}
+            hideInterstitial();
+            alert('Inicio de sesión exitoso.');
+            location.href = `${baseToRoot}index.html`;
+          } else {
+            hideInterstitial();
+            if (errorMsg) {
+              errorMsg.style.display = 'block';
+              errorMsg.textContent = 'Correo o contraseña incorrectos.';
+            }
           }
-        }
+        }, 900);
       });
     }
     if (crearBtn) {
