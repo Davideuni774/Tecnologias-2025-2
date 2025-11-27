@@ -25,7 +25,7 @@ if (!$mysqli || $mysqli->connect_error) {
     return;
 }
 
-$stmt = $mysqli->prepare('SELECT id, usuario, correo, clave_hash FROM usuarios WHERE usuario = ? LIMIT 1');
+$stmt = $mysqli->prepare('SELECT id, usuario, clave FROM usuarios WHERE usuario = ? LIMIT 1');
 if (!$stmt) {
     $mensaje = 'Error interno (prepare): ' . htmlspecialchars($mysqli->error);
     $mysqli->close();
@@ -40,7 +40,7 @@ if (!$stmt->execute()) {
 }
 $res = $stmt->get_result();
 if ($row = $res->fetch_assoc()) {
-    $hash = $row['clave_hash'];
+    $hash = $row['clave'];
     if (password_verify($clave, $hash)) {
         // Login correcto
         session_regenerate_id(true);
