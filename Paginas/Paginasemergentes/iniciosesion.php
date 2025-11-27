@@ -8,7 +8,7 @@ if(isset($_SESSION['usuario'])) {
 // Procesar el formulario de login
 $mensaje = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    include '../../login.php';
+    include '../../Phps/login.php';
 }
 ?>
 <!DOCTYPE html>
