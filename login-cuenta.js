@@ -1,0 +1,138 @@
+// login-cuenta.js - Maneja el login con AJAX/JSON
+document.addEventListener('DOMContentLoaded', () => {
+    // Helper: Mostrar un toast no modal en la esquina superior derecha
+    function showToast(message, type = 'info') {
+        const existing = document.getElementById('site-toast');
+        if (existing) existing.remove();
+        const toast = document.createElement('div');
+        toast.id = 'site-toast';
+        toast.textContent = message;
+        toast.style.position = 'fixed';
+        toast.style.top = '16px';
+        toast.style.right = '16px';
+        toast.style.background = type === 'success' ? '#2ecc71' : (type === 'error' ? '#e74c3c' : '#333');
+        toast.style.color = '#fff';
+        toast.style.padding = '10px 14px';
+        toast.style.borderRadius = '8px';
+        toast.style.boxShadow = '0 6px 18px rgba(0,0,0,0.2)';
+        toast.style.zIndex = 99999;
+        toast.style.fontFamily = 'Arial, sans-serif';
+        toast.style.fontSize = '14px';
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.transition = 'opacity 300ms ease';
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 350);
+        }, 3000);
+    }
+
+    const formulario = document.getElementById('form-login');
+    const respEl = document.getElementById('respuesta-login');
+    const submitBtn = formulario ? formulario.querySelector('button[type="submit"]') : null;
+
+    if (!formulario) {
+        console.error('❌ No se encontró el formulario de login');
+        return;
+    }
+
+    console.log('✅ Formulario de login encontrado, escuchando submit...');
+
+    formulario.addEventListener('submit', (evento) => {
+        evento.preventDefault();
+
+        const formData = new FormData(formulario);
+        const dataObjeto = {};
+        for (const [k, v] of formData.entries()) {
+            dataObjeto[k] = v;
+        }
+
+        console.log('🔐 Enviando datos de login:', {
+            correo: dataObjeto.correo || '(vacío)',
+            clave: dataObjeto.clave ? '🔒 [ENCRIPTADA]' : '(vacío)'
+        });
+        
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.log('📋 CONFIRMACIÓN DE DATOS A ENVIAR:');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.log('📧 Correo:', dataObjeto.correo);
+        console.log('🔐 Contraseña:', '●●●●●●●● (protegida)');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.log('🚀 Enviando al servidor...');
+
+        function sendPayload(payload) {
+            try {
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.dataset.origText = submitBtn.textContent;
+                    submitBtn.textContent = 'Iniciando sesión...';
+                }
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', "../../api/post/login-cuenta.php", true);
+                xhr.timeout = 15000;
+                xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        let msg = 'Inicio de sesión exitoso.';
+                        try {
+                            const json = JSON.parse(xhr.responseText);
+                            console.log('✅ Respuesta servidor:', json);
+                            if (json && json.message) msg = json.message;
+                            if (json && json.success) {
+                                console.log('✅ Éxito:', msg);
+                                // Mostrar mensaje no modal en pantalla
+                                try { showToast(msg, 'success'); } catch (e) {}
+                            } else {
+                                console.warn('⚠️ Login no exitoso:', msg);
+                                try { showToast(msg, 'error'); } catch (e) {}
+                            }
+                        } catch (e) {
+                            if (xhr.responseText && xhr.responseText.trim()) msg = xhr.responseText.trim();
+                            console.log('✅ Respuesta servidor (no JSON):', msg);
+                        }
+                        console.log('Respuesta completa:', xhr.responseText);
+                    } else {
+                        console.error('❌ Error:', xhr.status, xhr.statusText);
+                        let serverMsg = 'Error al iniciar sesión.';
+                        try {
+                            if (xhr.responseText) {
+                                const jsonErr = JSON.parse(xhr.responseText);
+                                if (jsonErr && (jsonErr.message || jsonErr.mensaje)) serverMsg = jsonErr.message || jsonErr.mensaje;
+                                else serverMsg = xhr.responseText;
+                            }
+                        } catch (e) {
+                            if (xhr.responseText && xhr.responseText.trim()) serverMsg = xhr.responseText.trim();
+                        }
+                        console.error('❌ Error del servidor:', serverMsg);
+                        console.error('Detalle respuesta servidor:', xhr.responseText);
+                    }
+                };
+
+                xhr.onerror = function () {
+                    console.error('❌ Network error al enviar - Verifica tu conexión');
+                };
+
+                xhr.ontimeout = function () {
+                    console.error('❌ Timeout al enviar - El servidor no respondió a tiempo');
+                };
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = submitBtn.dataset.origText || 'Continuar';
+                        }
+                    }
+                };
+
+                xhr.send(JSON.stringify(payload));
+            } catch (err) {
+                console.error('❌ Exception al enviar payload:', err);
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = submitBtn.dataset.origText || 'Continuar'; }
+            }
+        }
+
+        sendPayload(dataObjeto);
+    });
+});

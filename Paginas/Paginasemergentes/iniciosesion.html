@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="../../index.css?v=20251011">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <script src="../../index.js?v=20251011" defer></script>
+  <script src="../../login-cuenta.js?v=20251127" defer></script>
   <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
   <style>
     .login-container {
@@ -146,21 +147,23 @@
       </div>
 
       <div class="form-section">
-        <span class="form-label">Correo o teléfono</span>
-        <div class="input-group">
-          <span class="icon-person"></span>
-          <input type="text" placeholder="Ingresa">
-        </div>
+        <form id="form-login" method="POST">
+          <span class="form-label">Correo electrónico</span>
+          <div class="input-group">
+            <span class="icon-person"></span>
+            <input type="email" name="correo" placeholder="Ingresa tu correo" required>
+          </div>
 
-        <span class="form-label">Contraseña</span>
-        <div class="input-group">
-          <span class="icon-lock"></span>
-          <input type="password" placeholder="Ingresa tu contraseña">
-        </div>
+          <span class="form-label">Contraseña</span>
+          <div class="input-group">
+            <span class="icon-lock"></span>
+            <input type="password" name="clave" placeholder="Ingresa tu contraseña" required>
+          </div>
 
-        <button class="button primary">Continuar</button>
-        <button class="button secondary">Crear cuenta</button>
-        <div id="error-message" style="color: red; margin-top: 10px; display: none;">Usuario no existente</div>
+          <div id="respuesta-login" style="color: #000; margin: 10px 0; text-align: center; font-size: 14px;"></div>
+          <button type="submit" class="button primary">Continuar</button>
+        </form>
+        <a href="crearcuenta.html"><button type="button" class="button secondary">Crear cuenta</button></a>
       </div>
     </div>
   </section>

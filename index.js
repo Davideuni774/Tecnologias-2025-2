@@ -499,7 +499,9 @@
     };
 
     if (continuarBtn) {
-      continuarBtn.addEventListener('click', (e) => {
+      // Si existe el formulario manejado por AJAX, no usar el handler clásico que muestra alert()
+      if (!document.getElementById('form-login')) {
+        continuarBtn.addEventListener('click', (e) => {
         e.preventDefault();
         const email = emailInput?.value?.trim() || '';
         const password = passwordInput?.value?.trim() || '';
@@ -525,7 +527,8 @@
               localStorage.setItem('draconis_user_email', email);
             } catch {}
             hideInterstitial();
-            alert('Inicio de sesión exitoso.');
+            // Evitar alert(); mostramos mensaje no modal si se desea (o dejar que el formulario AJAX lo maneje)
+            console.log('Inicio de sesión exitoso (legacy).');
             location.href = `${baseToRoot}index.html`;
           } else {
             hideInterstitial();
@@ -535,7 +538,11 @@
             }
           }
         }, 900);
-      });
+        });
+      } else {
+        // formulario AJAX existe; no añadimos el legacy handler
+        console.log('[index.js] Formulario login AJAX detectado: evitando handler legacy con alert().');
+      }
     }
     if (crearBtn) {
       crearBtn.addEventListener('click', (e) => {
@@ -555,28 +562,34 @@
     const yaTengoBtn = createContainer.querySelector('.button.secondary');
 
     if (crearBtn) {
-      crearBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        // Capturar datos del formulario usando querySelectorAll para mayor fiabilidad
-        const inputs = createContainer.querySelectorAll('input');
-        const nombre = inputs[0]?.value?.trim() || '';
-        const email = inputs[1]?.value?.trim() || '';
-        const telefono = inputs[2]?.value?.trim() || '';
-        // Validar que todos los campos estén completos
-        if (!nombre || !email || !telefono) {
-          alert('Por favor, completa todos los campos.');
-          return;
-        }
-        // Simular guardar en localStorage
-        try {
-          localStorage.setItem('draconis_user_name', nombre);
-          localStorage.setItem('draconis_user_email', email);
-          localStorage.setItem('draconis_user_phone', telefono);
-        } catch {}
-        // Mostrar mensaje y redirigir al inicio
-        alert('Cuenta creada exitosamente');
-        location.href = `${baseToRoot}index.html`;
-      });
+      // Si existe el formulario manejado por AJAX, no agregar el handler clásico
+      if (!document.getElementById('form-registro')) {
+        crearBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          // Capturar datos del formulario usando querySelectorAll para mayor fiabilidad
+          const inputs = createContainer.querySelectorAll('input');
+          const nombre = inputs[0]?.value?.trim() || '';
+          const email = inputs[1]?.value?.trim() || '';
+          const telefono = inputs[2]?.value?.trim() || '';
+          // Validar que todos los campos estén completos
+          if (!nombre || !email || !telefono) {
+            alert('Por favor, completa todos los campos.');
+            return;
+          }
+          // Simular guardar en localStorage
+          try {
+            localStorage.setItem('draconis_user_name', nombre);
+            localStorage.setItem('draconis_user_email', email);
+            localStorage.setItem('draconis_user_phone', telefono);
+          } catch {}
+          // Mostrar mensaje y redirigir al inicio
+          alert('Cuenta creada exitosamente');
+          location.href = `${baseToRoot}index.html`;
+        });
+      } else {
+        // Hay un formulario AJAX (`#form-registro`), dejar que `registro-cuenta.js` lo maneje
+        console.log('[index.js] Formulario AJAX detectado: dejando que registro-cuenta.js maneje el envío.');
+      }
     }
     if (yaTengoBtn) {
       yaTengoBtn.addEventListener('click', (e) => {

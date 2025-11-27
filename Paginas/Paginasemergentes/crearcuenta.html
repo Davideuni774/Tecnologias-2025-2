@@ -6,6 +6,7 @@
   <title>Draconis - Crear Cuenta</title>
   <link rel="stylesheet" href="../../index.css?v=20251011">
   <script src="../../index.js?v=20251011" defer></script>
+  <script src="../../registro-cuenta.js?v=20251127" defer></script>
   <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
   <style>
     .create-account-container {
@@ -151,38 +152,41 @@
       </div>
 
       <div class="form-section">
-        <span class="form-label">Nombre completo</span>
-        <div class="input-group">
-          <span class="icon-person"></span>
-          <input type="text" placeholder="Ingresa tu nombre">
-        </div>
+        <form id="form-registro" method="POST">
+          <span class="form-label">Nombre completo</span>
+          <div class="input-group">
+            <span class="icon-person"></span>
+            <input type="text" name="nombre" placeholder="Ingresa tu nombre" required>
+          </div>
 
-        <span class="form-label">Correo electrónico</span>
-        <div class="input-group">
-          <span class="icon-email"></span>
-          <input type="email" placeholder="Ingresa tu email">
-        </div>
+          <span class="form-label">Correo electrónico</span>
+          <div class="input-group">
+            <span class="icon-email"></span>
+            <input type="email" name="correo" placeholder="Ingresa tu email" required>
+          </div>
 
-        <span class="form-label">Contraseña</span>
-        <div class="input-group">
-          <span>🔒</span>
-          <input type="password" placeholder="Ingresa tu contraseña">
-        </div>
+          <span class="form-label">Contraseña</span>
+          <div class="input-group">
+            <span>🔒</span>
+            <input type="password" name="clave" placeholder="Ingresa tu contraseña" required>
+          </div>
 
-        <span class="form-label">Confirmar Contraseña</span>
-        <div class="input-group">
-          <span>🔒</span>
-          <input type="password" placeholder="Confirma tu contraseña">
-        </div>
+          <span class="form-label">Confirmar Contraseña</span>
+          <div class="input-group">
+            <span>🔒</span>
+            <input type="password" name="confirmar_clave" placeholder="Confirma tu contraseña" required>
+          </div>
 
-        <span class="form-label">Teléfono</span>
-        <div class="input-group">
-          <span class="icon-phone"></span>
-          <input type="tel" placeholder="Ingresa tu teléfono">
-        </div>
+          <span class="form-label">Teléfono</span>
+          <div class="input-group">
+            <span class="icon-phone"></span>
+            <input type="tel" name="telefono" placeholder="Ingresa tu teléfono">
+          </div>
 
-      <button type="button" class="button primary">Crear cuenta</button>
-      <button type="button" class="button secondary">Ya tengo cuenta</button>
+        <div id="respuesta-registro" style="color: #000; margin: 10px 0; text-align: center; font-size: 14px;"></div>
+        <button type="submit" class="button primary">Crear cuenta</button>
+        </form>
+        <a href="iniciosesion.html"><button type="button" class="button secondary">Ya tengo cuenta</button></a>
       </div>
     </div>
   </section>

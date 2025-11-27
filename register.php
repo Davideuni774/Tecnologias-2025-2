@@ -1,18 +1,25 @@
 <?php
 // register.php - Maneja el registro de nuevos usuarios
-
+session_start();
 header("Content-Type: text/html; charset=utf-8");
 
 $mensaje = "";
 
+// Log para debugging
+error_log("[REGISTER] POST recibido: " . print_r($_POST, true));
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $usuario = trim($_POST['usuario'] ?? '');
+    $nombre = trim($_POST['nombre'] ?? '');
+    $correo = trim($_POST['correo'] ?? '');
+    $telefono = trim($_POST['telefono'] ?? '');
     $clave = $_POST['clave'] ?? '';
     $confirmar_clave = $_POST['confirmar_clave'] ?? '';
 
     // Validaciones
-    if (empty($usuario) || empty($clave) || empty($confirmar_clave)) {
-        $mensaje = "Todos los campos son obligatorios.";
+    if (empty($nombre) || empty($correo) || empty($clave) || empty($confirmar_clave)) {
+        $mensaje = "Todos los campos son obligatorios (excepto teléfono).";
+    } elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+        $mensaje = "El correo electrónico no es válido.";
     } elseif ($clave !== $confirmar_clave) {
         $mensaje = "Las contraseñas no coinciden.";
     } elseif (strlen($clave) < 6) {
@@ -37,42 +44,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (!$conn->select_db($dbname)) {
                     $mensaje = "No se pudo seleccionar la base de datos: " . $conn->error;
                 } else {
-                    // Crear tabla usuarios si no existe
-                    $createTableSql = "CREATE TABLE IF NOT EXISTS `usuarios` (
+                    // Crear tabla cuentas si no existe
+                    $createTableSql = "CREATE TABLE IF NOT EXISTS `cuentas` (
                       `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                      `usuario` VARCHAR(100) UNIQUE NOT NULL,
+                      `nombre` VARCHAR(255) NOT NULL,
+                      `correo` VARCHAR(255) UNIQUE NOT NULL,
+                      `telefono` VARCHAR(50) DEFAULT NULL,
                       `clave` VARCHAR(255) NOT NULL,
                       `fecha_registro` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
                     
                     if (!$conn->query($createTableSql)) {
-                        $mensaje = "No se pudo crear la tabla usuarios: " . $conn->error;
+                        $mensaje = "No se pudo crear la tabla cuentas: " . $conn->error;
                     } else {
-                        // Verificar si el usuario ya existe
-                        $stmt = $conn->prepare("SELECT id FROM usuarios WHERE usuario = ?");
-                        $stmt->bind_param('s', $usuario);
+                        // Verificar si el correo ya existe
+                        $stmt = $conn->prepare("SELECT id FROM cuentas WHERE correo = ?");
+                        $stmt->bind_param('s', $correo);
                         $stmt->execute();
                         $stmt->store_result();
                         
                         if ($stmt->num_rows > 0) {
-                            $mensaje = "El usuario ya existe. Por favor elige otro nombre.";
+                            $mensaje = "El correo ya está registrado. Por favor usa otro correo.";
                         } else {
                             // Hash de la contraseña
                             $clave_hash = password_hash($clave, PASSWORD_DEFAULT);
                             
-                            // Insertar nuevo usuario
-                            $stmt_insert = $conn->prepare("INSERT INTO usuarios (usuario, clave) VALUES (?, ?)");
-                            $stmt_insert->bind_param('ss', $usuario, $clave_hash);
+                            // Insertar nueva cuenta
+                            $stmt_insert = $conn->prepare("INSERT INTO cuentas (nombre, correo, telefono, clave) VALUES (?, ?, ?, ?)");
+                            $stmt_insert->bind_param('ssss', $nombre, $correo, $telefono, $clave_hash);
                             
                             if ($stmt_insert->execute()) {
                                 // Registro exitoso - iniciar sesión automáticamente
-                                session_start();
-                                $_SESSION['usuario'] = $usuario;
+                                $_SESSION['usuario'] = $nombre;
+                                $_SESSION['correo'] = $correo;
                                 $_SESSION['usuario_id'] = $stmt_insert->insert_id;
-                                header("Location: index.html");
+                                echo '<script>console.log("Registro exitoso:", {nombre: "' . addslashes($nombre) . '", correo: "' . addslashes($correo) . '", telefono: "' . addslashes($telefono) . '"}); window.location.href="index.html";</script>';
                                 exit();
                             } else {
-                                $mensaje = "Error al registrar el usuario: " . $stmt_insert->error;
+                                $mensaje = "Error al registrar la cuenta: " . $stmt_insert->error;
                             }
                             $stmt_insert->close();
                         }
