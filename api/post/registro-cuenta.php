@@ -44,50 +44,23 @@ if (strlen($clave) < 6) {
     exit;
 }
 
-// --- Almacenamiento en MySQL (draconiscuentas.cuentas)
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "draconiscuentas";
+// Conectar usando configuración central (en hosting compartido no crees bases desde PHP)
+include_once __DIR__ . '/../../Phps/db_config.php';
 
-$conn = new mysqli($host, $user, $pass);
-if ($conn->connect_errno) {
+if (!isset($conn) || $conn->connect_errno) {
     http_response_code(500);
     echo json_encode(["success" => false, "message" => "Error al conectar con la base de datos."]);
     exit;
 }
 
-// Crear base de datos si no existe
-$createDbSql = "CREATE DATABASE IF NOT EXISTS `" . $conn->real_escape_string($dbname) . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
-if (!$conn->query($createDbSql)) {
+// Verificar que la tabla `cuentas` exista. En InfinityFree crea la DB y tablas desde phpMyAdmin.
+$tblCheck = $conn->query("SHOW TABLES LIKE 'cuentas'");
+if (!$tblCheck || $tblCheck->num_rows === 0) {
     http_response_code(500);
-    echo json_encode(["success" => false, "message" => "No se pudo crear la base de datos."]);
-    $conn->close();
-    exit;
-}
-
-// Seleccionar la base
-if (!$conn->select_db($dbname)) {
-    http_response_code(500);
-    echo json_encode(["success" => false, "message" => "No se pudo seleccionar la base de datos."]);
-    $conn->close();
-    exit;
-}
-
-// Crear tabla cuentas si no existe
-$createTableSql = "CREATE TABLE IF NOT EXISTS `cuentas` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `nombre` VARCHAR(255) NOT NULL,
-  `correo` VARCHAR(255) UNIQUE NOT NULL,
-  `telefono` VARCHAR(50) DEFAULT NULL,
-  `clave` VARCHAR(255) NOT NULL,
-  `fecha_registro` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-
-if (!$conn->query($createTableSql)) {
-    http_response_code(500);
-    echo json_encode(["success" => false, "message" => "No se pudo crear la tabla de cuentas."]);
-    $conn->close();
+    echo json_encode([
+        "success" => false,
+        "message" => "La tabla 'cuentas' no existe. Crea la tabla en phpMyAdmin. SQL sugerido: CREATE TABLE cuentas (...)",
+    ]);
     exit;
 }
 

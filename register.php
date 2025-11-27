@@ -25,71 +25,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif (strlen($clave) < 6) {
         $mensaje = "La contraseña debe tener al menos 6 caracteres.";
     } else {
-        // Conectar a la base de datos
-        $host = "localhost";
-        $user = "root";
-        $pass = "";
-        $dbname = "Draconis";
-
-        $conn = new mysqli($host, $user, $pass);
-        if ($conn->connect_errno) {
-            $mensaje = "Error conectando al servidor MySQL: " . $conn->connect_error;
+        // Conectar usando configuración central (actualiza Phps/db_config.php con los datos de InfinityFree)
+        include_once __DIR__ . '/Phps/db_config.php';
+        if (!isset($conn) || $conn->connect_errno) {
+            $mensaje = "Error conectando al servidor de base de datos. Ver logs del servidor.";
         } else {
-            // Crear base de datos si no existe
-            $createDbSql = "CREATE DATABASE IF NOT EXISTS `" . $conn->real_escape_string($dbname) . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
-            if (!$conn->query($createDbSql)) {
-                $mensaje = "No se pudo crear la base de datos: " . $conn->error;
+            // Verificar que la tabla exista
+            $tblCheck = $conn->query("SHOW TABLES LIKE 'cuentas'");
+            if (!$tblCheck || $tblCheck->num_rows === 0) {
+                $mensaje = "La tabla 'cuentas' no existe. Crea la tabla en phpMyAdmin antes de usar el registro.";
             } else {
-                // Seleccionar la base
-                if (!$conn->select_db($dbname)) {
-                    $mensaje = "No se pudo seleccionar la base de datos: " . $conn->error;
+                // Verificar si el correo ya existe
+                $stmt = $conn->prepare("SELECT id FROM cuentas WHERE correo = ?");
+                $stmt->bind_param('s', $correo);
+                $stmt->execute();
+                $stmt->store_result();
+
+                if ($stmt->num_rows > 0) {
+                    $mensaje = "El correo ya está registrado. Por favor usa otro correo.";
                 } else {
-                    // Crear tabla cuentas si no existe
-                    $createTableSql = "CREATE TABLE IF NOT EXISTS `cuentas` (
-                      `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                      `nombre` VARCHAR(255) NOT NULL,
-                      `correo` VARCHAR(255) UNIQUE NOT NULL,
-                      `telefono` VARCHAR(50) DEFAULT NULL,
-                      `clave` VARCHAR(255) NOT NULL,
-                      `fecha_registro` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-                    
-                    if (!$conn->query($createTableSql)) {
-                        $mensaje = "No se pudo crear la tabla cuentas: " . $conn->error;
+                    // Hash de la contraseña
+                    $clave_hash = password_hash($clave, PASSWORD_DEFAULT);
+
+                    // Insertar nueva cuenta
+                    $stmt_insert = $conn->prepare("INSERT INTO cuentas (nombre, correo, telefono, clave) VALUES (?, ?, ?, ?)");
+                    $stmt_insert->bind_param('ssss', $nombre, $correo, $telefono, $clave_hash);
+
+                    if ($stmt_insert->execute()) {
+                        // Registro exitoso - iniciar sesión automáticamente
+                        $_SESSION['usuario'] = $nombre;
+                        $_SESSION['correo'] = $correo;
+                        $_SESSION['usuario_id'] = $stmt_insert->insert_id;
+                        echo '<script>console.log("Registro exitoso:", {nombre: "' . addslashes($nombre) . '", correo: "' . addslashes($correo) . '", telefono: "' . addslashes($telefono) . '"}); window.location.href="index.html";</script>';
+                        exit();
                     } else {
-                        // Verificar si el correo ya existe
-                        $stmt = $conn->prepare("SELECT id FROM cuentas WHERE correo = ?");
-                        $stmt->bind_param('s', $correo);
-                        $stmt->execute();
-                        $stmt->store_result();
-                        
-                        if ($stmt->num_rows > 0) {
-                            $mensaje = "El correo ya está registrado. Por favor usa otro correo.";
-                        } else {
-                            // Hash de la contraseña
-                            $clave_hash = password_hash($clave, PASSWORD_DEFAULT);
-                            
-                            // Insertar nueva cuenta
-                            $stmt_insert = $conn->prepare("INSERT INTO cuentas (nombre, correo, telefono, clave) VALUES (?, ?, ?, ?)");
-                            $stmt_insert->bind_param('ssss', $nombre, $correo, $telefono, $clave_hash);
-                            
-                            if ($stmt_insert->execute()) {
-                                // Registro exitoso - iniciar sesión automáticamente
-                                $_SESSION['usuario'] = $nombre;
-                                $_SESSION['correo'] = $correo;
-                                $_SESSION['usuario_id'] = $stmt_insert->insert_id;
-                                echo '<script>console.log("Registro exitoso:", {nombre: "' . addslashes($nombre) . '", correo: "' . addslashes($correo) . '", telefono: "' . addslashes($telefono) . '"}); window.location.href="index.html";</script>';
-                                exit();
-                            } else {
-                                $mensaje = "Error al registrar la cuenta: " . $stmt_insert->error;
-                            }
-                            $stmt_insert->close();
-                        }
-                        $stmt->close();
+                        $mensaje = "Error al registrar la cuenta: " . $stmt_insert->error;
                     }
+                    $stmt_insert->close();
                 }
+                $stmt->close();
             }
-            $conn->close();
         }
     }
 }

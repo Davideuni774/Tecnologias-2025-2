@@ -38,6 +38,18 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         console.log('🚀 Enviando al servidor...');
 
+        // Validación cliente: asegurar que las contraseñas coincidan antes de enviar
+        if ((dataObjeto.clave || '') !== (dataObjeto.confirmar_clave || '')) {
+            const msg = 'Las contraseñas no coinciden.';
+            console.error('❌ Validación cliente:', msg);
+            if (respEl) {
+                respEl.textContent = msg;
+                respEl.classList.remove('success');
+                respEl.classList.add('error');
+            }
+            return; // evitar enviar al servidor
+        }
+
         function sendPayload(payload) {
             try {
                 if (submitBtn) {

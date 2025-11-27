@@ -1,0 +1,22 @@
+-- setup.sql
+-- Ejecuta estas sentencias en phpMyAdmin (InfinityFree) después de crear la base de datos.
+
+CREATE TABLE IF NOT EXISTS `cuentas` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `nombre` VARCHAR(255) NOT NULL,
+  `correo` VARCHAR(255) UNIQUE NOT NULL,
+  `telefono` VARCHAR(50) DEFAULT NULL,
+  `clave` VARCHAR(255) NOT NULL,
+  `fecha_registro` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `productos` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `nombre` VARCHAR(255) DEFAULT NULL,
+  `precio` DECIMAL(10,2) DEFAULT 0,
+  `stock` INT DEFAULT 0,
+  `referencia` VARCHAR(100) DEFAULT NULL,
+  `imagen` VARCHAR(255) DEFAULT NULL,
+  `categoria` VARCHAR(100) DEFAULT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

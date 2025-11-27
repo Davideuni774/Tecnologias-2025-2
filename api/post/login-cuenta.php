@@ -23,13 +23,9 @@ if (empty($correo) || empty($clave)) {
     exit;
 }
 
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "draconiscuentas";
-
-$conn = new mysqli($host, $user, $pass, $dbname);
-if ($conn->connect_errno) {
+// Conectar usando configuración central
+include_once __DIR__ . '/../../Phps/db_config.php';
+if (!isset($conn) || $conn->connect_errno) {
     http_response_code(500);
     echo json_encode(["success" => false, "message" => "Error al conectar con la base de datos."]);
     exit;

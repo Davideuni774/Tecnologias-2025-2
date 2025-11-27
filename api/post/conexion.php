@@ -4,20 +4,15 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Configuración de la base de datos para InfinityFree
-$servername = "sql212.infinityfree.com";
-$username = "if0_40294133";
-$password = "AvatarGhost666";
-$dbname = "if0_40294133_usuarios_web";
+// Incluir configuración central
+include_once __DIR__ . '/../../Phps/db_config.php';
 
-// Crear conexión
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Verificar conexión
-if ($conn->connect_error) {
+if (!isset($conn) || ($conn instanceof mysqli && $conn->connect_errno)) {
+    $err = isset($conn_error) ? $conn_error : 'Unknown connection error';
     echo json_encode([
         'success' => false,
-        'message' => 'Error de conexión: ' . $conn->connect_error
+        'message' => 'Error de conexión a la base de datos',
+        'error' => $err
     ]);
     exit;
 }
