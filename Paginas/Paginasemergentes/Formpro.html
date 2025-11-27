@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio</title>
-    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="../../index.css?v=20251011">
     <style>
         /* Forzar disposición vertical del formulario */
         #formulario {
@@ -40,7 +40,8 @@
             #formulario { max-width: 600px; }
         }
     </style>
-    <script src="js/datos.js" defer></script>
+    <script src="../../index.js" defer></script>
+    <script src="../../datos.js" defer></script>
 </head>
 
 <body>
@@ -57,8 +58,14 @@
     </select>
     <label for="precio">Precio:</label>
     <input type="number" name="precio" id="precio">
-    <label for="referencia">Referencia:</label>
-    <input required type="text" name="referencia" id="referencia">
+    <label for="stock">Stock:</label>
+    <select required name="stock" id="stock">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+    </select>
     <label for="imagen">Imagen:</label>
     <input type="file" name="imagen" id="imagen">
     <figure><img id="preview" src="" alt=""></figure>

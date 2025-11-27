@@ -11,6 +11,7 @@
 
   const headerHTML = () => `
     <div class="top-bar">
+      <a href="${baseToRoot}Paginas/Paginasemergentes/Formpro.html" class="admin-tools" style="margin-right:12px; color:inherit; text-decoration:none;">Herramientas de administrador</a>
       <span class="envios">Envíos a toda Colombia</span>
       <a href="${baseToRoot}Paginas/Paginasemergentes/Mispedidos.html" style="color: inherit; text-decoration: none;">
         <span>Mis pedidos</span>
