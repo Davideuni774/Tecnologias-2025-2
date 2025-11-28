@@ -1,28 +1,5 @@
 // datos.js — mejora: espera DOMContentLoaded y valida selectores
 document.addEventListener('DOMContentLoaded', () => {
-    // Detectar raíz del sitio para construir rutas absolutas
-    let SITE_ROOT = '';
-    try {
-        // Buscar el script datos.js en el DOM para obtener su src
-        const scripts = document.querySelectorAll('script');
-        let scriptUrl = '';
-        scripts.forEach(s => {
-            if (s.src && s.src.includes('datos.js')) scriptUrl = s.src;
-        });
-        
-        if (scriptUrl) {
-            // Si datos.js está en la raíz, SITE_ROOT es la carpeta que lo contiene
-            const match = scriptUrl.match(/^(.*\/)datos\.js(\?.*)?$/i);
-            if (match) SITE_ROOT = match[1];
-        } else {
-            // Fallback relativo si no se encuentra el script
-            SITE_ROOT = '../../'; 
-        }
-    } catch (e) { console.error('Error detectando root:', e); SITE_ROOT = '../../'; }
-
-    const API_LISTAR = SITE_ROOT + 'api/post/listar-productos.php';
-    const API_REGISTRO = SITE_ROOT + 'api/post/registro.php';
-
     const formulario = document.getElementById('formulario');
     const imagenInput = document.getElementById('imagen');
     const preview = document.getElementById('preview');
@@ -36,29 +13,20 @@ document.addEventListener('DOMContentLoaded', () => {
         li.style.border = '1px solid #ccc';
         li.style.padding = '8px';
         li.style.marginBottom = '6px';
-        // Ajustar ruta de imagen si es relativa
-        let imgUrl = p.imagen;
-        if (imgUrl && !imgUrl.startsWith('http') && !imgUrl.startsWith('data:')) {
-            imgUrl = SITE_ROOT + imgUrl;
-        }
-
         li.innerHTML = `
             <strong>${p.nombre}</strong><br>
             <span>Precio: ${p.precio}</span><br>
             <span>Stock: ${p.stock !== null && p.stock !== undefined ? p.stock : (p.referencia || '-')}</span><br>
             <span>Categoría: ${p.categoria || '-'}</span><br>
-            ${imgUrl ? `<img src="${imgUrl}" alt="${p.nombre}" style="max-width:120px;display:block;margin-top:4px;">` : ''}
+            ${p.imagen ? `<img src="../../${p.imagen}" alt="${p.nombre}" style="max-width:120px;display:block;margin-top:4px;">` : ''}
         `;
         listaProductos.appendChild(li);
     }
 
     function cargarProductos() {
         if (!listaProductos) return;
-        fetch(API_LISTAR)
-            .then(r => {
-                if (!r.ok) throw new Error('Error HTTP ' + r.status);
-                return r.json();
-            })
+        fetch('../../Backend/post/listar-productos.php')
+            .then(r => r.json())
             .then(json => {
                 if (!json.success) {
                     console.warn('No se pudo cargar productos:', json.message);
@@ -110,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', API_REGISTRO, true);
+                xhr.open('POST', "../../Backend/post/registro.php", true);
                 xhr.timeout = 15000; // 15s
                 xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 
