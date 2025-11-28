@@ -84,20 +84,68 @@
   <main>
     <h2 class="categoria-titulo">Figuras Musicales</h2>
 
-    <section class="producto-detalle">
+    <section class="producto-detalle" id="productoDetalle" data-product-id="">
       <div class="producto-imagen">
-        <img src="https://i.imgur.com/WzFrJU7.png" alt="Tyler Joseph (llavero)">
+        <img id="productoImagen" src="" alt="" aria-hidden="true">
       </div>
 
       <div class="producto-info">
-        <h1>Tyler Joseph (llavero)</h1>
-        <p class="descripcion">
-          Mini figura del vocalista de Twenty One Pilots. Su look suele incluir máscara y pintura en los ojos, símbolo de la lucha contra la ansiedad y la autoexpresión artística.
-        </p>
-        <p class="precio"><strong>$12.000</strong></p>
-        <button class="btn-comprar">Comprar</button>
+        <h1 id="productoNombre">Cargando...</h1>
+        <p class="descripcion" id="productoDescripcion">Esperando datos del producto.</p>
+        <p class="precio" id="productoPrecio"><strong></strong></p>
+        <button class="btn-comprar" id="btnComprar" disabled>Comprar</button>
+        <p id="productoEstado" style="margin-top:12px;font-size:14px;color:#666;"></p>
       </div>
     </section>
+    <script>
+    (function(){
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        const detalle = document.getElementById('productoDetalle');
+        const imgEl = document.getElementById('productoImagen');
+        const nombreEl = document.getElementById('productoNombre');
+        const descEl = document.getElementById('productoDescripcion');
+        const precioEl = document.getElementById('productoPrecio').querySelector('strong');
+        const estadoEl = document.getElementById('productoEstado');
+        const comprarBtn = document.getElementById('btnComprar');
+
+        if(!id){
+           estadoEl.textContent = 'Falta parámetro ?id= en la URL.';
+           nombreEl.textContent = 'Producto no especificado';
+           return;
+        }
+        detalle.dataset.productId = id;
+        estadoEl.textContent = 'Cargando producto...';
+
+        fetch('../../api/post/obtener-producto.php?id=' + encodeURIComponent(id))
+          .then(r => r.json())
+          .then(json => {
+             if(!json.success){
+                estadoEl.textContent = 'No se pudo cargar: ' + (json.message || 'Error desconocido');
+                nombreEl.textContent = 'Producto no encontrado';
+                return;
+             }
+             const p = json.data;
+             nombreEl.textContent = p.nombre || 'Sin nombre';
+             imgEl.src = p.imagen || 'https://via.placeholder.com/420x420?text=Sin+Imagen';
+             imgEl.alt = p.nombre || 'Producto';
+             imgEl.removeAttribute('aria-hidden');
+             descEl.textContent = p.descripcion || p.referencia || 'Sin descripción disponible.';
+             precioEl.textContent = p.precio ? ('$' + new Intl.NumberFormat('es-CO').format(p.precio)) : 'Consultar';
+             comprarBtn.disabled = false;
+             estadoEl.textContent = p.stock !== null ? ('Stock: ' + p.stock) : '';
+          })
+          .catch(err => {
+             console.error(err);
+             estadoEl.textContent = 'Error de red al cargar producto.';
+             nombreEl.textContent = 'Error de carga';
+          });
+
+        comprarBtn.addEventListener('click', () => {
+            alert('Simulación de compra para producto ID ' + detalle.dataset.productId);
+        });
+    })();
+    </script>
   </main>
 </body>
 </html>

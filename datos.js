@@ -5,6 +5,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const preview = document.getElementById('preview');
     const respEl = document.getElementById('respuesta');
     const submitBtn = formulario ? formulario.querySelector('button[type="submit"]') : null;
+    const listaProductos = document.getElementById('productos');
+
+    function renderProducto(p) {
+        if (!listaProductos) return;
+        const li = document.createElement('li');
+        li.style.border = '1px solid #ccc';
+        li.style.padding = '8px';
+        li.style.marginBottom = '6px';
+        li.innerHTML = `
+            <strong>${p.nombre}</strong><br>
+            <span>Precio: ${p.precio}</span><br>
+            <span>Stock: ${p.stock !== null && p.stock !== undefined ? p.stock : (p.referencia || '-')}</span><br>
+            <span>Categoría: ${p.categoria || '-'}</span><br>
+            ${p.imagen ? `<img src="../../${p.imagen}" alt="${p.nombre}" style="max-width:120px;display:block;margin-top:4px;">` : ''}
+        `;
+        listaProductos.appendChild(li);
+    }
+
+    function cargarProductos() {
+        if (!listaProductos) return;
+        fetch('../../api/post/listar-productos.php')
+            .then(r => r.json())
+            .then(json => {
+                if (!json.success) {
+                    console.warn('No se pudo cargar productos:', json.message);
+                    return;
+                }
+                listaProductos.innerHTML = '';
+                json.data.forEach(renderProducto);
+            })
+            .catch(err => console.error('Error cargando productos:', err));
+    }
+
+    // Cargar productos al entrar a la página del formulario
+    cargarProductos();
 
     if (!formulario) return; // nada que hacer si no hay form
 
@@ -67,6 +102,27 @@ document.addEventListener('DOMContentLoaded', () => {
                         // limpiar formulario y preview (opcional)
                         try { formulario.reset(); } catch (e) {}
                         if (preview) preview.src = '';
+
+                        // Intentar parsear para obtener ID e incorporar nuevo producto sin recargar todo
+                        try {
+                            const json = JSON.parse(xhr.responseText);
+                            // Si la respuesta incluye id, reconstruimos objeto mínimo y lo añadimos
+                            if (json && json.success) {
+                                const nuevo = {
+                                    id: json.id,
+                                    nombre: dataObjeto.producto,
+                                    precio: parseFloat(dataObjeto.precio) || 0,
+                                    stock: dataObjeto.stock ? parseInt(dataObjeto.stock) : null,
+                                    referencia: dataObjeto.stock || '',
+                                    imagen: dataObjeto.imagen ? '(imagen subida)' : '',
+                                    categoria: dataObjeto.categoria || ''
+                                };
+                                renderProducto(nuevo);
+                            }
+                        } catch (e) {
+                            // Si falla el parse, recargamos la lista completa
+                            cargarProductos();
+                        }
                     } else {
                         // Mostrar información más útil: intentar parsear JSON de error
                         console.error('Error:', xhr.status, xhr.statusText);
