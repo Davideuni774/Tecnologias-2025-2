@@ -455,15 +455,11 @@
 
   // (Opcional) verificar sesión — tu app guarda login con 'draconis_logged_in'
   const logged = (() => { try { return localStorage.getItem('draconis_logged_in') === 'true'; } catch { return false; } })();
-if (!logged) {
-    // Guardar la página actual para volver luego del login
-    localStorage.setItem("draconis_return_to", location.href);
-
+  if (!logged) {
     alert('Debes iniciar sesión para completar la compra.');
     location.href = `${baseToRoot}Paginas/Paginasemergentes/iniciosesion.html`;
     return;
-}
-
+  }
 
   // Aquí: vaciamos el carrito usando la función que ya existe en este archivo
   try {

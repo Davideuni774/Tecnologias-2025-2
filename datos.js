@@ -1,5 +1,34 @@
 // datos.js — mejora: espera DOMContentLoaded y valida selectores
 document.addEventListener('DOMContentLoaded', () => {
+    // Detectar raíz del sitio para construir rutas absolutas
+    let SITE_ROOT = '';
+    try {
+        // Buscar el script datos.js en el DOM para obtener su src
+        const scripts = document.querySelectorAll('script');
+        let scriptUrl = '';
+        scripts.forEach(s => {
+            if (s.src && s.src.includes('datos.js')) scriptUrl = s.src;
+        });
+        
+        if (scriptUrl) {
+            // Si datos.js está en la raíz, SITE_ROOT es la carpeta que lo contiene
+            const match = scriptUrl.match(/^(.*\/)datos\.js(\?.*)?$/i);
+            if (match) SITE_ROOT = match[1];
+        } else {
+            // Fallback relativo si no se encuentra el script
+            SITE_ROOT = '../../'; 
+        }
+    } catch (e) { console.error('Error detectando root:', e); SITE_ROOT = '../../'; }
+
+    const API_LISTAR = SITE_ROOT + 'api/post/listar-productos.php';
+    const API_REGISTRO = SITE_ROOT + 'api/post/registro.php';
+
+    // Mensajes de depuración para el profesor
+    console.log('%c[Draconis Admin] Iniciando sistema...', 'color: cyan; font-weight: bold; font-size: 12px;');
+    console.log('[Draconis Admin] Ruta raíz detectada:', SITE_ROOT);
+    console.log('[Draconis Admin] Endpoint Listar:', API_LISTAR);
+    console.log('[Draconis Admin] Endpoint Registro:', API_REGISTRO);
+
     const formulario = document.getElementById('formulario');
     const imagenInput = document.getElementById('imagen');
     const preview = document.getElementById('preview');
@@ -13,29 +42,40 @@ document.addEventListener('DOMContentLoaded', () => {
         li.style.border = '1px solid #ccc';
         li.style.padding = '8px';
         li.style.marginBottom = '6px';
+        // Ajustar ruta de imagen si es relativa
+        let imgUrl = p.imagen;
+        if (imgUrl && !imgUrl.startsWith('http') && !imgUrl.startsWith('data:')) {
+            imgUrl = SITE_ROOT + imgUrl;
+        }
+
         li.innerHTML = `
             <strong>${p.nombre}</strong><br>
             <span>Precio: ${p.precio}</span><br>
             <span>Stock: ${p.stock !== null && p.stock !== undefined ? p.stock : (p.referencia || '-')}</span><br>
             <span>Categoría: ${p.categoria || '-'}</span><br>
-            ${p.imagen ? `<img src="../../${p.imagen}" alt="${p.nombre}" style="max-width:120px;display:block;margin-top:4px;">` : ''}
+            ${imgUrl ? `<img src="${imgUrl}" alt="${p.nombre}" style="max-width:120px;display:block;margin-top:4px;">` : ''}
         `;
         listaProductos.appendChild(li);
     }
 
     function cargarProductos() {
         if (!listaProductos) return;
-        fetch('../../Backend/post/listar-productos.php')
-            .then(r => r.json())
+        console.log('%c[Draconis Admin] Solicitando lista de productos al servidor...', 'color: yellow;');
+        fetch(API_LISTAR)
+            .then(r => {
+                if (!r.ok) throw new Error('Error HTTP ' + r.status);
+                return r.json();
+            })
             .then(json => {
                 if (!json.success) {
-                    console.warn('No se pudo cargar productos:', json.message);
+                    console.warn('[Draconis Admin] El servidor respondió pero indicó error:', json.message);
                     return;
                 }
+                console.log(`%c[Draconis Admin] Éxito: Se recibieron ${json.data.length} productos.`, 'color: green;');
                 listaProductos.innerHTML = '';
                 json.data.forEach(renderProducto);
             })
-            .catch(err => console.error('Error cargando productos:', err));
+            .catch(err => console.error('[Draconis Admin] Error crítico cargando productos:', err));
     }
 
     // Cargar productos al entrar a la página del formulario
@@ -54,8 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (k === 'imagen') continue;
             dataObjeto[k] = v;
         }
-
         function sendPayload(payload) {
+                console.log('%c[Draconis Admin] Preparando envío de datos...', 'color: orange;');
                 // Log payload summary for debugging
                 try {
                     console.log('Enviando producto:', {
@@ -78,12 +118,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', "../../Backend/post/registro.php", true);
+                xhr.open('POST', API_REGISTRO, true);
                 xhr.timeout = 15000; // 15s
                 xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-
                 xhr.onload = function () {
                     if (xhr.status === 200) {
+                        console.log('%c[Draconis Admin] ¡Producto guardado exitosamente!', 'color: green; font-weight: bold;');
                         // éxito
                         let msg = 'Envío exitoso.';
                         try {

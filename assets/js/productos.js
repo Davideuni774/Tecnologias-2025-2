@@ -4,21 +4,29 @@
 // Detectar si estamos en GitHub Pages (servidor estático sin PHP)
 const IS_GHPAGES = /github\.io$/i.test(location.hostname);
 
-// Función para determinar la ruta base relativa según la ubicación del archivo HTML actual
-function getBasePath() {
-    const path = window.location.pathname;
-    if (path.includes('/Paginas/Paginasemergentes/')) return '../../';
-    if (path.includes('/Paginas/')) return '../';
-    return '';
-}
-const BASE_PATH = getBasePath();
+// Detección robusta de la raíz del sitio basada en la ubicación de este script (assets/js/productos.js)
+// Esto funciona perfecto en InfinityFree sin importar la URL del navegador.
+let SITE_ROOT = '';
+try {
+    const scriptUrl = document.currentScript ? document.currentScript.src : '';
+    // Buscamos la parte de la URL antes de 'assets/js/productos.js'
+    const match = scriptUrl.match(/^(.*\/)assets\/js\/productos\.js(\?.*)?$/i);
+    if (match) {
+        SITE_ROOT = match[1]; // Ej: "https://tusitio.infinityfreeapp.com/"
+    } else {
+        // Fallback por si el script se llama diferente o algo falla
+        const path = window.location.pathname.toLowerCase();
+        if (path.includes('/paginas/paginasemergentes/')) SITE_ROOT = '../../';
+        else if (path.includes('/paginas/')) SITE_ROOT = '../';
+    }
+} catch (e) { console.error('Error detectando root:', e); }
 
 // Permitir configurar un backend remoto (e.g., hosting con PHP): define window.BACKEND_ORIGIN = 'https://tu-dominio.com'
 const REMOTE_ORIGIN = (typeof window !== 'undefined' && window.BACKEND_ORIGIN) ? String(window.BACKEND_ORIGIN).replace(/\/$/, '') : '';
-// Usar API remota si está definida; si no, usa ruta relativa para XAMPP
-const API_BASE = REMOTE_ORIGIN ? (REMOTE_ORIGIN + '/api/post') : (BASE_PATH + 'api/post');
+// Usar API remota si está definida; si no, usa ruta calculada
+const API_BASE = REMOTE_ORIGIN ? (REMOTE_ORIGIN + '/api/post') : (SITE_ROOT + 'api/post');
 // Fallback estático para GitHub Pages cuando NO hay backend remoto
-const ENDPOINT_LISTAR_STATIC = BASE_PATH + 'Datos/productos.json';
+const ENDPOINT_LISTAR_STATIC = SITE_ROOT + 'Datos/productos.json';
 const ENDPOINT_LISTAR = API_BASE + '/listar-productos.php';
 const ENDPOINT_REGISTRO = API_BASE + '/registro.php';
 
@@ -83,8 +91,10 @@ async function crearProducto(data) {
  * @returns {Promise<Array>} lista de productos
  */
 async function listarProductos() {
+    console.log('%c[Draconis Store] Iniciando carga de productos...', 'color: cyan;');
     // Si estamos en GitHub Pages sin backend remoto, ir al JSON estático
     if (IS_GHPAGES && !REMOTE_ORIGIN) {
+        console.log('[Draconis Store] Modo GitHub Pages detectado. Usando JSON estático.');
         const res = await fetch(ENDPOINT_LISTAR_STATIC + '?t=' + Date.now());
         if (!res.ok) throw new Error('No se pudo cargar Datos/productos.json');
         const data = await res.json();
@@ -109,23 +119,30 @@ async function listarProductos() {
                     });
                 });
             }
+            console.log(`%c[Draconis Store] Carga estática completada: ${items.length} productos.`, 'color: green;');
             return items.map(n => ({
                 id: n.id ?? 0,
                 nombre: n.nombre,
                 precio: Number((n.precio ?? 0)) || 0,
                 stock: n.stock ?? null,
                 referencia: n.referencia ?? '',
-                imagen: n.imagen || (n.imagenNombre ? ('imagenes/' + n.imagenNombre) : ''),
+                imagen: n.imagen ? (SITE_ROOT + n.imagen) : (n.imagenNombre ? (SITE_ROOT + 'imagenes/' + n.imagenNombre) : ''),
                 categoria: n.categoria || ''
             }));
     }
     // En servidor con PHP (local o remoto)
     try {
+        console.log('[Draconis Store] Conectando con API Backend:', ENDPOINT_LISTAR);
         const res = await fetch(ENDPOINT_LISTAR + '?t=' + Date.now());
         const json = await res.json().catch(() => ({ success: false }));
         if (!json.success) throw new Error(json.message || 'Error listando productos');
-        return json.data; // [{id, nombre, precio, imagen, categoria, ...}]
+        console.log(`%c[Draconis Store] Datos recibidos del servidor: ${json.data.length} productos.`, 'color: green;');
+        return json.data.map(n => ({
+            ...n,
+            imagen: n.imagen ? (SITE_ROOT + n.imagen) : ''
+        }));
     } catch (e) {
+        console.warn('[Draconis Store] Fallo en backend, intentando fallback estático...', e);
         // Fallback: intentar JSON estático si el endpoint PHP falla (útil en GH Pages sin backend)
         const res2 = await fetch(ENDPOINT_LISTAR_STATIC + '?t=' + Date.now());
         if (!res2.ok) throw e;
@@ -150,6 +167,7 @@ async function listarProductos() {
                     });
                 });
             }
+            console.log(`%c[Draconis Store] Fallback exitoso: ${items.length} productos cargados.`, 'color: orange;');
             return items.map(n => ({
                 id: n.id ?? 0,
                 nombre: n.nombre,
@@ -216,11 +234,14 @@ function escapeHtml(str) {
 async function initCategoriaPage(categoria, selectorContenedor, opciones = {}) {
     const cont = document.querySelector(selectorContenedor);
     if (!cont) return;
+    console.log(`%c[Draconis Store] Inicializando página de categoría: "${categoria}"`, 'color: magenta; font-weight: bold;');
     try {
         const todos = await listarProductos();
         const filtrados = filtrarPorCategoria(todos, categoria);
+        console.log(`[Draconis Store] Filtrando productos. Total: ${todos.length} -> Categoría "${categoria}": ${filtrados.length}`);
         renderizarProductos(cont, filtrados, opciones);
     } catch (e) {
+        console.error('[Draconis Store] Error fatal:', e);
         cont.innerHTML = '<p>Error cargando productos: ' + e.message + '</p>';
     }
 }
