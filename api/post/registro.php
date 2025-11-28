@@ -1,4 +1,5 @@
 <?php
+include_once __DIR__ . '/../cors.php';
 header("Content-Type: application/json; charset=utf-8");
 
 // Leer JSON de entrada

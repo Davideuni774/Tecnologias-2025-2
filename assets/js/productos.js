@@ -3,9 +3,11 @@
 
 // Detectar si estamos en GitHub Pages (servidor estático sin PHP)
 const IS_GHPAGES = /github\.io$/i.test(location.hostname);
-// Usar ruta relativa para funcionar bajo http://localhost/Tecnologias-2025-2/
-const API_BASE = 'api/post';
-// Fallback estático para GitHub Pages
+// Permitir configurar un backend remoto (e.g., hosting con PHP): define window.BACKEND_ORIGIN = 'https://tu-dominio.com'
+const REMOTE_ORIGIN = (typeof window !== 'undefined' && window.BACKEND_ORIGIN) ? String(window.BACKEND_ORIGIN).replace(/\/$/, '') : '';
+// Usar API remota si está definida; si no, usa ruta relativa para XAMPP
+const API_BASE = REMOTE_ORIGIN ? (REMOTE_ORIGIN + '/api/post') : 'api/post';
+// Fallback estático para GitHub Pages cuando NO hay backend remoto
 const ENDPOINT_LISTAR_STATIC = 'Datos/productos.json';
 const ENDPOINT_LISTAR = API_BASE + '/listar-productos.php';
 const ENDPOINT_REGISTRO = API_BASE + '/registro.php';
@@ -30,7 +32,7 @@ function fileToBase64(file) {
  * @returns {Promise<Object>} respuesta JSON
  */
 async function crearProducto(data) {
-    if (IS_GHPAGES) {
+    if (IS_GHPAGES && !REMOTE_ORIGIN) {
         throw new Error('Crear producto no está disponible en GitHub Pages (no hay PHP). Usa tu servidor XAMPP/hosting con PHP.');
     }
     const {
@@ -71,8 +73,8 @@ async function crearProducto(data) {
  * @returns {Promise<Array>} lista de productos
  */
 async function listarProductos() {
-    // Si estamos en GitHub Pages, ir directamente al JSON estático
-    if (IS_GHPAGES) {
+    // Si estamos en GitHub Pages sin backend remoto, ir al JSON estático
+    if (IS_GHPAGES && !REMOTE_ORIGIN) {
         const res = await fetch(ENDPOINT_LISTAR_STATIC + '?t=' + Date.now());
         if (!res.ok) throw new Error('No se pudo cargar Datos/productos.json');
         const data = await res.json();
@@ -107,14 +109,14 @@ async function listarProductos() {
                 categoria: n.categoria || ''
             }));
     }
-    // En servidor con PHP
+    // En servidor con PHP (local o remoto)
     try {
         const res = await fetch(ENDPOINT_LISTAR + '?t=' + Date.now());
         const json = await res.json().catch(() => ({ success: false }));
         if (!json.success) throw new Error(json.message || 'Error listando productos');
         return json.data; // [{id, nombre, precio, imagen, categoria, ...}]
     } catch (e) {
-        // Fallback: intentar JSON estático si el endpoint PHP falla (útil en preview)
+        // Fallback: intentar JSON estático si el endpoint PHP falla (útil en GH Pages sin backend)
         const res2 = await fetch(ENDPOINT_LISTAR_STATIC + '?t=' + Date.now());
         if (!res2.ok) throw e;
         const data = await res2.json();

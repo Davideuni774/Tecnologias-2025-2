@@ -1,5 +1,7 @@
 // login-cuenta.js - Maneja el login con AJAX/JSON
 document.addEventListener('DOMContentLoaded', () => {
+    const IS_GHPAGES = /github\.io$/i.test(location.hostname);
+    const REMOTE_ORIGIN = (typeof window !== 'undefined' && window.BACKEND_ORIGIN) ? String(window.BACKEND_ORIGIN).replace(/\/$/, '') : '';
     // Helper: Mostrar un toast no modal en la esquina superior derecha
     function showToast(message, type = 'info') {
         const existing = document.getElementById('site-toast');
@@ -37,8 +39,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log('✅ Formulario de login encontrado, escuchando submit...');
 
+    // Aviso en GH Pages
+    if (IS_GHPAGES && !REMOTE_ORIGIN) {
+        const note = document.createElement('div');
+        note.textContent = 'Inicio de sesión deshabilitado en GitHub Pages (requiere backend PHP). Prueba en tu servidor XAMPP o hosting.';
+        note.style.background = '#fff3cd';
+        note.style.color = '#856404';
+        note.style.border = '1px solid #ffeeba';
+        note.style.padding = '10px 12px';
+        note.style.borderRadius = '8px';
+        note.style.margin = '10px 0';
+        (formulario.parentElement || document.body).insertBefore(note, formulario);
+    }
+
     formulario.addEventListener('submit', (evento) => {
         evento.preventDefault();
+
+        if (IS_GHPAGES && !REMOTE_ORIGIN) {
+            showToast('Esta acción requiere backend. Prueba en XAMPP o hosting con PHP.', 'error');
+            return;
+        }
 
         const formData = new FormData(formulario);
         const dataObjeto = {};
@@ -68,7 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', "../../api/post/login-cuenta.php", true);
+                const base = REMOTE_ORIGIN ? (REMOTE_ORIGIN + '/api/post') : '../../api/post';
+                xhr.open('POST', base + "/login-cuenta.php", true);
+                if (REMOTE_ORIGIN) {
+                    xhr.withCredentials = true; // permitir cookies/sesión entre dominios
+                }
                 xhr.timeout = 15000;
                 xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 

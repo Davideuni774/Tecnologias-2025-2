@@ -1,5 +1,6 @@
 <?php
 // api/post/registro-cuenta.php - Endpoint JSON para registro de cuentas
+include_once __DIR__ . '/../cors.php';
 session_start();
 header("Content-Type: application/json; charset=utf-8");
 

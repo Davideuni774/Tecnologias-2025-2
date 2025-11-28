@@ -1,5 +1,6 @@
 <?php
 // api/post/listar-productos.php - Devuelve lista JSON de productos
+include_once __DIR__ . '/../cors.php';
 header('Content-Type: application/json; charset=utf-8');
 
 include_once __DIR__ . '/../../Phps/db_config.php';

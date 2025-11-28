@@ -1,5 +1,6 @@
 <?php
 // api/post/obtener-producto.php - Devuelve detalle JSON de un producto por id
+include_once __DIR__ . '/../cors.php';
 header('Content-Type: application/json; charset=utf-8');
 
 include_once __DIR__ . '/../../Phps/db_config.php';

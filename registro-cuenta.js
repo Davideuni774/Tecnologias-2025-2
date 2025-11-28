@@ -1,5 +1,7 @@
 // registro-cuenta.js - Maneja el registro de cuentas con AJAX/JSON
 document.addEventListener('DOMContentLoaded', () => {
+    const IS_GHPAGES = /github\.io$/i.test(location.hostname);
+    const REMOTE_ORIGIN = (typeof window !== 'undefined' && window.BACKEND_ORIGIN) ? String(window.BACKEND_ORIGIN).replace(/\/$/, '') : '';
     const formulario = document.getElementById('form-registro');
     const respEl = document.getElementById('respuesta-registro');
     const submitBtn = formulario ? formulario.querySelector('button[type="submit"]') : null;
@@ -11,8 +13,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log('✅ Formulario de registro encontrado, escuchando submit...');
 
+    // Aviso en GH Pages
+    if (IS_GHPAGES && !REMOTE_ORIGIN) {
+        const note = document.createElement('div');
+        note.textContent = 'Registro deshabilitado en GitHub Pages (requiere backend PHP). Prueba en tu servidor XAMPP o hosting.';
+        note.style.background = '#fff3cd';
+        note.style.color = '#856404';
+        note.style.border = '1px solid #ffeeba';
+        note.style.padding = '10px 12px';
+        note.style.borderRadius = '8px';
+        note.style.margin = '10px 0';
+        (formulario.parentElement || document.body).insertBefore(note, formulario);
+    }
+
     formulario.addEventListener('submit', (evento) => {
         evento.preventDefault();
+
+        if (IS_GHPAGES && !REMOTE_ORIGIN) {
+            if (respEl) {
+                respEl.textContent = 'Esta acción requiere backend. Prueba en XAMPP o hosting con PHP.';
+                respEl.classList.remove('success');
+                respEl.classList.add('error');
+            }
+            return;
+        }
 
         const formData = new FormData(formulario);
         const dataObjeto = {};
@@ -59,7 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', "../../api/post/registro-cuenta.php", true);
+                const base = REMOTE_ORIGIN ? (REMOTE_ORIGIN + '/api/post') : '../../api/post';
+                xhr.open('POST', base + "/registro-cuenta.php", true);
+                if (REMOTE_ORIGIN) {
+                    xhr.withCredentials = true; // permitir cookies/sesión entre dominios
+                }
                 xhr.timeout = 15000;
                 xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 
