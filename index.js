@@ -437,25 +437,47 @@
       renderCartPage();
     });
 
-    document.getElementById('cart-checkout')?.addEventListener('click', () => {
-      // Validar que exista dirección de envío y método de pago antes de continuar
-      const shipping = (() => { try { return localStorage.getItem('draconis_shipping_address') || ''; } catch { return ''; } })();
-      const payMethod = (() => { try { return localStorage.getItem('draconis_payment_method') || ''; } catch { return ''; } })();
+ document.getElementById('cart-checkout')?.addEventListener('click', () => {
+  // Validar que exista dirección de envío y método de pago antes de continuar
+  const shippingCheck = (() => { try { return localStorage.getItem('draconis_shipping_address') || ''; } catch { return ''; } })();
+  const payMethodCheck = (() => { try { return localStorage.getItem('draconis_payment_method') || ''; } catch { return ''; } })();
 
-      if (!shipping) {
-        alert('Por favor, añade tu Dirección de envío para continuar.');
-        location.href = `${baseToRoot}Paginas/Paginasemergentes/Direcciondeenvio.html`;
-        return;
-      }
-      if (!payMethod) {
-        alert('Por favor, elige un Medio de pago para continuar.');
-        location.href = `${baseToRoot}Paginas/Paginasemergentes/Mediosdepago.html`;
-        return;
-      }
+  if (!shippingCheck) {
+    alert('Por favor, añade tu Dirección de envío para continuar.');
+    location.href = `${baseToRoot}Paginas/Paginasemergentes/Direcciondeenvio.html`;
+    return;
+  }
+  if (!payMethodCheck) {
+    alert('Por favor, elige un Medio de pago para continuar.');
+    location.href = `${baseToRoot}Paginas/Paginasemergentes/Mediosdepago.html`;
+    return;
+  }
 
-      // Ambos presentes: continuar a página de confirmación
-      location.href = `${baseToRoot}Paginas/Paginasemergentes/Gracias.html`;
-    });
+  // (Opcional) verificar sesión — tu app guarda login con 'draconis_logged_in'
+  const logged = (() => { try { return localStorage.getItem('draconis_logged_in') === 'true'; } catch { return false; } })();
+  if (!logged) {
+    alert('Debes iniciar sesión para completar la compra.');
+    location.href = `${baseToRoot}Paginas/Paginasemergentes/iniciosesion.html`;
+    return;
+  }
+
+  // Aquí: vaciamos el carrito usando la función que ya existe en este archivo
+  try {
+    setCart([]);               // borra items y actualiza badge
+    renderCartPage();          // refrescar la vista actual del carrito (por si no navegamos)
+  } catch (e) {
+    console.warn('[Carrito] No se pudo vaciar con setCart, limpiando manualmente', e);
+    localStorage.removeItem(CART_KEY);
+    updateCartBadge();
+  }
+
+  // Finalmente, vamos a la página de agradecimiento
+  // (si quieres esperar 300-600ms para que el UI muestre el cambio, añade setTimeout)
+  setTimeout(() => {
+    location.href = `${baseToRoot}Paginas/Paginasemergentes/Gracias.html`;
+  }, 150);
+});
+
   }
 
   // --- Página Inicio de sesión (iniciosesion.html) ---
@@ -884,36 +906,3 @@ function initCookieSystem() {
 
 document.addEventListener("DOMContentLoaded", initCookieSystem);
 
-//yo otra vez
-
-document.addEventListener("DOMContentLoaded", () => {
-  const btnPagar = document.getElementById("btn-pagar");
-  if (!btnPagar) return;
-
-  btnPagar.addEventListener("click", () => {
-    
-    // Verificar si el usuario está logueado
-    const usuario = localStorage.getItem("usuarioLogueado");
-    if (!usuario) {
-      alert("Debes iniciar sesión para completar la compra");
-      return;
-    }
-
-    // Mensaje de compra exitosa
-    alert("Gracias por su compra ❤️");
-
-    // Vaciar carrito
-    localStorage.removeItem("carrito");
-    localStorage.setItem("carrito-count", "0");
-
-    // Actualizar contador visual
-    const badge = document.getElementById("cart-count");
-    if (badge) badge.textContent = "0";
-
-    // Limpiar interfaz del carrito
-    const cartRoot = document.getElementById("cart-root");
-    if (cartRoot) {
-      cartRoot.innerHTML = "<p>Tu carrito está vacío.</p>";
-    }
-  });
-});
