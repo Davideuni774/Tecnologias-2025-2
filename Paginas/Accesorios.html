@@ -62,17 +62,54 @@
   <main>
     <h2 class="categoria-titulo">Accesorios</h2>
 
-    <!-- Contenedor dinámico de productos de la categoría -->
     <section class="categorias">
-      <div id="gridAccesorios" class="grid-categorias"></div>
+      <div class="grid-categorias">
+        <div class="categoria">
+          <a href="Paginasemergentes/Aretes-y-Collar-Banda-Avatar.html">
+            <img src="../assets/img/avatar-aretes-collar.png" alt="Aretes y Collar Banda Avatar">
+            <p>Aretes y Collar<br>Banda Avatar</p>
+            <p><strong>$10.000</strong></p>
+          </a>
+        </div>
+
+        <div class="categoria">
+          <a href="Paginasemergentes/Collar-Banda-Ghost.html">
+            <img src="../assets/img/ghost-collar.png" alt="Collar Banda Ghost">
+            <p>Collar Banda<br>Ghost</p>
+            <p><strong>$5.000</strong></p>
+          </a>
+        </div>
+
+        <div class="categoria">
+          <a href="Paginasemergentes/Collar-Linkin-Park.html">
+            <img src="../assets/img/linkinpark-collar.png" alt="Collar Linkin Park">
+            <p>Collar<br>Linkin Park</p>
+            <p><strong>$5.000</strong></p>
+          </a>
+        </div>
+
+        <div class="categoria">
+          <a href="Paginasemergentes/Aretes-Monster-Draculavra.html">
+            <img src="../assets/img/monster-draculaura-aretes.png" alt="Aretes Monster Draculaura">
+            <p>Aretes Monster<br>Draculaura</p>
+            <p><strong>$8.000</strong></p>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Contenedor para productos nuevos agregados desde el admin -->
+      <h3 style="text-align:center; font-family:'Irish Grover', cursive; margin-top:40px;">Nuevos Lanzamientos</h3>
+      <div id="gridAccesoriosNuevos" class="grid-categorias"></div>
+
     </section>
   </main>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Cargar productos de la categoría 'accesorios'
-      ProductosAPI.initCategoriaPage('accesorios', '#gridAccesorios', { mostrarStock: true });
+      // Cargar productos dinámicos de la categoría 'accesorios'
+      ProductosAPI.initCategoriaPage('accesorios', '#gridAccesoriosNuevos', { mostrarStock: true });
     });
   </script>
+</body>
 </body>
 </html>

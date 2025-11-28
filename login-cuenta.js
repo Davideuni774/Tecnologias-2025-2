@@ -1,6 +1,24 @@
 // login-cuenta.js - Maneja el login con AJAX/JSON
+
+// Capturar la URL del script actual para determinar la raíz del sitio de forma robusta
+const _currentScriptSrc = document.currentScript ? document.currentScript.src : '';
+
 document.addEventListener('DOMContentLoaded', () => {
     const IS_GHPAGES = /github\.io$/i.test(location.hostname);
+    
+    // Calcular SITE_ROOT basado en la ubicación de este script (que está en la raíz)
+    let SITE_ROOT = '';
+    if (_currentScriptSrc) {
+        const match = _currentScriptSrc.match(/^(.*\/)login-cuenta\.js(\?.*)?$/i);
+        if (match) SITE_ROOT = match[1];
+    }
+    // Fallback
+    if (!SITE_ROOT) {
+        const path = window.location.pathname.toLowerCase();
+        if (path.includes('/paginas/paginasemergentes/')) SITE_ROOT = '../../';
+        else if (path.includes('/paginas/')) SITE_ROOT = '../';
+    }
+
     const REMOTE_ORIGIN = (typeof window !== 'undefined' && window.BACKEND_ORIGIN) ? String(window.BACKEND_ORIGIN).replace(/\/$/, '') : '';
 
     // Helper: Mostrar un toast no modal en la esquina superior derecha
@@ -80,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const xhr = new XMLHttpRequest();
-                const base = REMOTE_ORIGIN ? (REMOTE_ORIGIN + '/api/post') : '../../api/post';
+                const base = REMOTE_ORIGIN ? (REMOTE_ORIGIN + '/api/post') : (SITE_ROOT + 'api/post');
                 xhr.open('POST', base + "/login-cuenta.php", true);
                 if (REMOTE_ORIGIN) {
                     xhr.withCredentials = true;
