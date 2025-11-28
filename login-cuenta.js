@@ -2,6 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const IS_GHPAGES = /github\.io$/i.test(location.hostname);
     const REMOTE_ORIGIN = (typeof window !== 'undefined' && window.BACKEND_ORIGIN) ? String(window.BACKEND_ORIGIN).replace(/\/$/, '') : '';
+
     // Helper: Mostrar un toast no modal en la esquina superior derecha
     function showToast(message, type = 'info') {
         const existing = document.getElementById('site-toast');
@@ -29,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const formulario = document.getElementById('form-login');
-    const respEl = document.getElementById('respuesta-login');
     const submitBtn = formulario ? formulario.querySelector('button[type="submit"]') : null;
 
     if (!formulario) {
@@ -70,14 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
             correo: dataObjeto.correo || '(vacío)',
             clave: dataObjeto.clave ? '🔒 [ENCRIPTADA]' : '(vacío)'
         });
-        
-        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        console.log('📋 CONFIRMACIÓN DE DATOS A ENVIAR:');
-        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        console.log('📧 Correo:', dataObjeto.correo);
-        console.log('🔐 Contraseña:', '●●●●●●●● (protegida)');
-        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        console.log('🚀 Enviando al servidor...');
 
         function sendPayload(payload) {
             try {
@@ -91,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const base = REMOTE_ORIGIN ? (REMOTE_ORIGIN + '/api/post') : '../../api/post';
                 xhr.open('POST', base + "/login-cuenta.php", true);
                 if (REMOTE_ORIGIN) {
-                    xhr.withCredentials = true; // permitir cookies/sesión entre dominios
+                    xhr.withCredentials = true;
                 }
                 xhr.timeout = 15000;
                 xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
@@ -103,42 +95,42 @@ document.addEventListener('DOMContentLoaded', () => {
                             const json = JSON.parse(xhr.responseText);
                             console.log('✅ Respuesta servidor:', json);
                             if (json && json.message) msg = json.message;
+
                             if (json && json.success) {
                                 console.log('✅ Éxito:', msg);
-                                // Mostrar mensaje no modal en pantalla
+
                                 try { showToast(msg, 'success'); } catch (e) {}
+
+                                /*
+                                 * BLOQUE NUEVO:
+                                 * Redirigir de vuelta a la página donde el usuario estaba
+                                 * (por ejemplo carrito o checkout).
+                                 */
+                                try {
+                                    const prev = sessionStorage.getItem('redirect_after_login');
+                                    if (prev) {
+                                        sessionStorage.removeItem('redirect_after_login');
+                                        console.log('🔁 Volviendo automáticamente a:', prev);
+                                        window.location.href = prev;
+                                        return;
+                                    }
+                                } catch (e) {
+                                    console.warn('⚠️ No se pudo manejar redirect_after_login', e);
+                                }
+
+                                // Si no venía de pago, solo recargar la página actual
+                                setTimeout(() => location.reload(), 300);
                             } else {
                                 console.warn('⚠️ Login no exitoso:', msg);
                                 try { showToast(msg, 'error'); } catch (e) {}
                             }
+
                         } catch (e) {
-                            if (xhr.responseText && xhr.responseText.trim()) msg = xhr.responseText.trim();
-                            console.log('✅ Respuesta servidor (no JSON):', msg);
+                            console.log('Respuesta servidor (no JSON):', xhr.responseText);
                         }
-                        console.log('Respuesta completa:', xhr.responseText);
                     } else {
                         console.error('❌ Error:', xhr.status, xhr.statusText);
-                        let serverMsg = 'Error al iniciar sesión.';
-                        try {
-                            if (xhr.responseText) {
-                                const jsonErr = JSON.parse(xhr.responseText);
-                                if (jsonErr && (jsonErr.message || jsonErr.mensaje)) serverMsg = jsonErr.message || jsonErr.mensaje;
-                                else serverMsg = xhr.responseText;
-                            }
-                        } catch (e) {
-                            if (xhr.responseText && xhr.responseText.trim()) serverMsg = xhr.responseText.trim();
-                        }
-                        console.error('❌ Error del servidor:', serverMsg);
-                        console.error('Detalle respuesta servidor:', xhr.responseText);
                     }
-                };
-
-                xhr.onerror = function () {
-                    console.error('❌ Network error al enviar - Verifica tu conexión');
-                };
-
-                xhr.ontimeout = function () {
-                    console.error('❌ Timeout al enviar - El servidor no respondió a tiempo');
                 };
 
                 xhr.onreadystatechange = function () {
@@ -148,6 +140,14 @@ document.addEventListener('DOMContentLoaded', () => {
                             submitBtn.textContent = submitBtn.dataset.origText || 'Continuar';
                         }
                     }
+                };
+
+                xhr.onerror = function () {
+                    console.error('❌ Network error al enviar - Verifica conexión');
+                };
+
+                xhr.ontimeout = function () {
+                    console.error('❌ Timeout - Servidor no respondió a tiempo');
                 };
 
                 xhr.send(JSON.stringify(payload));
