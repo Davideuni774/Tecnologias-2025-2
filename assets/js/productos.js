@@ -1,7 +1,12 @@
 // assets/js/productos.js
 // Utilidades para crear y listar productos y renderizarlos por categoría.
 
-const API_BASE = '/api/post';
+// Detectar si estamos en GitHub Pages (servidor estático sin PHP)
+const IS_GHPAGES = /github\.io$/i.test(location.hostname);
+// Usar ruta relativa para funcionar bajo http://localhost/Tecnologias-2025-2/
+const API_BASE = 'api/post';
+// Fallback estático para GitHub Pages
+const ENDPOINT_LISTAR_STATIC = 'Datos/productos.json';
 const ENDPOINT_LISTAR = API_BASE + '/listar-productos.php';
 const ENDPOINT_REGISTRO = API_BASE + '/registro.php';
 
@@ -25,6 +30,9 @@ function fileToBase64(file) {
  * @returns {Promise<Object>} respuesta JSON
  */
 async function crearProducto(data) {
+    if (IS_GHPAGES) {
+        throw new Error('Crear producto no está disponible en GitHub Pages (no hay PHP). Usa tu servidor XAMPP/hosting con PHP.');
+    }
     const {
         nombre = '',
         precio = 0,
@@ -46,7 +54,7 @@ async function crearProducto(data) {
         imagen: imagenBase64
     };
 
-    const res = await fetch(ENDPOINT_REGISTRO, {
+    const res = await fetch(ENDPOINT_REGISTRO + '?t=' + Date.now(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -63,10 +71,83 @@ async function crearProducto(data) {
  * @returns {Promise<Array>} lista de productos
  */
 async function listarProductos() {
-    const res = await fetch(ENDPOINT_LISTAR);
-    const json = await res.json().catch(() => ({ success: false }));
-    if (!json.success) throw new Error(json.message || 'Error listando productos');
-    return json.data; // [{id, nombre, precio, imagen, categoria, ...}]
+    // Si estamos en GitHub Pages, ir directamente al JSON estático
+    if (IS_GHPAGES) {
+        const res = await fetch(ENDPOINT_LISTAR_STATIC + '?t=' + Date.now());
+        if (!res.ok) throw new Error('No se pudo cargar Datos/productos.json');
+        const data = await res.json();
+            // Normalizar posibles formatos: arreglo plano, {data:[...]}, o {categorias:[{nombre, Productos:{...}}]}
+            let items = [];
+            if (Array.isArray(data)) {
+                items = data;
+            } else if (Array.isArray(data?.data)) {
+                items = data.data;
+            } else if (Array.isArray(data?.categorias)) {
+                data.categorias.forEach(cat => {
+                    const catName = (cat?.nombre || '').toString();
+                    const productosObj = cat?.Productos || {};
+                    Object.values(productosObj).forEach(p => {
+                        items.push({
+                            nombre: p?.nombre || '',
+                            precio: p?.precio,
+                            stock: p?.stock ?? null,
+                            imagen: p?.imagen || '',
+                            categoria: catName
+                        });
+                    });
+                });
+            }
+            return items.map(n => ({
+                id: n.id ?? 0,
+                nombre: n.nombre,
+                precio: Number((n.precio ?? 0)) || 0,
+                stock: n.stock ?? null,
+                referencia: n.referencia ?? '',
+                imagen: n.imagen || (n.imagenNombre ? ('imagenes/' + n.imagenNombre) : ''),
+                categoria: n.categoria || ''
+            }));
+    }
+    // En servidor con PHP
+    try {
+        const res = await fetch(ENDPOINT_LISTAR + '?t=' + Date.now());
+        const json = await res.json().catch(() => ({ success: false }));
+        if (!json.success) throw new Error(json.message || 'Error listando productos');
+        return json.data; // [{id, nombre, precio, imagen, categoria, ...}]
+    } catch (e) {
+        // Fallback: intentar JSON estático si el endpoint PHP falla (útil en preview)
+        const res2 = await fetch(ENDPOINT_LISTAR_STATIC + '?t=' + Date.now());
+        if (!res2.ok) throw e;
+        const data = await res2.json();
+            let items = [];
+            if (Array.isArray(data)) {
+                items = data;
+            } else if (Array.isArray(data?.data)) {
+                items = data.data;
+            } else if (Array.isArray(data?.categorias)) {
+                data.categorias.forEach(cat => {
+                    const catName = (cat?.nombre || '').toString();
+                    const productosObj = cat?.Productos || {};
+                    Object.values(productosObj).forEach(p => {
+                        items.push({
+                            nombre: p?.nombre || '',
+                            precio: p?.precio,
+                            stock: p?.stock ?? null,
+                            imagen: p?.imagen || '',
+                            categoria: catName
+                        });
+                    });
+                });
+            }
+            return items.map(n => ({
+                id: n.id ?? 0,
+                nombre: n.nombre,
+                precio: Number((n.precio ?? 0)) || 0,
+                stock: n.stock ?? null,
+                referencia: n.referencia ?? '',
+                imagen: n.imagen || (n.imagenNombre ? ('imagenes/' + n.imagenNombre) : ''),
+                categoria: n.categoria || ''
+            }));
+    }
 }
 
 /**
@@ -87,7 +168,7 @@ function filtrarPorCategoria(productos, categoria) {
  * @param {Object} opts { mostrarStock, placeholderImg }
  */
 function renderizarProductos(container, productos, opts = {}) {
-    const { mostrarStock = false, placeholderImg = 'assets/img/placeholder.png' } = opts;
+    const { mostrarStock = false, placeholderImg = 'https://via.placeholder.com/300x300?text=Producto' } = opts;
     if (!container) return;
     container.innerHTML = '';
     if (!productos.length) {
@@ -139,6 +220,10 @@ function attachCrearProductoHandler(formSelector, refreshCallback) {
     if (!form) return;
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        if (IS_GHPAGES) {
+            alert('Crear producto no está disponible en GitHub Pages. Prueba en tu servidor local (XAMPP) o hosting con PHP.');
+            return;
+        }
         const fd = new FormData(form);
         const nombre = fd.get('nombre');
         const precio = fd.get('precio');
