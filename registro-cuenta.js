@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    console.log('✅ Formulario de registro encontrado, escuchando submit...');
+    console.log('%c[Draconis Auth] Formulario de registro encontrado, escuchando submit...', 'color: cyan; font-weight: bold;');
 
     // Aviso en GH Pages
     if (IS_GHPAGES && !REMOTE_ORIGIN) {
@@ -62,7 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
             dataObjeto[k] = v;
         }
 
-        console.log('📤 Enviando datos de registro:', {
+        console.log('%c[Draconis Auth] Preparando envío de datos de registro...', 'color: orange;');
+        console.log('📤 Datos capturados:', {
             nombre: dataObjeto.nombre || '(vacío)',
             correo: dataObjeto.correo || '(vacío)',
             telefono: dataObjeto.telefono || '(vacío)',
@@ -70,24 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
             confirmar_clave: dataObjeto.confirmar_clave ? '🔒 [ENCRIPTADA]' : '(vacío)'
         });
         
-        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        console.log('📋 CONFIRMACIÓN DE DATOS A ENVIAR:');
-        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        console.log('👤 Nombre:', dataObjeto.nombre);
-        console.log('📧 Correo:', dataObjeto.correo);
-        console.log('📞 Teléfono:', dataObjeto.telefono || '(no proporcionado)');
-        console.log('🔐 Contraseña:', '●●●●●●●● (protegida)');
-        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        console.log('🚀 Enviando al servidor...');
-
         // Validación cliente: asegurar que las contraseñas coincidan antes de enviar
         if ((dataObjeto.clave || '') !== (dataObjeto.confirmar_clave || '')) {
             const msg = 'Las contraseñas no coinciden.';
-            console.error('❌ Validación cliente:', msg);
+            console.error('%c[Draconis Auth] Error de validación: ' + msg, 'color: red;');
             if (respEl) {
                 respEl.textContent = msg;
-                respEl.classList.remove('success');
-                respEl.classList.add('error');
+                respEl.style.color = 'red';
             }
             return; // evitar enviar al servidor
         }
@@ -99,9 +89,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     submitBtn.dataset.origText = submitBtn.textContent;
                     submitBtn.textContent = 'Creando cuenta...';
                 }
+                if (respEl) {
+                    respEl.textContent = 'Procesando registro...';
+                    respEl.style.color = 'blue';
+                }
 
                 const xhr = new XMLHttpRequest();
                 const base = REMOTE_ORIGIN ? (REMOTE_ORIGIN + '/api/post') : (SITE_ROOT + 'api/post');
+                console.log('[Draconis Auth] Conectando con endpoint:', base + "/registro-cuenta.php");
+                
                 xhr.open('POST', base + "/registro-cuenta.php", true);
                 if (REMOTE_ORIGIN) {
                     xhr.withCredentials = true; // permitir cookies/sesión entre dominios
@@ -114,21 +110,31 @@ document.addEventListener('DOMContentLoaded', () => {
                         let msg = 'Cuenta creada exitosamente.';
                         try {
                             const json = JSON.parse(xhr.responseText);
-                            console.log('✅ Respuesta servidor:', json);
                             if (json && json.message) msg = json.message;
                             if (json && json.success) {
-                                console.log('✅ Éxito:', msg);
-                                console.log('ℹ️ No se realizará redirección automática. Mantén la página abierta para revisar la consola.');
+                                console.log('%c[Draconis Auth] ¡Registro Exitoso!', 'color: green; font-weight: bold;');
+                                console.log('✅ Mensaje del servidor:', msg);
+                                if (respEl) {
+                                    respEl.textContent = '¡Cuenta creada con éxito! Redirigiendo...';
+                                    respEl.style.color = 'green';
+                                }
+                                // Opcional: Redirigir al login o home después de unos segundos
+                                setTimeout(() => {
+                                    window.location.href = 'iniciosesion.html';
+                                }, 2000);
                             } else {
-                                console.warn('⚠️ Registro no exitoso:', msg);
+                                console.warn('%c[Draconis Auth] Registro fallido:', 'color: orange;', msg);
+                                if (respEl) {
+                                    respEl.textContent = msg;
+                                    respEl.style.color = 'red';
+                                }
                             }
                         } catch (e) {
                             if (xhr.responseText && xhr.responseText.trim()) msg = xhr.responseText.trim();
-                            console.log('✅ Respuesta servidor (no JSON):', msg);
+                            console.log('[Draconis Auth] Respuesta no JSON:', msg);
                         }
-                        console.log('Respuesta completa:', xhr.responseText);
                     } else {
-                        console.error('❌ Error:', xhr.status, xhr.statusText);
+                        console.error('[Draconis Auth] Error HTTP:', xhr.status, xhr.statusText);
                         let serverMsg = 'Error en el registro.';
                         try {
                             if (xhr.responseText) {
@@ -139,8 +145,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         } catch (e) {
                             if (xhr.responseText && xhr.responseText.trim()) serverMsg = xhr.responseText.trim();
                         }
-                        console.error('❌ Error del servidor:', serverMsg);
-                        console.error('Detalle respuesta servidor:', xhr.responseText);
+                        if (respEl) {
+                            respEl.textContent = serverMsg;
+                            respEl.style.color = 'red';
+                        }
                     }
                 };
 

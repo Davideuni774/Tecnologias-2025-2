@@ -125,6 +125,10 @@ document.addEventListener('DOMContentLoaded', () => {
                                 console.log('✅ Éxito:', msg);
                                 // Mostrar mensaje no modal en pantalla
                                 try { showToast(msg, 'success'); } catch (e) {}
+                                // Redirigir al perfil después de 1.5 segundos
+                                setTimeout(() => {
+                                    window.location.href = 'perfil.html';
+                                }, 1500);
                             } else {
                                 console.warn('⚠️ Login no exitoso:', msg);
                                 try { showToast(msg, 'error'); } catch (e) {}

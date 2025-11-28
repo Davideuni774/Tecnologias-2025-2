@@ -159,9 +159,64 @@
       return raw ? JSON.parse(raw) : [];
     } catch { return []; }
   }
+
+  // --- Sincronización con Servidor ---
+  const API_CART_URL = `${baseToRoot}api/post/carrito.php`;
+  let isSyncing = false;
+
+  async function saveCartToServer(items) {
+    if (isSyncing) return;
+    try {
+      await fetch(API_CART_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items })
+      });
+    } catch (e) {
+      // Silencioso si falla (ej. no logueado)
+    }
+  }
+
+  async function initCartSync() {
+    try {
+      const res = await fetch(API_CART_URL);
+      const data = await res.json();
+      if (data.success && Array.isArray(data.items)) {
+        const serverItems = data.items;
+        const localItems = getCart();
+        
+        // Merge: Servidor + Local (prioridad cantidad mayor)
+        const mergedMap = new Map();
+        serverItems.forEach(item => mergedMap.set(item.name, item));
+        
+        localItems.forEach(lItem => {
+          if (mergedMap.has(lItem.name)) {
+             const existing = mergedMap.get(lItem.name);
+             existing.qty = Math.max(existing.qty, lItem.qty);
+          } else {
+             mergedMap.set(lItem.name, lItem);
+          }
+        });
+        
+        const mergedList = Array.from(mergedMap.values());
+        
+        // Actualizar local y servidor
+        isSyncing = true;
+        localStorage.setItem(CART_KEY, JSON.stringify(mergedList));
+        updateCartBadge();
+        isSyncing = false;
+        
+        saveCartToServer(mergedList);
+      }
+    } catch (e) {
+      // No logueado o error de red
+    }
+  }
+
   function setCart(items) {
     localStorage.setItem(CART_KEY, JSON.stringify(items));
     updateCartBadge();
+    saveCartToServer(items);
   }
   function addToCart(product) {
     const items = getCart();
@@ -839,6 +894,7 @@
       initUserPage();
       initCreateAccountPage();
       initSearchResultsPage();
+      initCartSync();
       console.log('[Draconis] Header y footer inyectados (DOMContentLoaded).');
     });
   } else {
@@ -855,6 +911,7 @@
     initUserPage();
     initCreateAccountPage();
     initSearchResultsPage();
+    initCartSync();
     console.log('[Draconis] Header y footer inyectados (carga inmediata).');
   }
 })();
