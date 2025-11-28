@@ -47,7 +47,11 @@
 <body>
    <form id="formulario" enctype="multipart/form-data">
     <label for="producto">Producto:</label>
-    <input type="text" name="producto" id="producto">
+    <select name="producto" id="producto" required>
+        <option value="collar">Collar</option>
+        <option value="manilla">Manilla</option>
+        <option value="figura">Figura</option>
+    </select>
     <label for="categoria">Categoría:</label>
     <select name="categoria" id="categoria">
         <option value="accesorios">Accesorios</option>
@@ -71,8 +75,56 @@
     <figure><img id="preview" src="" alt=""></figure>
     <button type="submit">Enviar</button>
    </form>
-   <span id="respuesta"></span>
-   <ul id="productos"> </ul>
+     <span id="respuesta"></span>
+     <div id="productos" style="margin:20px auto; max-width:800px;"></div>
+     <script src="../../assets/js/productos.js"></script>
+     <script>
+         // Vista previa de imagen
+         const fileInput = document.getElementById('imagen');
+         const previewImg = document.getElementById('preview');
+         fileInput.addEventListener('change', () => {
+                const f = fileInput.files && fileInput.files[0];
+                if (f) { previewImg.src = URL.createObjectURL(f); }
+         });
+
+         document.addEventListener('DOMContentLoaded', () => {
+                // Refrescar lista completa tras creación
+                async function refrescarLista() {
+                    try {
+                        const productos = await ProductosAPI.listarProductos();
+                        ProductosAPI.renderizarProductos(document.getElementById('productos'), productos, { mostrarStock: true });
+                    } catch(e) {
+                        document.getElementById('productos').innerHTML = '<p>Error: ' + e.message + '</p>';
+                    }
+                }
+                refrescarLista();
+
+                // Adaptar nombres de campos del formulario a la API
+                const form = document.getElementById('formulario');
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const fd = new FormData(form);
+                    const nombre = fd.get('producto'); // usar selección como nombre
+                    const precio = fd.get('precio');
+                    const categoria = fd.get('categoria');
+                    const stock = fd.get('stock');
+                    const imagenFile = fd.get('imagen');
+                    const btn = form.querySelector('button[type=submit]');
+                    if (btn) btn.disabled = true;
+                    try {
+                        await ProductosAPI.crearProducto({ nombre, precio, categoria, stock, imagenFile });
+                        form.reset();
+                        previewImg.src = '';
+                        refrescarLista();
+                        document.getElementById('respuesta').textContent = 'Producto creado y listado actualizado.';
+                    } catch(err) {
+                        document.getElementById('respuesta').textContent = 'Error: ' + err.message;
+                    } finally {
+                        if (btn) btn.disabled = false;
+                    }
+                });
+         });
+     </script>
 </body>
 
 

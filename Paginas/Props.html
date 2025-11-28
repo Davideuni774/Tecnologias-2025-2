@@ -6,6 +6,8 @@
   <title>Draconis - Props</title>
   <link rel="stylesheet" href="../index.css?v=20251011">
   <script src="../index.js?v=20251011" defer></script>
+  <script src="../config.js?v=20251127"></script>
+  <script src="../assets/js/productos.js?v=20251127"></script>
   <style>
     body { background: #fff; }
     h2 { text-align: center; font-family: 'Irish Grover', cursive; font-size:48px; margin:40px 0; color:#000; }
@@ -35,32 +37,13 @@
     <h2>Props para Cosplay</h2>
 
     <section class="categorias">
-      <div class="grid-categorias">
-        <div class="categoria">
-          <a href="Paginasemergentes/Accesorios-Ghost.html">
-            <img src="https://i.imgur.com/QLvS0he.png" alt="Accesorios Ghost">
-            <p>Accesorios<br>Ghost</p>
-            <p><strong>$25.000</strong></p>
-          </a>
-        </div>
-
-        <div class="categoria">
-          <a href="Paginasemergentes/Papa-Emeritus-II-Ghost-Cetro.html">
-            <img src="https://i.imgur.com/2GXDAYl.png" alt="Papa Emeritus II Ghost/Cetro">
-            <p>Papa Emeritus II<br>Ghost/Cetro</p>
-            <p><strong>$180.000</strong></p>
-          </a>
-        </div>
-
-        <div class="categoria">
-          <a href="Paginasemergentes/Manos-Robot-Cyberpunk.html">
-            <img src="https://i.imgur.com/FM6fGg2.png" alt="Manos Robot Cyberpunk">
-            <p>Manos Robot<br>Cyberpunk</p>
-            <p><strong>$450.000</strong></p>
-          </a>
-        </div>
-      </div>
+      <div id="gridProps" class="grid-categorias"></div>
     </section>
   </main>
 </body>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    ProductosAPI.initCategoriaPage('props', '#gridProps', { mostrarStock: true });
+  });
+</script>
 </html>

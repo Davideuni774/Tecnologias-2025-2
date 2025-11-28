@@ -6,6 +6,8 @@
   <title>Draconis - Figuras personalizadas</title>
   <link rel="stylesheet" href="../index.css?v=20251011">
   <script src="../index.js?v=20251011" defer></script>
+  <script src="../config.js?v=20251127"></script>
+  <script src="../assets/js/productos.js?v=20251127"></script>
   <style>
     .categoria { text-align: center; font-family: 'Irish Grover', cursive; color:black; }
     .categoria a { color: black; text-decoration: none; }
@@ -16,7 +18,7 @@
   <main>
     <section class="categorias">
       <h2>Figuras Musicales</h2>
-      <div class="grid-categorias">
+      <div class="grid-categorias" id="gridFigurasStatic">
         <div class="categoria">
           <a href="Paginasemergentes/Tyler-Joseph.html">
             <img src="https://i.imgur.com/WzFrJU7.png" alt="Tyler Joseph (llavero)">
@@ -24,7 +26,6 @@
             <p><strong>$12.000</strong></p>
           </a>
         </div>
-
         <div class="categoria">
           <a href="Paginasemergentes/Josh-Dun.html">
             <img src="https://i.imgur.com/WST3GGQ.png" alt="Josh Dun (llavero)">
@@ -32,7 +33,6 @@
             <p><strong>$12.000</strong></p>
           </a>
         </div>
-
         <div class="categoria">
           <a href="Paginasemergentes/Ned-TOP.html">
             <img src="https://i.imgur.com/OKRPzxR.png" alt="Ned TOP (llavero)">
@@ -40,7 +40,6 @@
             <p><strong>$20.000</strong></p>
           </a>
         </div>
-
         <div class="categoria">
           <a href="Paginasemergentes/Johannes-Eckerstrom.html">
             <img src="https://i.imgur.com/hWapRIj.png" alt="Johannes Eckerstrom">
@@ -50,6 +49,15 @@
         </div>
       </div>
     </section>
+    <section class="categorias">
+      <div id="gridFigurasDynamic" class="grid-categorias"></div>
+    </section>
   </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      ProductosAPI.initCategoriaPage('figuras_personalizadas', '#gridFigurasDynamic', { mostrarStock: true });
+    });
+  </script>
 </body>
 </html>

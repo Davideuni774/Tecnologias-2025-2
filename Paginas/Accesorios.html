@@ -6,6 +6,8 @@
   <title>Draconis - Accesorios</title>
   <link rel="stylesheet" href="../index.css?v=20251011">
   <script src="../index.js?v=20251011" defer></script>
+  <script src="../config.js?v=20251127"></script>
+  <script src="../assets/js/productos.js?v=20251127"></script>
 
   <style>
     body { background: #fff; }
@@ -60,41 +62,17 @@
   <main>
     <h2 class="categoria-titulo">Accesorios</h2>
 
+    <!-- Contenedor dinámico de productos de la categoría -->
     <section class="categorias">
-      <div class="grid-categorias">
-        <div class="categoria">
-          <a href="Paginasemergentes/Aretes-y-Collar-Banda-Avatar.html">
-            <img src="../assets/img/avatar-aretes-collar.png" alt="Aretes y Collar Banda Avatar">
-            <p>Aretes y Collar<br>Banda Avatar</p>
-            <p><strong>$10.000</strong></p>
-          </a>
-        </div>
-
-        <div class="categoria">
-          <a href="Paginasemergentes/Collar-Banda-Ghost.html">
-            <img src="../assets/img/ghost-collar.png" alt="Collar Banda Ghost">
-            <p>Collar Banda<br>Ghost</p>
-            <p><strong>$5.000</strong></p>
-          </a>
-        </div>
-
-        <div class="categoria">
-          <a href="Paginasemergentes/Collar-Linkin-Park.html">
-            <img src="../assets/img/linkinpark-collar.png" alt="Collar Linkin Park">
-            <p>Collar<br>Linkin Park</p>
-            <p><strong>$5.000</strong></p>
-          </a>
-        </div>
-
-        <div class="categoria">
-          <a href="Paginasemergentes/Aretes-Monster-Draculavra.html">
-            <img src="../assets/img/monster-draculaura-aretes.png" alt="Aretes Monster Draculaura">
-            <p>Aretes Monster<br>Draculaura</p>
-            <p><strong>$8.000</strong></p>
-          </a>
-        </div>
-      </div>
+      <div id="gridAccesorios" class="grid-categorias"></div>
     </section>
   </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Cargar productos de la categoría 'accesorios'
+      ProductosAPI.initCategoriaPage('accesorios', '#gridAccesorios', { mostrarStock: true });
+    });
+  </script>
 </body>
 </html>

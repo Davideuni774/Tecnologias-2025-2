@@ -117,7 +117,7 @@
         detalle.dataset.productId = id;
         estadoEl.textContent = 'Cargando producto...';
 
-        fetch('../../api/post/obtener-producto.php?id=' + encodeURIComponent(id))
+        fetch('../../Backend/post/obtener-producto.php?id=' + encodeURIComponent(id))
           .then(r => r.json())
           .then(json => {
              if(!json.success){

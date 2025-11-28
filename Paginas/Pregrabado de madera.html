@@ -6,6 +6,8 @@
   <title>Draconis - Pirograbado en madera</title>
   <link rel="stylesheet" href="../index.css?v=20251011">
   <script src="../index.js?v=20251011" defer></script>
+  <script src="../config.js?v=20251127"></script>
+  <script src="../assets/js/productos.js?v=20251127"></script>
   <style>
     body { background: #fff; }
     h2 { text-align: center; font-family: 'Irish Grover', cursive; font-size:48px; margin:40px 0; color:#000; }
@@ -35,7 +37,7 @@
     <h2>Pirograbado en madera</h2>
 
     <section class="categorias">
-      <div class="grid-categorias">
+      <div class="grid-categorias" id="gridMaderaStatic">
         <div class="categoria">
           <a href="Paginasemergentes/Cofres-Madera-Personalizados.html">
             <img src="https://i.imgur.com/1Hc45qB.jpg"
@@ -45,7 +47,6 @@
             <p><strong>$45.000</strong></p>
           </a>
         </div>
-
         <div class="categoria">
           <a href="Paginasemergentes/Tankards-Pocillos-Personalizados.html">
             <img src="https://i.imgur.com/2LxYXPu.jpg"
@@ -55,7 +56,6 @@
             <p><strong>$30.000</strong></p>
           </a>
         </div>
-
         <div class="categoria">
           <a href="Paginasemergentes/Escudo-Vikingo-de-Madera.html">
             <img src="https://i.imgur.com/nmIqXbZ.jpg"
@@ -65,7 +65,6 @@
             <p><strong>$350.000</strong></p>
           </a>
         </div>
-
         <div class="categoria">
           <a href="Paginasemergentes/Cuadros-Personalizados.html">
             <img src="https://i.imgur.com/IToLGgu.jpg"
@@ -77,6 +76,14 @@
         </div>
       </div>
     </section>
+    <section class="categorias">
+      <div id="gridMaderaDynamic" class="grid-categorias"></div>
+    </section>
   </main>
 </body>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    ProductosAPI.initCategoriaPage('pregrabado_madera', '#gridMaderaDynamic', { mostrarStock: true });
+  });
+</script>
 </html>

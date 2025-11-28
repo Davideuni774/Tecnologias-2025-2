@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function cargarProductos() {
         if (!listaProductos) return;
-        fetch('../../api/post/listar-productos.php')
+        fetch('../../Backend/post/listar-productos.php')
             .then(r => r.json())
             .then(json => {
                 if (!json.success) {
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', "../../api/post/registro.php", true);
+                xhr.open('POST', "../../Backend/post/registro.php", true);
                 xhr.timeout = 15000; // 15s
                 xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 

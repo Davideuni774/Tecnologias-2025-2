@@ -3,12 +3,22 @@
 
 // Detectar si estamos en GitHub Pages (servidor estático sin PHP)
 const IS_GHPAGES = /github\.io$/i.test(location.hostname);
+
+// Función para determinar la ruta base relativa según la ubicación del archivo HTML actual
+function getBasePath() {
+    const path = window.location.pathname;
+    if (path.includes('/Paginas/Paginasemergentes/')) return '../../';
+    if (path.includes('/Paginas/')) return '../';
+    return '';
+}
+const BASE_PATH = getBasePath();
+
 // Permitir configurar un backend remoto (e.g., hosting con PHP): define window.BACKEND_ORIGIN = 'https://tu-dominio.com'
 const REMOTE_ORIGIN = (typeof window !== 'undefined' && window.BACKEND_ORIGIN) ? String(window.BACKEND_ORIGIN).replace(/\/$/, '') : '';
 // Usar API remota si está definida; si no, usa ruta relativa para XAMPP
-const API_BASE = REMOTE_ORIGIN ? (REMOTE_ORIGIN + '/api/post') : 'api/post';
+const API_BASE = REMOTE_ORIGIN ? (REMOTE_ORIGIN + '/api/post') : (BASE_PATH + 'api/post');
 // Fallback estático para GitHub Pages cuando NO hay backend remoto
-const ENDPOINT_LISTAR_STATIC = 'Datos/productos.json';
+const ENDPOINT_LISTAR_STATIC = BASE_PATH + 'Datos/productos.json';
 const ENDPOINT_LISTAR = API_BASE + '/listar-productos.php';
 const ENDPOINT_REGISTRO = API_BASE + '/registro.php';
 
