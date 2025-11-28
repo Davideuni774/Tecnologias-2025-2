@@ -215,10 +215,60 @@ function renderizarProductos(container, productos, opts = {}) {
             </div>
             <div class="producto-info">
               <h3>${escapeHtml(p.nombre)}</h3>
-              <p class="precio">$${Number(p.precio).toFixed(2)}</p>
+              <p class="precio">$${Number(p.precio).toLocaleString('es-CO')}</p>
               ${mostrarStock && p.stock !== null ? `<p class="stock">Stock: ${p.stock}</p>` : ''}
             </div>
+            <div class="producto-actions" style="display:flex; gap:10px; justify-content:center; margin-top:10px;">
+                <!-- Botones inyectados por JS -->
+            </div>
         `;
+        
+        // Crear botones de acción
+        const actionsDiv = card.querySelector('.producto-actions');
+        
+        const btnAdd = document.createElement('button');
+        btnAdd.textContent = 'Agregar';
+        btnAdd.style.cssText = 'padding:6px 12px; background:#333; color:#fff; border:none; border-radius:4px; cursor:pointer; font-size:0.9rem;';
+        
+        const btnBuy = document.createElement('button');
+        btnBuy.textContent = 'Comprar';
+        btnBuy.style.cssText = 'padding:6px 12px; background:#d00; color:#fff; border:none; border-radius:4px; cursor:pointer; font-size:0.9rem;';
+
+        const productData = {
+            name: p.nombre,
+            price: Number(p.precio),
+            image: p.imagen || placeholderImg,
+            url: location.pathname,
+            qty: 1
+        };
+
+        btnAdd.addEventListener('click', () => {
+            if (window.addToCart) {
+                window.addToCart(productData);
+                const originalText = btnAdd.textContent;
+                btnAdd.textContent = '✔';
+                setTimeout(() => btnAdd.textContent = originalText, 1000);
+            } else {
+                console.error('addToCart no disponible');
+            }
+        });
+
+        btnBuy.addEventListener('click', () => {
+            if (window.addToCart) {
+                window.addToCart(productData);
+                // Redirección inteligente a Medios de pago
+                let checkoutPath = 'Paginas/Paginasemergentes/Mediosdepago.html';
+                const path = location.pathname;
+                if (path.includes('/Paginas/Paginasemergentes/')) checkoutPath = 'Mediosdepago.html';
+                else if (path.includes('/Paginas/')) checkoutPath = 'Paginasemergentes/Mediosdepago.html';
+                
+                location.href = checkoutPath;
+            }
+        });
+
+        actionsDiv.appendChild(btnAdd);
+        actionsDiv.appendChild(btnBuy);
+
         fragment.appendChild(card);
     });
     container.appendChild(fragment);

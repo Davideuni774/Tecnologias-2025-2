@@ -162,18 +162,62 @@
 
   // --- Sincronización con Servidor ---
   const API_CART_URL = `${baseToRoot}api/post/carrito.php`;
+  const API_PROFILE_URL = `${baseToRoot}api/post/perfil.php`;
+  const PROFILE_PAGE_URL = `${baseToRoot}Paginas/Paginasemergentes/perfil.html`;
+
+  async function checkUserSession() {
+    try {
+      const res = await fetch(API_PROFILE_URL);
+      const data = await res.json();
+      if (data.success) {
+        // Usuario logueado
+        const userName = data.nombre || 'Usuario';
+        
+        // Actualizar enlace "Mi cuenta" en el header
+        // Buscamos por el texto o estructura. 
+        // En headerHTML: <a href="${loginPath}" ...><span>Mi cuenta</span></a>
+        // Y la imagen: <a href="${loginPath}"><img ...></a>
+        
+        const topBar = document.querySelector('.top-bar');
+        if (topBar) {
+          const links = topBar.querySelectorAll('a');
+          links.forEach(link => {
+            if (link.textContent.trim() === 'Mi cuenta' || link.querySelector('img[alt="Usuario"]')) {
+              link.href = PROFILE_PAGE_URL;
+              if (link.textContent.trim() === 'Mi cuenta') {
+                link.textContent = userName;
+              }
+            }
+          });
+        }
+
+        // Ocultar mensaje flotante de "inicia sesión" en el carrito
+        const floatMsg = document.querySelector('.floating-message');
+        if (floatMsg) {
+          floatMsg.style.display = 'none';
+        }
+      }
+    } catch (e) {
+      // No logueado o error
+    }
+  }
+
   let isSyncing = false;
 
   async function saveCartToServer(items) {
     if (isSyncing) return;
     try {
-      await fetch(API_CART_URL, {
+      const res = await fetch(API_CART_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ items })
       });
+      const json = await res.json();
+      if (!json.success && json.message !== 'No hay sesión activa') {
+         console.warn('[Carrito] Error guardando en servidor:', json.message);
+      }
     } catch (e) {
-      // Silencioso si falla (ej. no logueado)
+      console.warn('[Carrito] Error de red al guardar:', e);
     }
   }
 
@@ -225,6 +269,9 @@
     if (idx >= 0) items[idx].qty += product.qty || 1; else items.push(product);
     setCart(items);
   }
+  // Exponer globalmente para scripts externos (como productos.js)
+  window.addToCart = addToCart;
+
   function updateCartBadge() {
     const countEl = document.getElementById('cart-count');
     if (!countEl) return;
@@ -509,12 +556,12 @@
   }
 
   // (Opcional) verificar sesión — tu app guarda login con 'draconis_logged_in'
-  const logged = (() => { try { return localStorage.getItem('draconis_logged_in') === 'true'; } catch { return false; } })();
-  if (!logged) {
-    alert('Debes iniciar sesión para completar la compra.');
-    location.href = `${baseToRoot}Paginas/Paginasemergentes/iniciosesion.html`;
-    return;
-  }
+  // const logged = (() => { try { return localStorage.getItem('draconis_logged_in') === 'true'; } catch { return false; } })();
+  // if (!logged) {
+  //   alert('Debes iniciar sesión para completar la compra.');
+  //   location.href = `${baseToRoot}Paginas/Paginasemergentes/iniciosesion.html`;
+  //   return;
+  // }
 
   // Aquí: vaciamos el carrito usando la función que ya existe en este archivo
   try {
@@ -895,6 +942,7 @@
       initCreateAccountPage();
       initSearchResultsPage();
       initCartSync();
+      checkUserSession();
       console.log('[Draconis] Header y footer inyectados (DOMContentLoaded).');
     });
   } else {
@@ -912,6 +960,7 @@
     initCreateAccountPage();
     initSearchResultsPage();
     initCartSync();
+    checkUserSession();
     console.log('[Draconis] Header y footer inyectados (carga inmediata).');
   }
 })();

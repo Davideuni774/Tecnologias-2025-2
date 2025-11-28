@@ -84,18 +84,29 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnLogout) {
         btnLogout.addEventListener('click', () => {
             if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                // Limpiar inmediatamente para evitar condiciones de carrera
+                localStorage.removeItem('draconis_cart_items');
+                localStorage.removeItem('draconis_logged_in');
+                
                 const xhr = new XMLHttpRequest();
-                xhr.open('GET', SITE_ROOT + 'Phps/logout.php', true); // Usar el logout existente
+                // Añadir parámetro ajax=1 para evitar redirección 302 y obtener JSON
+                xhr.open('GET', SITE_ROOT + 'Phps/logout.php?ajax=1', true);
+                
                 if (REMOTE_ORIGIN) {
-                    // Si usas backend remoto, quizás necesites un endpoint API específico para logout
-                    // Por ahora intentamos llamar al logout.php local o relativo
-                    xhr.open('GET', API_BASE.replace('/api/post', '/Phps/logout.php'), true);
+                    xhr.open('GET', API_BASE.replace('/api/post', '/Phps/logout.php?ajax=1'), true);
                     xhr.withCredentials = true;
                 }
                 
                 xhr.onload = () => {
+                    // Redirigir manualmente tras confirmar logout en servidor
                     window.location.href = '../../index.html';
                 };
+                
+                xhr.onerror = () => {
+                    // Fallback si falla la red: redirigir igual
+                    window.location.href = '../../index.html';
+                };
+                
                 xhr.send();
             }
         });
