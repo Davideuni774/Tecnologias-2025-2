@@ -884,3 +884,36 @@ function initCookieSystem() {
 
 document.addEventListener("DOMContentLoaded", initCookieSystem);
 
+//yo otra vez
+
+document.addEventListener("DOMContentLoaded", () => {
+  const btnPagar = document.getElementById("btn-pagar");
+  if (!btnPagar) return;
+
+  btnPagar.addEventListener("click", () => {
+    
+    // Verificar si el usuario está logueado
+    const usuario = localStorage.getItem("usuarioLogueado");
+    if (!usuario) {
+      alert("Debes iniciar sesión para completar la compra");
+      return;
+    }
+
+    // Mensaje de compra exitosa
+    alert("Gracias por su compra ❤️");
+
+    // Vaciar carrito
+    localStorage.removeItem("carrito");
+    localStorage.setItem("carrito-count", "0");
+
+    // Actualizar contador visual
+    const badge = document.getElementById("cart-count");
+    if (badge) badge.textContent = "0";
+
+    // Limpiar interfaz del carrito
+    const cartRoot = document.getElementById("cart-root");
+    if (cartRoot) {
+      cartRoot.innerHTML = "<p>Tu carrito está vacío.</p>";
+    }
+  });
+});
